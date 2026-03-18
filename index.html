@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -157,6 +158,34 @@
     <button id="save-continue-btn" onclick="enterApp()" style="width:100%;max-width:340px;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px"></button>
     <div id="save-skip" onclick="enterApp()" style="font-size:12px;color:#999;cursor:pointer;text-decoration:underline"></div>
   </div>
+<!-- NAME SCREEN -->
+<div id="name-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;background:#f7f5f0;text-align:center">
+  <div style="margin-bottom:16px">
+    <svg width="72" height="72" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="60" cy="50" rx="40" ry="28" fill="#C8BC5A" stroke="#8B7A20" stroke-width="2"/>
+      <ellipse cx="74" cy="42" rx="13" ry="9" fill="#D4849A" opacity="0.9"/>
+      <ellipse cx="47" cy="54" rx="7" ry="5" fill="#f7f5f0"/>
+      <rect x="57" y="72" width="6" height="30" rx="2.5" fill="#5C3D1E"/>
+      <ellipse cx="60" cy="72" rx="5" ry="7" fill="#8B5E3C"/>
+      <text x="26" y="57" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#2C2C2A">D</text>
+      <text x="66" y="96" font-family="Georgia,serif" font-size="19" font-style="italic" font-weight="600" fill="#9B4E2E">'art</text>
+      <polygon points="53,100 60,114 67,100" fill="#D4849A"/>
+    </svg>
+  </div>
+  <div id="name-screen-title" style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:8px">What is your name?</div>
+  <div id="name-screen-sub" style="font-size:13px;color:#666;margin-bottom:28px;line-height:1.7;max-width:300px">So we can personalize your experience and contact you when needed.</div>
+  <div style="width:100%;max-width:340px">
+    <input id="guest-name-input" type="text" placeholder="e.g. Sarah Johnson" 
+      style="width:100%;padding:14px 16px;border:1px solid #ddd;border-radius:12px;font-size:16px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;margin-bottom:12px;box-sizing:border-box"
+      onkeydown="if(event.key==='Enter') submitGuestName()"/>
+    <button id="name-submit-btn" onclick="submitGuestName()" 
+      style="width:100%;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px">
+      Continue →
+    </button>
+    <div id="name-skip-btn" onclick="submitGuestName(true)" style="font-size:12px;color:#bbb;cursor:pointer;text-decoration:underline">Skip for now</div>
+  </div>
+</div>
+
 <div id="main-app" style="display:none">
   <div id="tab-bar">
     <div class="tab active" onclick="showTab('chat')" id="tab-chat-btn">Guest Assistant</div>
@@ -185,8 +214,8 @@
       <span class="sug" style="background:#EAF3DE;border-color:#97C459;color:#27500A;font-weight:500" onclick="requestTowels()" id="sug-towels">Extra towels / pillows</span>
       <span class="sug" style="background:#FFF0F0;border-color:#E24B4A;color:#A32D2D;font-weight:500" onclick="noiseComplaint()" id="sug-noise">Noise complaint</span>
       <span class="sug" style="background:#FFF8E1;border-color:#F9A825;color:#6D4C00;font-weight:500" onclick="showExchange()" id="sug-exchange">Currency exchange</span>
-      <span class="sug sug-emergency" onclick="showEmergency()" id="sug-emergency">Emergency</span>
-      <span class="sug sug-mo" onclick="talkToMohamed()" id="sug-mo">Talk with Mohamed</span>
+      <span class="sug" style="background:#fff3e0;border-color:#ff9800;color:#e65100;font-weight:600" onclick="showContactReception()" id="sug-contact">📞 Contact reception</span>
+      <span class="sug sug-emergency" onclick="showUrgentHelp()" id="sug-emergency">🆘 Urgent help</span>
       <span class="sug sug-checkout" onclick="showTab('checkout')" id="sug-checkout">I am checking out</span>
     </div>
     <div id="input-row">
@@ -634,16 +663,102 @@ function selectLang(lang, code) {
 }
 function enterApp() {
   document.getElementById('save-screen').style.display = 'none';
+  // Show name screen
+  const nameScreen = document.getElementById('name-screen');
+  nameScreen.style.display = 'flex';
+
+  // Translate name screen
+  const nameTitles = {
+    en: { title: "What is your name?", sub: "So we can personalize your experience and contact you when needed.", btn: "Continue →", skip: "Skip for now", ph: "e.g. Sarah Johnson" },
+    fr: { title: "Quel est votre prénom?", sub: "Pour personnaliser votre séjour et vous contacter si besoin.", btn: "Continuer →", skip: "Passer", ph: "ex: Sarah Johnson" },
+    es: { title: "¿Cuál es su nombre?", sub: "Para personalizar su experiencia y contactarle cuando sea necesario.", btn: "Continuar →", skip: "Omitir", ph: "ej: Sarah Johnson" },
+    it: { title: "Come si chiama?", sub: "Per personalizzare la sua esperienza e contattarla se necessario.", btn: "Continua →", skip: "Salta", ph: "es: Sarah Johnson" },
+    de: { title: "Wie heißen Sie?", sub: "Damit wir Ihren Aufenthalt personalisieren können.", btn: "Weiter →", skip: "Überspringen", ph: "z.B. Sarah Johnson" },
+    ar: { title: "ما هو اسمك؟", sub: "لنتمكن من تخصيص تجربتك والتواصل معك عند الحاجة.", btn: "متابعة →", skip: "تخطي", ph: "مثال: سارة جونسون" }
+  };
+  const nm = nameTitles[selectedLangCode] || nameTitles.en;
+  document.getElementById('name-screen-title').textContent = nm.title;
+  document.getElementById('name-screen-sub').textContent = nm.sub;
+  document.getElementById('name-submit-btn').textContent = nm.btn;
+  document.getElementById('name-skip-btn').textContent = nm.skip;
+  document.getElementById('guest-name-input').placeholder = nm.ph;
+  setTimeout(() => document.getElementById('guest-name-input').focus(), 300);
+}
+
+let guestName = '';
+
+function submitGuestName(skip) {
+  const input = document.getElementById('guest-name-input').value.trim();
+  guestName = skip ? '' : (input || '');
+  document.getElementById('name-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
   const t = T[selectedLangCode];
   applyTranslations(t);
   const welcome = document.createElement('div');
   welcome.className = 'msg msg-bot';
-  welcome.textContent = t.welcome;
+  // Personalize welcome with guest name
+  let welcomeText = t.welcome;
+  if(guestName) {
+    const greetings = {
+      en: `Welcome, ${guestName}! 🌿`,
+      fr: `Bienvenue, ${guestName}! 🌿`,
+      es: `¡Bienvenido, ${guestName}! 🌿`,
+      it: `Benvenuto, ${guestName}! 🌿`,
+      de: `Willkommen, ${guestName}! 🌿`,
+      ar: `مرحباً ${guestName}! 🌿`
+    };
+    welcomeText = (greetings[selectedLangCode] || greetings.en) + '\n\n' + t.welcome.split('\n\n').slice(1).join('\n\n');
+  }
+  welcome.textContent = welcomeText;
   document.getElementById('chat-box').appendChild(welcome);
+
+  // IMPROVEMENT 1: Show quick info card (WiFi, breakfast, location)
+  setTimeout(() => {
+    const infoCard = document.createElement('div');
+    infoCard.className = 'action-card';
+    infoCard.style.cssText = 'background:linear-gradient(135deg,#E1F5EE,#f7fdf9);border-color:#5DCAA5;';
+    infoCard.innerHTML = `
+      <div class="action-card-title" style="color:#0F6E56;font-size:13px;margin-bottom:10px">✨ Quick info for your stay</div>
+      <div style="font-size:12px;color:#333;line-height:2">
+        📶 <strong>WiFi:</strong> 19531954<br>
+        🍳 <strong>Breakfast:</strong> 8:00 – 10:30 AM<br>
+        🏊 <strong>Pool:</strong> Free for all guests
+      </div>
+      <a class="action-btn btn-maps" href="https://maps.app.goo.gl/peCF8ekeoyFvNP248" target="_blank" style="margin-top:10px">📍 Find the Riad on Maps</a>
+    `;
+    document.getElementById('chat-box').appendChild(infoCard);
+    document.getElementById('chat-box').scrollTop = 99999;
+  }, 800);
+
+  // IMPROVEMENT 9: Check-in follow-up message after 5 seconds
+  setTimeout(() => {
+    const followUp = document.createElement('div');
+    followUp.className = 'msg msg-bot';
+    const firstName = guestName ? guestName.split(' ')[0] : '';
+    const fn = firstName ? firstName + ', ' : '';
+    const followMsgs = {
+      en: fn + "is everything good with your room? 🏡 Let me know if you need anything — I'm here for you!",
+      fr: fn + "tout est bien dans votre chambre ? 🏡 Dites-moi si vous avez besoin de quelque chose !",
+      es: fn + "¿todo bien en su habitación? 🏡 ¡Dígame si necesita algo!",
+      it: fn + "tutto bene nella sua camera? 🏡 Fatemi sapere se avete bisogno di qualcosa!",
+      de: fn + "ist alles in Ordnung in Ihrem Zimmer? 🏡 Sagen Sie mir, wenn Sie etwas brauchen!",
+      ar: "هل كل شيء بخير" + (firstName ? ' يا ' + firstName : '') + "؟ 🏡 أخبرني إذا احتجت أي شيء!"
+    };
+    // Capitalize first letter if no name prefix
+    let followText = followMsgs[selectedLangCode] || followMsgs.en;
+    if(!firstName && selectedLangCode !== 'ar') followText = followText.charAt(0).toUpperCase() + followText.slice(1);
+    followUp.textContent = followText;
+    document.getElementById('chat-box').appendChild(followUp);
+    document.getElementById('chat-box').scrollTop = 99999;
+  }, 7200000); // 2 hours
 }
 
 function applyTranslations(t) {
+  // Pre-fill checkout survey name from guest name
+  if(guestName) {
+    const gni = document.getElementById('guest-name');
+    if(gni) gni.value = guestName;
+  }
   document.getElementById('header-sub').textContent = t.headerSub;
   document.getElementById('sug-checkin').textContent = t.checkin.length > 20 ? (selectedLangCode==='en'?'Check-in/out':t.checkin.substring(0,18)+'…') : t.checkin;
   document.getElementById('sug-checkin').textContent = selectedLangCode==='en'?'Check-in/out':selectedLangCode==='fr'?'Check-in/out':selectedLangCode==='ar'?'تسجيل الوصول':'Check-in/out';
@@ -656,7 +771,6 @@ function applyTranslations(t) {
   document.getElementById('sug-pool').textContent = selectedLangCode==='ar'?'المسبح':selectedLangCode==='de'?'Pool':'Pool';
   document.getElementById('sug-location').textContent = t.location;
   document.getElementById('sug-emergency').textContent = t.emergency;
-  document.getElementById('sug-mo').textContent = t.talkMo;
   document.getElementById('sug-checkout').textContent = t.checkout;
   document.getElementById('send-btn').textContent = t.sendBtn;
   document.getElementById('chat-input').placeholder = t.placeholder;
@@ -697,7 +811,7 @@ function requestTowels() {
   const c = document.createElement('div'); c.className='action-card';
   c.innerHTML=`<div class="action-card-title">🛁 Extra towels / pillows</div>
     <p style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">No problem! Tap below and Mohamed will bring them to your room as soon as possible.</p>
-    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=Hello Mohamed, I am a guest at Riad Dar D'Art. Could you please bring extra towels and/or pillows to my room? Thank you!" target="_blank">Request via WhatsApp</a>`;
+    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent('Hello Mohamed, ' + (guestName ? 'Guest ' + guestName + ' is' : 'A guest is') + ' requesting extra towels and/or pillows. Thank you!')}" target="_blank">Request via WhatsApp</a>`;
   chatBox.appendChild(c); chatBox.scrollTop=chatBox.scrollHeight;
 }
 
@@ -706,7 +820,7 @@ function noiseComplaint() {
   const c = document.createElement('div'); c.className='action-card';
   c.innerHTML=`<div class="action-card-title">🔇 Noise complaint</div>
     <p style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">We are sorry to hear that. Please contact Mohamed directly and he will take care of it immediately.</p>
-    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=Hello Mohamed, I am a guest at Riad Dar D'Art. I am being disturbed by noise and need your help please." target="_blank">Contact Mohamed now</a>`;
+    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent('Hello Mohamed, ' + (guestName ? 'Guest ' + guestName : 'A guest') + ' is being disturbed by noise and needs your help please.')}" target="_blank">Contact Mohamed now</a>`;
   chatBox.appendChild(c); chatBox.scrollTop=chatBox.scrollHeight;
 }
 
@@ -717,7 +831,7 @@ function showLocation() {
   c.innerHTML=`<div class="action-card-title">${tr.locationTitle}</div>
     <p style="font-size:12px;color:#666;margin-bottom:10px;line-height:1.6">${tr.locationMsg}<br><strong>${tr.locationAddress}</strong></p>
     <a class="action-btn btn-maps" href="${RIAD_LOCATION}" target="_blank">${tr.locationBtn}</a>
-    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=Hello, I am lost and need directions to the riad" target="_blank">${tr.contactBtn}</a>`;
+    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent('Hello Mohamed, ' + (guestName ? guestName + ' is' : 'A guest is') + ' lost and needs directions to the riad.')}" target="_blank">${tr.contactBtn}</a>`;
   chatBox.appendChild(c); chatBox.scrollTop=chatBox.scrollHeight;
 }
 
@@ -736,20 +850,84 @@ function showEmergency() {
   chatBox.appendChild(c); chatBox.scrollTop=chatBox.scrollHeight;
 }
 
-// TALK WITH MOHAMED
-function talkToMohamed() {
-  const tr = T[selectedLangCode];
-  const c = document.createElement('div'); c.className='action-card';
-  c.innerHTML=`<div class="action-card-title">${tr.moTitle}</div>
-    <a class="action-btn btn-wa" href="${RECEPTION_WA}?text=Hello Mohamed, I am a guest at Riad Dar D'Art and I need help" target="_blank">${tr.moBtn}</a>`;
+// CONTACT RECEPTION (Improvement 6)
+function showContactReception() {
+  const old = document.getElementById('contact-card'); if(old) old.remove();
+  const c = document.createElement('div'); c.className='action-card'; c.id='contact-card';
+  const titles = { en:'📞 Contact reception', fr:'📞 Contacter la réception', es:'📞 Contactar recepción', it:'📞 Contatta la reception', de:'📞 Rezeption kontaktieren', ar:'📞 التواصل مع الاستقبال' };
+  const hints = { en:"Hello, I need help with…", fr:"Bonjour, j'ai besoin d'aide pour…", es:"Hola, necesito ayuda con…", it:"Ciao, ho bisogno di aiuto per…", de:"Hallo, ich brauche Hilfe mit…", ar:"مرحبا، أحتاج مساعدة في…" };
+  c.innerHTML = `
+    <div class="action-card-title">${titles[selectedLangCode]||titles.en}</div>
+    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent((guestName ? guestName + ': ' : '') + (hints[selectedLangCode]||hints.en))}" target="_blank">💬 WhatsApp — 0699814919</a>
+  `;
   chatBox.appendChild(c); chatBox.scrollTop=chatBox.scrollHeight;
 }
+
+// URGENT HELP (Improvement 7)
+function showUrgentHelp() {
+  const old = document.getElementById('urgent-card'); if(old) old.remove();
+  const c = document.createElement('div'); c.className='action-card'; c.id='urgent-card';
+  c.style.cssText='border-color:#E24B4A;background:#fff8f8;';
+  const titles = { en:'🆘 Urgent help — priority contact', fr:'🆘 Aide urgente — contact prioritaire', es:'🆘 Ayuda urgente — contacto prioritario', it:'🆘 Aiuto urgente — contatto prioritario', de:'🆘 Dringende Hilfe — Prioritätskontakt', ar:'🆘 مساعدة عاجلة — اتصال أولوية' };
+  c.innerHTML = `
+    <div class="action-card-title" style="color:#A32D2D">${titles[selectedLangCode]||titles.en}</div>
+    <p style="font-size:12px;color:#A32D2D;margin-bottom:10px;font-weight:600">Mohamed will respond immediately.</p>
+    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent('🆘 URGENT: ' + (guestName ? guestName + ' needs' : 'A guest needs') + ' immediate help at Riad Dar D\'Art!')}" target="_blank" style="background:#E24B4A">📲 Call Mohamed NOW</a>
+    <a class="action-btn btn-red" href="tel:15" style="margin-top:6px">🚑 Ambulance — 15</a>
+    <a class="action-btn btn-red" href="tel:19">🚔 Police — 19</a>
+  `;
+  chatBox.appendChild(c); chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+// talkToMohamed removed - use showContactReception instead
 
 // SPA BOOKING
 let spaService='',spaDuration='',spaPeople='',spaTime='';
 function showSpaBooking() {
+  // Show relax sub-menu first
   const tr = T[selectedLangCode];
-  spaService='';spaDuration='';spaPeople='';spaTime='';
+  const old2 = document.getElementById('relax-menu'); if(old2) old2.remove();
+  const menu = document.createElement('div'); menu.className='action-card'; menu.id='relax-menu';
+  const urgencyMsgs = {
+    en: '⏰ Evening slots are the most requested — book early!',
+    fr: '⏰ Les créneaux du soir sont très demandés — réservez tôt!',
+    es: '⏰ Los turnos de tarde son los más solicitados — ¡reserve pronto!',
+    it: '⏰ I turni serali sono i più richiesti — prenotate presto!',
+    de: '⏰ Abendtermine sind am beliebtesten — frühzeitig buchen!',
+    ar: '⏰ مواعيد المساء هي الأكثر طلباً — احجز مبكراً!'
+  };
+  menu.innerHTML = `
+    <div class="action-card-title">🧖 Relax — Choose your experience</div>
+    <p style="font-size:11px;color:#E07B2A;font-weight:600;margin-bottom:10px">${urgencyMsgs[selectedLangCode]||urgencyMsgs.en}</p>
+    <button class="action-btn btn-green" onclick="showSpaFormDirect('hammam')">🛁 Hammam · min. 2 people · 20€/person</button>
+    <button class="action-btn btn-green" onclick="showSpaFormDirect('massage')">💆 Massage · 30 min=30€ | 60 min=40€</button>
+    <button class="action-btn btn-teal" onclick="showSpaFormDirect('both')">✨ Both Hammam + Massage</button>
+  `;
+  chatBox.appendChild(menu); chatBox.scrollTop=chatBox.scrollHeight;
+
+  // Improvement 5: Follow-up nudge if no booking made
+  setTimeout(() => {
+    if(document.getElementById('relax-menu') && !document.getElementById('spa-form')) {
+      const nudge = document.createElement('div');
+      nudge.className = 'msg msg-bot';
+      const nudgeMsgs = {
+        en: "💆 Still interested in a hammam or massage? I can reserve it for you right now!",
+        fr: "💆 Toujours intéressé par un hammam ou massage? Je peux réserver pour vous!",
+        es: "💆 ¿Aún interesado en hammam o masaje? ¡Puedo reservarlo ahora mismo!",
+        it: "💆 Ancora interessato a hammam o massaggio? Posso prenotarlo ora!",
+        de: "💆 Noch Interesse an Hammam oder Massage? Ich kann es jetzt für Sie reservieren!",
+        ar: "💆 لا تزال مهتماً بالحمام أو المساج؟ يمكنني الحجز لك الآن!"
+      };
+      nudge.textContent = nudgeMsgs[selectedLangCode] || nudgeMsgs.en;
+      chatBox.appendChild(nudge);
+      chatBox.scrollTop=chatBox.scrollHeight;
+    }
+  }, 180000); // 3 minutes
+}
+
+function showSpaFormDirect(preservice) {
+  const tr = T[selectedLangCode];
+  spaService=preservice||'';spaDuration='';spaPeople='';spaTime='';
   const old=document.getElementById('spa-form'); if(old) old.remove();
   const form=document.createElement('div'); form.className='booking-form'; form.id='spa-form';
   form.innerHTML=`
@@ -812,7 +990,8 @@ function confirmSpa(){
   if(!name){alert('Please enter your name');return;}
   if(spaService==='hammam'&&parseInt(spaPeople)<2){alert('Hammam requires minimum 2 people');return;}
   const svcText=spaService==='hammam'?'Hammam':spaService==='massage'?`Massage (${spaDuration} min)`:`Hammam + Massage (${spaDuration} min)`;
-  const msg=`Hello Mohamed! New spa booking request:\n\n🌿 Service: ${svcText}\n👥 People: ${spaPeople}\n📅 Date & Time: ${time}\n👤 Guest: ${name}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
+  const gName = guestName || name;
+  const msg=`Hello Mohamed! New spa booking request:\n\n🌿 Service: ${svcText}\n👥 People: ${spaPeople}\n📅 Date & Time: ${time}\n👤 Guest: ${gName}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
   const waUrl=`${RECEPTION_WA}?text=${encodeURIComponent(msg)}`;
   document.getElementById('spa-form').remove();
   const conf=document.createElement('div');conf.className='msg msg-bot';conf.textContent=`${tr.bookConfirm.replace('Mohamed',name.split(' ')[0])}`;
@@ -847,8 +1026,47 @@ const sendBtn=document.getElementById('send-btn');
 
 function askSug(key){
   const t=T[selectedLangCode];
+  if(key==='taxi') { showTaxiFlow(); return; }
   const map={checkin:t.checkin,wifi:t.wifi,breakfast:t.breakfast,taxi:t.taxi,dinner:t.dinner,excursions:t.excursions,pool:t.pool};
   chatInput.value=map[key]||''; sendChat();
+}
+
+function showTaxiFlow() {
+  const old = document.getElementById('taxi-card'); if(old) old.remove();
+  const c = document.createElement('div'); c.className='action-card'; c.id='taxi-card';
+  const labels = {
+    en: { title:'🚕 Airport Transfer', q:'What time is your flight?', p:'e.g. Tomorrow at 6:00 AM', btn:'Confirm Transfer', confirm:'We will arrange your transfer. Reception has been notified! ✅', price:'1-4 people: 20€ · 5+ people: 30€' },
+    fr: { title:'🚕 Transfert Aéroport', q:'À quelle heure est votre vol?', p:'ex: Demain à 6h00', btn:'Confirmer le transfert', confirm:'Votre transfert est organisé. La réception a été informée! ✅', price:'1-4 personnes: 20€ · 5+: 30€' },
+    es: { title:'🚕 Traslado al aeropuerto', q:'¿A qué hora es su vuelo?', p:'ej: Mañana a las 6:00', btn:'Confirmar traslado', confirm:'Su traslado está organizado. ¡La recepción ha sido notificada! ✅', price:'1-4 personas: 20€ · 5+: 30€' },
+    it: { title:'🚕 Trasferimento aeroporto', q:'A che ora è il suo volo?', p:'es: Domani alle 6:00', btn:'Conferma trasferimento', confirm:'Il tuo trasferimento è organizzato! ✅', price:'1-4 persone: 20€ · 5+: 30€' },
+    de: { title:'🚕 Flughafentransfer', q:'Wann ist Ihr Flug?', p:'z.B. Morgen um 6:00 Uhr', btn:'Transfer bestätigen', confirm:'Ihr Transfer ist organisiert! ✅', price:'1-4 Personen: 20€ · 5+: 30€' },
+    ar: { title:'🚕 النقل إلى المطار', q:'في أي وقت رحلتك؟', p:'مثال: غداً الساعة 6 صباحاً', btn:'تأكيد التحويل', confirm:'تم ترتيب نقلك وتنبيه الاستقبال! ✅', price:'1-4 أشخاص: 20€ · 5+: 30€' }
+  };
+  const l = labels[selectedLangCode] || labels.en;
+  c.innerHTML = `
+    <div class="action-card-title">${l.title}</div>
+    <p style="font-size:11px;color:#666;margin-bottom:8px">${l.price}</p>
+    <div style="font-size:12px;font-weight:600;color:#333;margin-bottom:6px">${l.q}</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input id="taxi-time" type="text" placeholder="${l.p}" style="flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:12px;font-family:inherit;outline:none"/>
+    </div>
+    <button class="action-btn btn-teal" onclick="confirmTaxi('${encodeURIComponent(JSON.stringify(l))}')">${l.btn}</button>
+  `;
+  chatBox.appendChild(c); chatBox.scrollTop=chatBox.scrollHeight;
+}
+
+function confirmTaxi(lJson) {
+  const l = JSON.parse(decodeURIComponent(lJson));
+  const time = document.getElementById('taxi-time').value.trim();
+  if(!time) { alert('Please enter your flight time'); return; }
+  const guestLabel = guestName ? `\n👤 Guest: ${guestName}` : '';
+  const msg = `Hello Mohamed! Airport transfer request:\n\n🚕 Flight time: ${time}${guestLabel}\n🌐 Language: ${selectedLang}\n\nPlease confirm the transfer. Thank you!`;
+  const waUrl = `${RECEPTION_WA}?text=${encodeURIComponent(msg)}`;
+  const card = document.getElementById('taxi-card');
+  if(card) {
+    card.innerHTML = `<div class="action-card-title">${l.confirm}</div><a class="action-btn btn-teal" href="${waUrl}" target="_blank">📲 Send to reception via WhatsApp</a>`;
+  }
+  chatBox.scrollTop=chatBox.scrollHeight;
 }
 
 function processReply(text){
@@ -859,7 +1077,21 @@ function processReply(text){
   else if(text.includes('[SHOW_CONTACT]')){clean=text.replace('[SHOW_CONTACT]','').trim();tag='contact';}
   if(clean){const d=document.createElement('div');d.className='msg msg-bot';d.textContent=clean;chatBox.appendChild(d);}
   if(tag==='booking'){const c=document.createElement('div');c.className='action-card';c.innerHTML=`<div class="action-card-title">${tr.bookingReq}</div><a class="action-btn btn-teal" href="${RECEPTION_WA}?text=Hello, booking request" target="_blank">${tr.contactBtn}</a>`;chatBox.appendChild(c);}
-  else if(tag==='review'){const c=document.createElement('div');c.className='action-card';c.innerHTML=`<div class="action-card-title">${tr.reviewTitle}</div><a class="action-btn btn-green" href="${GMAPS}" target="_blank">Google Review</a><a class="action-btn btn-blue" href="${BOOKING_URL}" target="_blank">Booking.com Review</a><a class="action-btn btn-teal" href="${RECEPTION_WA}" target="_blank">${tr.contactBtn}</a>`;chatBox.appendChild(c);}
+  else if(tag==='review'){
+    const preMsg = document.createElement('div');
+    preMsg.className = 'msg msg-bot';
+    const reviewPreMsgs = {
+      en: "If you enjoyed your stay, mentioning our team and the warm atmosphere helps us a great deal 🙏 Even just a few words makes a huge difference for us!",
+      fr: "Si vous avez apprécié votre séjour, mentionner notre équipe nous aide beaucoup 🙏 Même quelques mots font une grande différence!",
+      es: "Si disfrutó su estancia, mencionar a nuestro equipo nos ayuda mucho 🙏 ¡Incluso unas pocas palabras hacen una gran diferencia!",
+      it: "Se ha apprezzato il soggiorno, menzionare il nostro team ci aiuta molto 🙏",
+      de: "Wenn Sie Ihren Aufenthalt genossen haben, hilft eine Erwähnung unseres Teams uns sehr 🙏",
+      ar: "إذا أعجبك إقامتك، فإن ذكر فريقنا يساعدنا كثيراً 🙏 حتى بضع كلمات تصنع فرقاً كبيراً!"
+    };
+    preMsg.textContent = reviewPreMsgs[selectedLangCode] || reviewPreMsgs.en;
+    chatBox.appendChild(preMsg);
+    const c=document.createElement('div');c.className='action-card';c.innerHTML=`<div class="action-card-title">${tr.reviewTitle}</div><a class="action-btn btn-green" href="${GMAPS}" target="_blank">⭐ Google Review</a><a class="action-btn btn-blue" href="${BOOKING_URL}" target="_blank">🏨 Booking.com Review</a><a class="action-btn btn-teal" href="${RECEPTION_WA}" target="_blank">${tr.contactBtn}</a>`;chatBox.appendChild(c);
+  }
   else if(tag==='contact'){const c=document.createElement('div');c.className='action-card';c.innerHTML=`<div class="action-card-title">${tr.contactTitle}</div><a class="action-btn btn-reception" href="${RECEPTION_WA}" target="_blank">${tr.contactBtn} — 0699814919</a>`;chatBox.appendChild(c);}
   chatBox.scrollTop=chatBox.scrollHeight;
 }
@@ -873,7 +1105,7 @@ async function sendChat(){
   chatBox.scrollTop=chatBox.scrollHeight;
   const systemPrompt=SYSTEM_BASE.replace('{LANG}',selectedLang);
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':'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','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:systemPrompt,messages:history})});
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:systemPrompt,messages:history})});
     const data=await res.json();
     const reply=data.content?.[0]?.text||'[SHOW_CONTACT]';
     loading.remove();processReply(reply);
@@ -898,7 +1130,7 @@ function showExchange() {
     </div>
     <p style="font-size:11px;color:#999;margin-bottom:10px">Rate approx. 1€ = 10.9 MAD (check current rate at Hotel Ali)</p>
     <a class="action-btn btn-maps" href="https://maps.app.goo.gl/HotelAliMarrakech" target="_blank">Find Hotel Ali on Google Maps</a>
-    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=Hello, I need help finding the currency exchange" target="_blank">Ask reception for directions</a>
+    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent('Hello Mohamed, ' + (guestName ? guestName + ' needs' : 'A guest needs') + ' help finding the currency exchange.')}" target="_blank">Ask reception for directions</a>
   `;
   chatBox.appendChild(c); chatBox.scrollTop=chatBox.scrollHeight;
 }
