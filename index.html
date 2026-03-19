@@ -1113,10 +1113,18 @@ function confirmTaxi(lJson) {
 
 function processReply(text){
   const tr=T[selectedLangCode];
-  let clean=text,tag=null;
-  if(text.includes('[SHOW_BOOKING]')){clean=text.replace('[SHOW_BOOKING]','').trim();tag='booking';}
-  else if(text.includes('[SHOW_REVIEW]')){clean=text.replace('[SHOW_REVIEW]','').trim();tag='review';}
-  else if(text.includes('[SHOW_CONTACT]')){clean=text.replace('[SHOW_CONTACT]','').trim();tag='contact';}
+  // Strip all markdown formatting
+  let clean=text
+    .replace(/\*\*(.*?)\*\*/g,'$1')
+    .replace(/\*(.*?)\*/g,'$1')
+    .replace(/__(.*?)__/g,'$1')
+    .replace(/_(.*?)_/g,'$1')
+    .replace(/#{1,6}\s/g,'')
+    .replace(/`(.*?)`/g,'$1');
+  let tag=null;
+  if(clean.includes('[SHOW_BOOKING]')){clean=clean.replace('[SHOW_BOOKING]','').trim();tag='booking';}
+  else if(clean.includes('[SHOW_REVIEW]')){clean=clean.replace('[SHOW_REVIEW]','').trim();tag='review';}
+  else if(clean.includes('[SHOW_CONTACT]')){clean=clean.replace('[SHOW_CONTACT]','').trim();tag='contact';}
   if(clean){const d=document.createElement('div');d.className='msg msg-bot';d.textContent=clean;chatBox.appendChild(d);}
   if(tag==='booking'){const c=document.createElement('div');c.className='action-card';c.innerHTML=`<div class="action-card-title">${tr.bookingReq}</div><a class="action-btn btn-teal" href="${RECEPTION_WA}?text=Hello, booking request" target="_blank">${tr.contactBtn}</a>`;chatBox.appendChild(c);}
   else if(tag==='review'){
