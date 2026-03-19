@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -340,6 +341,41 @@ let selectedLang = 'English';
 let selectedLangCode = 'en';
 const history = [];
 
+// ── LOCAL STORAGE HELPERS ──
+const STORAGE_KEY = 'riad_dart_session';
+
+function saveSession() {
+  try {
+    const session = {
+      lang: selectedLang,
+      langCode: selectedLangCode,
+      guestName: guestName,
+      history: history,
+      chatHTML: document.getElementById('chat-box') ? document.getElementById('chat-box').innerHTML : '',
+      savedAt: Date.now()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+  } catch(e) {}
+}
+
+function loadSession() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const session = JSON.parse(raw);
+    // Sessions expire after 7 days
+    if (Date.now() - session.savedAt > 7 * 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return session;
+  } catch(e) { return null; }
+}
+
+function clearSession() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
 // ── TRANSLATIONS ──
 const T = {
   en: {
@@ -661,6 +697,67 @@ function selectLang(lang, code) {
   document.getElementById('save-skip').textContent = st.skip;
   saveScreen.style.display = 'flex';
 }
+
+// ── RESTORE SESSION ON PAGE LOAD ──
+window.addEventListener('load', () => {
+  const session = loadSession();
+  if (session && session.langCode && session.chatHTML) {
+    // Restore session silently
+    selectedLang = session.lang;
+    selectedLangCode = session.langCode;
+    guestName = session.guestName || '';
+    // Restore history
+    if (session.history && session.history.length) {
+      session.history.forEach(m => history.push(m));
+    }
+    // Skip all intro screens
+    document.getElementById('lang-screen').style.display = 'none';
+    document.getElementById('save-screen').style.display = 'none';
+    document.getElementById('name-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    // Apply translations
+    const t = T[selectedLangCode] || T['en'];
+    applyTranslations(t);
+    // Restore chat content
+    document.getElementById('chat-box').innerHTML = session.chatHTML;
+    // Scroll to bottom
+    setTimeout(() => {
+      const cb = document.getElementById('chat-box');
+      cb.scrollTop = cb.scrollHeight;
+      // Add returning guest banner
+      addReturnBanner();
+    }, 100);
+  }
+});
+
+function addReturnBanner() {
+  const bannerMsgs = {
+    en: `Welcome back${guestName ? ', ' + guestName.split(' ')[0] : ''}! 👋 Your conversation has been saved. You can continue where you left off.`,
+    fr: `Content de vous revoir${guestName ? ', ' + guestName.split(' ')[0] : ''}! 👋 Votre conversation a été sauvegardée.`,
+    es: `¡Bienvenido de nuevo${guestName ? ', ' + guestName.split(' ')[0] : ''}! 👋 Tu conversación ha sido guardada.`,
+    it: `Bentornato${guestName ? ', ' + guestName.split(' ')[0] : ''}! 👋 La tua conversazione è stata salvata.`,
+    de: `Willkommen zurück${guestName ? ', ' + guestName.split(' ')[0] : ''}! 👋 Ihre Konversation wurde gespeichert.`,
+    ar: `مرحباً بعودتك${guestName ? ' يا ' + guestName.split(' ')[0] : ''}! 👋 تم حفظ محادثتك.`
+  };
+  const resetMsgs = {
+    en: 'Start new conversation', fr: 'Nouvelle conversation',
+    es: 'Nueva conversación', it: 'Nuova conversazione',
+    de: 'Neue Unterhaltung', ar: 'محادثة جديدة'
+  };
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:#E1F5EE;border:1px solid #5DCAA5;border-radius:10px;padding:10px 13px;font-size:12px;color:#0F6E56;margin:4px 0;display:flex;align-items:center;justify-content:space-between;gap:8px;';
+  banner.innerHTML = `
+    <span>${bannerMsgs[selectedLangCode] || bannerMsgs.en}</span>
+    <button onclick="startNewConversation()" style="background:#1D9E75;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit">${resetMsgs[selectedLangCode] || resetMsgs.en}</button>
+  `;
+  const chatBox = document.getElementById('chat-box');
+  chatBox.insertBefore(banner, chatBox.firstChild);
+}
+
+function startNewConversation() {
+  clearSession();
+  location.reload();
+}
 function enterApp() {
   document.getElementById('save-screen').style.display = 'none';
   // Show name screen
@@ -728,6 +825,7 @@ function submitGuestName(skip) {
     `;
     document.getElementById('chat-box').appendChild(infoCard);
     document.getElementById('chat-box').scrollTop = 99999;
+    saveSession();
   }, 800);
 
   // IMPROVEMENT 9: Check-in follow-up message after 5 seconds
@@ -1101,6 +1199,7 @@ async function sendChat(){
   chatInput.value='';sendBtn.disabled=true;
   const um=document.createElement('div');um.className='msg msg-user';um.textContent=text;chatBox.appendChild(um);
   history.push({role:'user',content:text});
+  saveSession();
   const loading=document.createElement('div');loading.className='msg msg-bot msg-loading';loading.textContent='...';chatBox.appendChild(loading);
   chatBox.scrollTop=chatBox.scrollHeight;
   const systemPrompt=SYSTEM_BASE.replace('{LANG}',selectedLang);
@@ -1110,6 +1209,7 @@ async function sendChat(){
     const reply=data.content?.[0]?.text||'[SHOW_CONTACT]';
     loading.remove();processReply(reply);
     history.push({role:'assistant',content:reply});
+    saveSession();
   }catch(e){loading.remove();const c=document.createElement('div');c.className='action-card';c.innerHTML=`<div class="action-card-title">${T[selectedLangCode].contactTitle}</div><a class="action-btn btn-reception" href="${RECEPTION_WA}" target="_blank">${T[selectedLangCode].contactBtn}</a>`;chatBox.appendChild(c);chatBox.scrollTop=chatBox.scrollHeight;}
   sendBtn.disabled=false;chatInput.focus();
 }
