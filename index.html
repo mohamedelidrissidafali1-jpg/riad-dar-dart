@@ -191,7 +191,6 @@
   <div id="tab-bar">
     <div class="tab active" onclick="showTab('chat')" id="tab-chat-btn">Guest Assistant</div>
     <div class="tab" onclick="showTab('checkout')" id="tab-checkout-btn">Checkout Survey</div>
-    <div class="tab" onclick="showTab('qr')" id="tab-qr-btn">QR Code</div>
   </div>
 
   <!-- CHAT -->
@@ -293,43 +292,6 @@
   </div>
 </div>
 
-  <!-- QR CODE TAB -->
-  <div id="tab-qr" class="screen">
-    <div style="text-align:center;padding:24px 0 16px">
-      <div style="font-size:17px;font-weight:700;color:#1a1a1a;margin-bottom:4px">QR Code</div>
-      <div style="font-size:12px;color:#999;margin-bottom:24px">Print and place in every guest room</div>
-    </div>
-
-    <div style="background:#fff;border:1px solid #ece9e2;border-radius:14px;padding:24px;text-align:center;margin-bottom:14px">
-      <div id="qr-container" style="display:flex;justify-content:center;margin-bottom:16px">
-        <div id="qr-code"></div>
-      </div>
-      <div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px">Riad Dar D'Art</div>
-      <div style="font-size:12px;color:#999;margin-bottom:16px">Guest Assistant · Available 24/7</div>
-      <button onclick="printQR()" style="width:100%;padding:12px;background:#1D9E75;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">Print QR Code</button>
-      <div style="font-size:11px;color:#bbb">Place this QR code in every room so guests can scan it on arrival</div>
-    </div>
-
-    <div style="background:#fff;border:1px solid #ece9e2;border-radius:14px;padding:16px;margin-bottom:14px">
-      <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:8px">Enter your live website URL</div>
-      <div style="font-size:12px;color:#999;margin-bottom:10px">Once you deploy on Vercel, paste your link here to generate the final QR code</div>
-      <div style="display:flex;gap:8px">
-        <input id="url-input" type="text" placeholder="e.g. https://riad-dar-dart.vercel.app" style="flex:1;padding:9px 11px;border:1px solid #ddd;border-radius:8px;font-size:12px;font-family:inherit;outline:none"/>
-        <button onclick="generateQR()" style="padding:9px 14px;background:#1D9E75;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Generate</button>
-      </div>
-    </div>
-
-    <div style="background:#E1F5EE;border:1px solid #5DCAA5;border-radius:12px;padding:14px">
-      <div style="font-size:12px;font-weight:600;color:#0F6E56;margin-bottom:6px">How to use this QR code</div>
-      <div style="font-size:12px;color:#0F6E56;line-height:1.7">
-        1. Deploy the assistant on Vercel (free)<br>
-        2. Paste your Vercel link above and generate<br>
-        3. Print the QR code and laminate it<br>
-        4. Place one card in every guest room<br>
-        5. Guests scan on arrival and get instant help!
-      </div>
-    </div>
-  </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const RECEPTION_WA = 'https://wa.me/212699814919';
@@ -881,27 +843,9 @@ function t(key) { return T[selectedLangCode][key] || T['en'][key]; }
 
 // TABS
 function showTab(tab) {
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',(tab==='chat'&&i===0)||(tab==='checkout'&&i===1)||(tab==='qr'&&i===2)));
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',(tab==='chat'&&i===0)||(tab==='checkout'&&i===1)));
   document.getElementById('tab-chat').classList.toggle('active',tab==='chat');
   document.getElementById('tab-checkout').classList.toggle('active',tab==='checkout');
-  document.getElementById('tab-qr').classList.toggle('active',tab==='qr');
-  if(tab==='qr' && !qrInstance) setTimeout(()=>generateQR(),100);
-}
-
-// QR CODE
-let qrInstance = null;
-function generateQR() {
-  const url = document.getElementById('url-input').value.trim() || window.location.href;
-  const container = document.getElementById('qr-code');
-  container.innerHTML = '';
-  qrInstance = new QRCode(container, { text: url, width: 200, height: 200, colorDark: '#1a1a1a', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
-}
-
-function printQR() {
-  const qrHTML = document.getElementById('qr-container').innerHTML;
-  const win = window.open('', '_blank');
-  win.document.write(`<html><head><title>Riad Dar D'Art QR Code</title><style>body{font-family:sans-serif;text-align:center;padding:40px;background:#fff}h2{font-size:22px;margin-bottom:4px;color:#1a1a1a}p{font-size:13px;color:#666;margin-bottom:20px}.qr-wrap{display:inline-block;padding:20px;border:2px solid #1D9E75;border-radius:16px;margin-bottom:16px}.footer{font-size:12px;color:#999;margin-top:10px}</style></head><body><h2>Riad Dar D'Art</h2><p>Scan to access your personal guest assistant — available 24/7</p><div class="qr-wrap">${qrHTML}</div><div class="footer">Ask about WiFi, breakfast, hammam, taxi, excursions and more</div><script>window.onload=()=>{window.print()}<\/script></body></html>`);
-  win.document.close();
 }
 
 // TOWELS
