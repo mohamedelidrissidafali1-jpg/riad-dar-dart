@@ -842,7 +842,10 @@ function applyTranslations(t) {
 function t(key) { return T[selectedLangCode][key] || T['en'][key]; }
 
 // TABS
+let checkoutDone = false;
 function showTab(tab) {
+  // If checkout is done, don't allow going back to chat
+  if(tab === 'chat' && checkoutDone) return;
   document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',(tab==='chat'&&i===0)||(tab==='checkout'&&i===1)));
   document.getElementById('tab-chat').classList.toggle('active',tab==='chat');
   document.getElementById('tab-checkout').classList.toggle('active',tab==='checkout');
@@ -1274,6 +1277,25 @@ function submitSurvey(){
     document.getElementById('ty-name').textContent=`${tr.tyTitle}, ${name}! 🌿`;
     document.getElementById('ty-sub').textContent=tr.tySub;
     document.getElementById('ty-review-title').textContent=tr.tyReview;
+
+    // ── LOCK THE APP AFTER CHECKOUT ──
+    checkoutDone = true;
+    // 1. Disable the chat tab so guest can't go back
+    const chatTab = document.getElementById('tab-chat-btn');
+    if(chatTab) {
+      chatTab.style.pointerEvents = 'none';
+      chatTab.style.opacity = '0.35';
+    }
+    // 2. Clear the saved session so next guest starts fresh
+    clearSession();
+    // 3. Lock the chat input
+    const ci = document.getElementById('chat-input');
+    const sb = document.getElementById('send-btn');
+    if(ci) { ci.disabled = true; ci.placeholder = '—'; }
+    if(sb) sb.disabled = true;
+    // 4. Hide the suggestion buttons
+    const sugg = document.getElementById('suggestions');
+    if(sugg) sugg.style.display = 'none';
   },800);
 }
 </script>
