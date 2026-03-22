@@ -1262,7 +1262,7 @@ function submitSurvey(){
     finalComment: finalComment || '',
     allRatings: allRatingsText || 'No ratings given'
   };
-  if(SHEET_WEBHOOK && SHEET_WEBHOOK !== 'https://script.google.com/macros/s/AKfycbw-PGygu58Nc1XOKYcPhbasMGbpC10Rfweu9UJStWu4Ivz9JGt_qL4jg6r7jHmq4Lqy4w/exec') {
+  if(SHEET_WEBHOOK) {
     fetch(SHEET_WEBHOOK, {
       method: 'POST',
       mode: 'no-cors',
