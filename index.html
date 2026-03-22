@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -295,9 +296,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const RECEPTION_WA = 'https://wa.me/212699814919';
+
 const GMAPS = 'https://maps.app.goo.gl/peCF8ekeoyFvNP248';
 const BOOKING_URL = 'https://www.booking.com/hotel/ma/dar-d-39-art-marrakech.html';
 const RIAD_LOCATION = 'https://maps.app.goo.gl/peCF8ekeoyFvNP248';
+// Google Sheet webhook — paste your Apps Script URL here after setup
+const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbw-PGygu58Nc1XOKYcPhbasMGbpC10Rfweu9UJStWu4Ivz9JGt_qL4jg6r7jHmq4Lqy4w/exec';
+
+// Track all bookings made during session
+const sessionBookings = [];
 
 let selectedLang = 'English';
 let selectedLangCode = 'en';
@@ -1036,13 +1043,15 @@ function confirmSpa(){
   if(spaService==='hammam'&&parseInt(spaPeople)<2){alert('Hammam requires minimum 2 people');return;}
   const svcText=spaService==='hammam'?'Hammam':spaService==='massage'?`Massage (${spaDuration} min)`:`Hammam + Massage (${spaDuration} min)`;
   const gName = guestName || name;
-  const msg=`Hello Mohamed! New spa booking request:\n\n🌿 Service: ${svcText}\n👥 People: ${spaPeople}\n📅 Date & Time: ${time}\n👤 Guest: ${gName}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
-  const waUrl=`${RECEPTION_WA}?text=${encodeURIComponent(msg)}`;
+  const msg=`Hello! New spa booking request at Riad Dar D'Art:\n\n🌿 Service: ${svcText}\n👥 People: ${spaPeople}\n📅 Date & Time: ${time}\n👤 Guest: ${gName}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
+  sessionBookings.push(`🌿 ${svcText} — ${time} (${spaPeople} people)`);
   document.getElementById('spa-form').remove();
   const conf=document.createElement('div');conf.className='msg msg-bot';conf.textContent=`${tr.bookConfirm.replace('Mohamed',name.split(' ')[0])}`;
   chatBox.appendChild(conf);
   const card=document.createElement('div');card.className='action-card';
-  card.innerHTML=`<div class="action-card-title">${tr.bookingReq}</div><a class="action-btn btn-teal" href="${waUrl}" target="_blank">${tr.sendWa}</a>`;
+  card.innerHTML=`<div class="action-card-title">${tr.bookingReq}</div>
+    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent(msg)}" target="_blank">${tr.sendWa}</a>
+`;
   chatBox.appendChild(card);chatBox.scrollTop=chatBox.scrollHeight;
 }
 
@@ -1105,12 +1114,16 @@ function confirmTaxi(lJson) {
   const time = document.getElementById('taxi-time').value.trim();
   if(!time) { alert('Please enter your flight time'); return; }
   const guestLabel = guestName ? `\n👤 Guest: ${guestName}` : '';
-  const msg = `Hello Mohamed! Airport transfer request:\n\n🚕 Flight time: ${time}${guestLabel}\n🌐 Language: ${selectedLang}\n\nPlease confirm the transfer. Thank you!`;
-  const waUrl = `${RECEPTION_WA}?text=${encodeURIComponent(msg)}`;
+  const msg = `Hello! Airport transfer request from Riad Dar D'Art:\n\n🚕 Flight time: ${time}${guestLabel}\n🌐 Language: ${selectedLang}\n\nPlease confirm the transfer. Thank you!`;
+  sessionBookings.push(`🚕 Airport Transfer — ${time}`);
   const card = document.getElementById('taxi-card');
   if(card) {
-    card.innerHTML = `<div class="action-card-title">${l.confirm}</div><a class="action-btn btn-teal" href="${waUrl}" target="_blank">📲 Send to reception via WhatsApp</a>`;
+    card.innerHTML = `<div class="action-card-title">${l.confirm}</div>
+      <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent(msg)}" target="_blank">📲 Send to Mohamed via WhatsApp</a>
+`;
   }
+  chatBox.scrollTop=chatBox.scrollHeight;
+}
   chatBox.scrollTop=chatBox.scrollHeight;
 }
 
@@ -1230,10 +1243,75 @@ function submitSurvey(){
   ];
   const finalComment = document.getElementById('cmt-final').value.trim();
 
+  // ── GOOGLE SHEET SAVE ──
+  const today = new Date().toLocaleDateString('fr-FR');
+  const allRatingsText = sections
+    .filter(s => ratings[s.key] > 0)
+    .map(s => `${s.label}: ${STAR_LABELS[ratings[s.key]]}${s.comment?' — '+s.comment:''}`)
+    .join(' | ');
+  const sheetData = {
+    date: today,
+    guestName: name,
+    reservationNumber: '',
+    language: selectedLang,
+    bookings: sessionBookings.length > 0 ? sessionBookings.join(', ') : 'None',
+    staffRating: ratings.staff || '',
+    roomRating: ratings.room || '',
+    breakfastRating: ratings.breakfast || '',
+    hammamRating: ratings.hammam || '',
+    massageRating: ratings.massage || '',
+    transportRating: ratings.transport || '',
+    finalComment: finalComment || '',
+    allRatings: allRatingsText || 'No ratings given'
+  };
+  if(SHEET_WEBHOOK && SHEET_WEBHOOK !== 'https://script.google.com/macros/s/AKfycbw-PGygu58Nc1XOKYcPhbasMGbpC10Rfweu9UJStWu4Ivz9JGt_qL4jg6r7jHmq4Lqy4w/exec') {
+    fetch(SHEET_WEBHOOK, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(sheetData)
+    }).catch(() => {});
+  }
+
+  // ── WHATSAPP CHECKOUT SUMMARY TO BOTH NUMBERS ──
+  let summary = `📋 *Checkout Summary — Riad Dar D'Art*\n\n`;
+  summary += `📅 Date: ${today}\n`;
+  summary += `👤 Guest: *${name}*\n`;
+  summary += `🌐 Language: ${selectedLang}\n\n`;
+
+  if(sessionBookings.length > 0) {
+    summary += `🛎️ *Services booked during stay:*\n`;
+    sessionBookings.forEach(b => { summary += `• ${b}\n`; });
+    summary += '\n';
+  } else {
+    summary += `🛎️ No extra services booked\n\n`;
+  }
+
+  const ratedSections = sections.filter(s => ratings[s.key] > 0);
+  if(ratedSections.length > 0) {
+    summary += `⭐ *Satisfaction ratings:*\n`;
+    ratedSections.forEach(s => {
+      summary += `• ${s.label}: ${STAR_LABELS[ratings[s.key]]}`;
+      if(s.comment) summary += ` — "${s.comment}"`;
+      summary += '\n';
+    });
+  }
+  if(finalComment) summary += `\n💬 *Guest comment:*\n"${finalComment}"`;
+
+  // Send checkout summary to Mohamed
+  setTimeout(() => {
+    const enc = encodeURIComponent(summary);
+    const l1 = document.createElement('a');
+    l1.href = RECEPTION_WA + '?text=' + enc;
+    l1.target = '_blank'; l1.style.display = 'none';
+    document.body.appendChild(l1); l1.click();
+    setTimeout(() => document.body.removeChild(l1), 1000);
+  }, 300);
+
   // Find low ratings (1 or 2 stars)
   const lowRatings = sections.filter(s => ratings[s.key] > 0 && ratings[s.key] <= 2);
 
-  // If any low rating found — send WhatsApp alert to manager
+  // If any low rating found — send WhatsApp ALERT to manager (Patrice) only
   if(lowRatings.length > 0) {
     let msg = `🚨 *Checkout Alert — Riad Dar D'Art*\n\n`;
     msg += `👤 Guest: *${name}*\n`;
@@ -1245,7 +1323,6 @@ function submitSurvey(){
       msg += '\n';
     });
 
-    // Add all other ratings for full context
     const otherRatings = sections.filter(s => ratings[s.key] > 2);
     if(otherRatings.length > 0) {
       msg += `\n✅ *Other ratings:*\n`;
@@ -1260,15 +1337,15 @@ function submitSurvey(){
     msg += `\n\n📋 Please follow up with this guest as soon as possible.`;
 
     const managerUrl = `https://wa.me/212634320834?text=${encodeURIComponent(msg)}`;
-
-    // Open WhatsApp silently in background using a hidden link
-    const link = document.createElement('a');
-    link.href = managerUrl;
-    link.target = '_blank';
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(()=>document.body.removeChild(link), 1000);
+    setTimeout(() => {
+      const link = document.createElement('a');
+      link.href = managerUrl;
+      link.target = '_blank';
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(()=>document.body.removeChild(link), 1000);
+    }, 3500);
   }
 
   setTimeout(()=>{
@@ -1280,20 +1357,16 @@ function submitSurvey(){
 
     // ── LOCK THE APP AFTER CHECKOUT ──
     checkoutDone = true;
-    // 1. Disable the chat tab so guest can't go back
     const chatTab = document.getElementById('tab-chat-btn');
     if(chatTab) {
       chatTab.style.pointerEvents = 'none';
       chatTab.style.opacity = '0.35';
     }
-    // 2. Clear the saved session so next guest starts fresh
     clearSession();
-    // 3. Lock the chat input
     const ci = document.getElementById('chat-input');
     const sb = document.getElementById('send-btn');
     if(ci) { ci.disabled = true; ci.placeholder = '—'; }
     if(sb) sb.disabled = true;
-    // 4. Hide the suggestion buttons
     const sugg = document.getElementById('suggestions');
     if(sugg) sugg.style.display = 'none';
   },800);
