@@ -203,21 +203,14 @@
     </div>
     <div id="chat-box"></div>
     <div id="suggestions">
-      <span class="sug" id="sug-checkin" onclick="askSug('checkin')">Check-in/out</span>
-      <span class="sug" id="sug-wifi" onclick="askSug('wifi')">WiFi</span>
-      <span class="sug" id="sug-breakfast" onclick="askSug('breakfast')">Breakfast</span>
-      <span class="sug sug-spa" onclick="showSpaBooking()" id="sug-spa">Hammam &amp; Massage</span>
-      <span class="sug" id="sug-taxi" onclick="askSug('taxi')">Book taxi</span>
-      <span class="sug" id="sug-dinner" onclick="askSug('dinner')">Book dinner</span>
-      <span class="sug" id="sug-excursions" onclick="askSug('excursions')">Excursions</span>
-      <span class="sug" id="sug-pool" onclick="askSug('pool')">Pool</span>
-      <span class="sug sug-location" onclick="showLocation()" id="sug-location">Find the riad</span>
-      <span class="sug" style="background:#EAF3DE;border-color:#97C459;color:#27500A;font-weight:500" onclick="requestTowels()" id="sug-towels">Extra towels / pillows</span>
-      <span class="sug" style="background:#FFF0F0;border-color:#E24B4A;color:#A32D2D;font-weight:500" onclick="noiseComplaint()" id="sug-noise">Noise complaint</span>
-      <span class="sug" style="background:#FFF8E1;border-color:#F9A825;color:#6D4C00;font-weight:500" onclick="showExchange()" id="sug-exchange">Currency exchange</span>
-      <span class="sug" style="background:#fff3e0;border-color:#ff9800;color:#e65100;font-weight:600" onclick="showContactReception()" id="sug-contact">📞 Contact reception</span>
+      <span class="sug" id="sug-wifi" onclick="askSug('wifi')">📶 WiFi</span>
+      <span class="sug" id="sug-breakfast" onclick="askSug('breakfast')">🍳 Breakfast</span>
+      <span class="sug sug-spa" onclick="showSpaBooking()" id="sug-spa">🛁 Spa</span>
+      <span class="sug" id="sug-taxi" onclick="askSug('taxi')">🚕 Airport taxi</span>
+      <span class="sug" id="sug-excursions" onclick="askSug('excursions')">🏜️ Excursions</span>
+      <span class="sug sug-location" onclick="showLocation()" id="sug-location">📍 Find the riad</span>
       <span class="sug sug-emergency" onclick="showUrgentHelp()" id="sug-emergency">🆘 Urgent help</span>
-      <span class="sug sug-checkout" onclick="showTab('checkout')" id="sug-checkout">I am checking out</span>
+      <span class="sug sug-checkout" onclick="showTab('checkout')" id="sug-checkout">✅ Checkout</span>
     </div>
     <div id="input-row">
       <input id="chat-input" type="text" placeholder="Ask anything..." onkeydown="if(event.key==='Enter') sendChat()"/>
@@ -241,21 +234,21 @@
       <div class="card">
         <div class="card-title" id="lbl-staff-title">Staff &amp; service</div>
         <div class="card-sub" id="lbl-staff-sub">How was our team?</div>
-        <div class="stars" id="stars-staff"><span class="star" data-s="staff" data-v="1">⭐</span><span class="star" data-s="staff" data-v="2">⭐</span><span class="star" data-s="staff" data-v="3">⭐</span><span class="star" data-s="staff" data-v="4">⭐</span></div>
+        <div class="stars" id="stars-staff"><span class="star" data-s="staff" data-v="1">⭐</span><span class="star" data-s="staff" data-v="2">⭐</span><span class="star" data-s="staff" data-v="3">⭐</span><span class="star" data-s="staff" data-v="4">⭐</span><span class="star" data-s="staff" data-v="5">⭐</span></div>
         <div class="star-label" id="lbl-staff"></div>
         <textarea class="s-textarea" id="cmt-staff" rows="2" placeholder="Comments? (optional)"></textarea>
       </div>
       <div class="card">
         <div class="card-title" id="lbl-room-title">Your room</div>
         <div class="card-sub" id="lbl-room-sub">Cleanliness, comfort, and facilities</div>
-        <div class="stars" id="stars-room"><span class="star" data-s="room" data-v="1">⭐</span><span class="star" data-s="room" data-v="2">⭐</span><span class="star" data-s="room" data-v="3">⭐</span><span class="star" data-s="room" data-v="4">⭐</span></div>
+        <div class="stars" id="stars-room"><span class="star" data-s="room" data-v="1">⭐</span><span class="star" data-s="room" data-v="2">⭐</span><span class="star" data-s="room" data-v="3">⭐</span><span class="star" data-s="room" data-v="4">⭐</span><span class="star" data-s="room" data-v="5">⭐</span></div>
         <div class="star-label" id="lbl-room"></div>
         <textarea class="s-textarea" id="cmt-room" rows="2" placeholder="Comments? (optional)"></textarea>
       </div>
       <div class="card">
         <div class="card-title" id="lbl-bfast-title">Breakfast</div>
         <div class="card-sub" id="lbl-bfast-sub">Our traditional Moroccan breakfast</div>
-        <div class="stars" id="stars-breakfast"><span class="star" data-s="breakfast" data-v="1">⭐</span><span class="star" data-s="breakfast" data-v="2">⭐</span><span class="star" data-s="breakfast" data-v="3">⭐</span><span class="star" data-s="breakfast" data-v="4">⭐</span></div>
+        <div class="stars" id="stars-breakfast"><span class="star" data-s="breakfast" data-v="1">⭐</span><span class="star" data-s="breakfast" data-v="2">⭐</span><span class="star" data-s="breakfast" data-v="3">⭐</span><span class="star" data-s="breakfast" data-v="4">⭐</span><span class="star" data-s="breakfast" data-v="5">⭐</span></div>
         <div class="star-label" id="lbl-breakfast"></div>
         <textarea class="s-textarea" id="cmt-breakfast" rows="2" placeholder="Comments? (optional)"></textarea>
       </div>
@@ -264,13 +257,13 @@
         <div class="card-sub" id="lbl-extra-sub">Did you try any of these?</div>
         <div class="extra-label">Hammam</div>
         <div class="tried-row"><div class="tried-btn" id="hammam-yes" onclick="toggleTried('hammam',true)">Yes</div><div class="tried-btn selected" id="hammam-no" onclick="toggleTried('hammam',false)">No</div></div>
-        <div id="hammam-rate" style="display:none;margin-bottom:12px"><div class="stars" id="stars-hammam"><span class="star" data-s="hammam" data-v="1">⭐</span><span class="star" data-s="hammam" data-v="2">⭐</span><span class="star" data-s="hammam" data-v="3">⭐</span><span class="star" data-s="hammam" data-v="4">⭐</span></div><div class="star-label" id="lbl-hammam"></div></div>
+        <div id="hammam-rate" style="display:none;margin-bottom:12px"><div class="stars" id="stars-hammam"><span class="star" data-s="hammam" data-v="1">⭐</span><span class="star" data-s="hammam" data-v="2">⭐</span><span class="star" data-s="hammam" data-v="3">⭐</span><span class="star" data-s="hammam" data-v="4">⭐</span><span class="star" data-s="hammam" data-v="5">⭐</span></div><div class="star-label" id="lbl-hammam"></div></div>
         <div class="extra-label">Massage</div>
         <div class="tried-row"><div class="tried-btn" id="massage-yes" onclick="toggleTried('massage',true)">Yes</div><div class="tried-btn selected" id="massage-no" onclick="toggleTried('massage',false)">No</div></div>
-        <div id="massage-rate" style="display:none;margin-bottom:12px"><div class="stars" id="stars-massage"><span class="star" data-s="massage" data-v="1">⭐</span><span class="star" data-s="massage" data-v="2">⭐</span><span class="star" data-s="massage" data-v="3">⭐</span><span class="star" data-s="massage" data-v="4">⭐</span></div><div class="star-label" id="lbl-massage"></div></div>
+        <div id="massage-rate" style="display:none;margin-bottom:12px"><div class="stars" id="stars-massage"><span class="star" data-s="massage" data-v="1">⭐</span><span class="star" data-s="massage" data-v="2">⭐</span><span class="star" data-s="massage" data-v="3">⭐</span><span class="star" data-s="massage" data-v="4">⭐</span><span class="star" data-s="massage" data-v="5">⭐</span></div><div class="star-label" id="lbl-massage"></div></div>
         <div class="extra-label">Airport transfer</div>
         <div class="tried-row"><div class="tried-btn" id="transport-yes" onclick="toggleTried('transport',true)">Yes</div><div class="tried-btn selected" id="transport-no" onclick="toggleTried('transport',false)">No</div></div>
-        <div id="transport-rate" style="display:none"><div class="stars" id="stars-transport"><span class="star" data-s="transport" data-v="1">⭐</span><span class="star" data-s="transport" data-v="2">⭐</span><span class="star" data-s="transport" data-v="3">⭐</span><span class="star" data-s="transport" data-v="4">⭐</span></div><div class="star-label" id="lbl-transport"></div></div>
+        <div id="transport-rate" style="display:none"><div class="stars" id="stars-transport"><span class="star" data-s="transport" data-v="1">⭐</span><span class="star" data-s="transport" data-v="2">⭐</span><span class="star" data-s="transport" data-v="3">⭐</span><span class="star" data-s="transport" data-v="4">⭐</span><span class="star" data-s="transport" data-v="5">⭐</span></div><div class="star-label" id="lbl-transport"></div></div>
       </div>
       <div class="card">
         <div class="card-title" id="lbl-final-title">Any final message?</div>
@@ -385,7 +378,7 @@ const T = {
     sendWa: "Send to Mohamed via WhatsApp",
     surveyTitle: "Checkout survey",
     surveySub: "Your feedback helps us improve every day",
-    starLabels: ['','Needs improvement','Good','Very good','Excellent'],
+    starLabels: ['','Needs improvement','Poor','Acceptable','Good','Excellent'],
     submitBtn: "Complete checkout",
     tyTitle: "Thank you",
     tySub: "We are so happy you chose Riad Dar D'Art for your stay in Marrakech. We truly hope to welcome you back very soon!",
@@ -433,7 +426,7 @@ const T = {
     sendWa: "Envoyer à Mohamed via WhatsApp",
     surveyTitle: "Questionnaire de départ",
     surveySub: "Vos retours nous aident à nous améliorer",
-    starLabels: ['','À améliorer','Bien','Très bien','Excellent'],
+    starLabels: ['','À améliorer','Insuffisant','Acceptable','Bien','Excellent'],
     submitBtn: "Terminer le départ",
     tyTitle: "Merci",
     tySub: "Nous sommes ravis que vous ayez choisi le Riad Dar D'Art. Nous espérons vous revoir très bientôt!",
@@ -481,7 +474,7 @@ const T = {
     sendWa: "Enviar a Mohamed por WhatsApp",
     surveyTitle: "Encuesta de salida",
     surveySub: "Sus comentarios nos ayudan a mejorar",
-    starLabels: ['','Necesita mejora','Bien','Muy bien','Excelente'],
+    starLabels: ['','Necesita mejora','Malo','Aceptable','Bien','Excelente'],
     submitBtn: "Completar checkout",
     tyTitle: "Gracias",
     tySub: "Estamos muy contentos de que haya elegido Riad Dar D'Art. ¡Esperamos volver a verle muy pronto!",
@@ -529,7 +522,7 @@ const T = {
     sendWa: "Invia a Mohamed via WhatsApp",
     surveyTitle: "Questionario di partenza",
     surveySub: "Il tuo feedback ci aiuta a migliorare",
-    starLabels: ['','Da migliorare','Bene','Molto bene','Eccellente'],
+    starLabels: ['','Da migliorare','Scarso','Accettabile','Bene','Eccellente'],
     submitBtn: "Completa il checkout",
     tyTitle: "Grazie",
     tySub: "Siamo felici che tu abbia scelto il Riad Dar D'Art. Speriamo di rivederti presto!",
@@ -577,7 +570,7 @@ const T = {
     sendWa: "An Mohamed per WhatsApp senden",
     surveyTitle: "Abreise-Umfrage",
     surveySub: "Ihr Feedback hilft uns, besser zu werden",
-    starLabels: ['','Verbesserungsbedarf','Gut','Sehr gut','Ausgezeichnet'],
+    starLabels: ['','Verbesserungsbedarf','Schlecht','Akzeptabel','Gut','Ausgezeichnet'],
     submitBtn: "Checkout abschließen",
     tyTitle: "Danke schön",
     tySub: "Wir freuen uns, dass Sie das Riad Dar D'Art gewählt haben. Wir hoffen, Sie bald wiederzusehen!",
@@ -625,7 +618,7 @@ const T = {
     sendWa: "إرسال إلى محمد عبر واتساب",
     surveyTitle: "استبيان المغادرة",
     surveySub: "آراؤكم تساعدنا على التحسين",
-    starLabels: ['','يحتاج تحسين','جيد','جيد جداً','ممتاز'],
+    starLabels: ['','يحتاج تحسين','ضعيف','مقبول','جيد','ممتاز'],
     submitBtn: "إتمام المغادرة",
     tyTitle: "شكراً جزيلاً",
     tySub: "يسعدنا أنك اخترت رياض دار دارت لإقامتك في مراكش. نأمل أن نراك قريباً مجدداً!",
@@ -827,18 +820,14 @@ function applyTranslations(t) {
     if(gni) gni.value = guestName;
   }
   document.getElementById('header-sub').textContent = t.headerSub;
-  document.getElementById('sug-checkin').textContent = t.checkin.length > 20 ? (selectedLangCode==='en'?'Check-in/out':t.checkin.substring(0,18)+'…') : t.checkin;
-  document.getElementById('sug-checkin').textContent = selectedLangCode==='en'?'Check-in/out':selectedLangCode==='fr'?'Check-in/out':selectedLangCode==='ar'?'تسجيل الوصول':'Check-in/out';
-  document.getElementById('sug-wifi').textContent = 'WiFi';
-  document.getElementById('sug-breakfast').textContent = selectedLangCode==='ar'?'الإفطار':selectedLangCode==='fr'?'Petit-déj':selectedLangCode==='es'?'Desayuno':selectedLangCode==='it'?'Colazione':selectedLangCode==='de'?'Frühstück':'Breakfast';
-  document.getElementById('sug-spa').textContent = t.spaTitle;
-  document.getElementById('sug-taxi').textContent = selectedLangCode==='ar'?'تاكسي':selectedLangCode==='fr'?'Taxi':selectedLangCode==='de'?'Taxi buchen':'Book taxi';
-  document.getElementById('sug-dinner').textContent = selectedLangCode==='ar'?'عشاء':selectedLangCode==='fr'?'Dîner':selectedLangCode==='es'?'Cenar':selectedLangCode==='it'?'Cena':selectedLangCode==='de'?'Abendessen':'Book dinner';
-  document.getElementById('sug-excursions').textContent = selectedLangCode==='ar'?'رحلات':selectedLangCode==='de'?'Ausflüge':'Excursions';
-  document.getElementById('sug-pool').textContent = selectedLangCode==='ar'?'المسبح':selectedLangCode==='de'?'Pool':'Pool';
-  document.getElementById('sug-location').textContent = t.location;
-  document.getElementById('sug-emergency').textContent = t.emergency;
-  document.getElementById('sug-checkout').textContent = t.checkout;
+  document.getElementById('sug-wifi').textContent = '📶 WiFi';
+  document.getElementById('sug-breakfast').textContent = selectedLangCode==='ar'?'🍳 الإفطار':selectedLangCode==='fr'?'🍳 Petit-déj':selectedLangCode==='es'?'🍳 Desayuno':selectedLangCode==='it'?'🍳 Colazione':selectedLangCode==='de'?'🍳 Frühstück':'🍳 Breakfast';
+  document.getElementById('sug-spa').textContent = '🛁 Spa';
+  document.getElementById('sug-taxi').textContent = selectedLangCode==='ar'?'🚕 تاكسي':selectedLangCode==='fr'?'🚕 Taxi aéroport':selectedLangCode==='de'?'🚕 Flughafen':'🚕 Airport taxi';
+  document.getElementById('sug-excursions').textContent = selectedLangCode==='ar'?'🏜️ رحلات':selectedLangCode==='de'?'🏜️ Ausflüge':'🏜️ Excursions';
+  document.getElementById('sug-location').textContent = selectedLangCode==='ar'?'📍 الرياض':selectedLangCode==='fr'?'📍 Trouver le riad':selectedLangCode==='es'?'📍 Encontrar el riad':selectedLangCode==='de'?'📍 Riad finden':'📍 Find the riad';
+  document.getElementById('sug-emergency').textContent = selectedLangCode==='ar'?'🆘 طوارئ':selectedLangCode==='fr'?'🆘 Urgence':selectedLangCode==='es'?'🆘 Emergencia':selectedLangCode==='de'?'🆘 Notfall':'🆘 Urgent help';
+  document.getElementById('sug-checkout').textContent = selectedLangCode==='ar'?'✅ المغادرة':selectedLangCode==='fr'?'✅ Départ':selectedLangCode==='es'?'✅ Checkout':selectedLangCode==='de'?'✅ Auschecken':'✅ Checkout';
   document.getElementById('send-btn').textContent = t.sendBtn;
   document.getElementById('chat-input').placeholder = t.placeholder;
   document.getElementById('survey-title').textContent = t.surveyTitle;
@@ -1177,7 +1166,7 @@ async function sendChat(){
     history.push({role:'assistant',content:reply});
     saveSession();
   }catch(e){loading.remove();const c=document.createElement('div');c.className='action-card';c.innerHTML=`<div class="action-card-title">${T[selectedLangCode].contactTitle}</div><a class="action-btn btn-reception" href="${RECEPTION_WA}" target="_blank">${T[selectedLangCode].contactBtn}</a>`;chatBox.appendChild(c);chatBox.scrollTop=chatBox.scrollHeight;}
-  sendBtn.disabled=false;chatInput.focus();
+  sendBtn.disabled=false;
 }
 
 // CURRENCY EXCHANGE
@@ -1207,7 +1196,7 @@ function convertCurrency() {
   if(!val || isNaN(val)) { result.textContent='— MAD'; return; }
   result.textContent = (val * 10.9).toFixed(0) + ' MAD';
 }
-const STAR_LABELS_DEFAULT=['','Needs improvement','Good','Very good','Excellent'];
+const STAR_LABELS_DEFAULT=['','Needs improvement','Poor','Acceptable','Good','Excellent'];
 const ratings={staff:0,room:0,breakfast:0,hammam:0,massage:0,transport:0};
 document.querySelectorAll('.star').forEach(star=>{
   star.addEventListener('click',()=>{
@@ -1228,7 +1217,7 @@ function submitSurvey(){
   btn.disabled=true;btn.textContent='...';
   const name=document.getElementById('guest-name').value.trim()||'Guest';
   const tr=T[selectedLangCode];
-  const STAR_LABELS=['','⭐ Needs improvement','⭐⭐ Good','⭐⭐⭐ Very good','⭐⭐⭐⭐ Excellent'];
+  const STAR_LABELS=['','⭐ Needs improvement','⭐⭐ Poor','⭐⭐⭐ Acceptable','⭐⭐⭐⭐ Good','⭐⭐⭐⭐⭐ Excellent'];
 
   // Collect all ratings and comments
   const sections = [
@@ -1307,7 +1296,7 @@ function submitSurvey(){
   }, 300);
 
   // Find low ratings (1 or 2 stars)
-  const lowRatings = sections.filter(s => ratings[s.key] > 0 && ratings[s.key] <= 2);
+  const lowRatings = sections.filter(s => ratings[s.key] > 0 && ratings[s.key] <= 3);
 
   // If any low rating found — send WhatsApp ALERT to manager (Patrice) only
   if(lowRatings.length > 0) {
