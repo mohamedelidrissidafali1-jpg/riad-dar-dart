@@ -1193,8 +1193,8 @@ window.addEventListener('load', () => {
       const cb = document.getElementById('chat-box');
       cb.scrollTop = cb.scrollHeight;
       addReturnBanner();
-      // ── UPSELL TRIGGER 2 — show followup upsell to returning guests if not yet seen ──
-      setTimeout(() => showUpsellFollowup(), 1500);
+      // ── UPSELL TRIGGER 2 — check if 2h have passed since first load ──
+      checkAndShowFollowup();
     }, 100);
   }
 });
@@ -1253,17 +1253,16 @@ function launchWelcome() {
     setTimeout(() => showUpsellInitial(), 3000);
   }, 800);
 
-  // Follow-up check-in after 2 hours — also triggers upsell followup if not yet shown
-  setTimeout(() => {
-    const firstName = reservationName.split(' ')[0];
-    const followUp = document.createElement('div');
-    followUp.className = 'msg msg-bot';
-    followUp.textContent = t.followUpMsg(firstName);
-    cb.appendChild(followUp);
-    cb.scrollTop = 99999;
-    // ── UPSELL TRIGGER 2 — fires alongside the 2h follow-up ──
-    setTimeout(() => showUpsellFollowup(), 2000);
-  }, 7200000);
+  // ── Save timestamp when welcome first loads (for 2h follow-up logic) ──
+  if(!localStorage.getItem('followupStartTime')) {
+    localStorage.setItem('followupStartTime', Date.now().toString());
+    localStorage.setItem('followupShown', 'false');
+  }
+
+  // ── Check every 60 seconds if 2h have passed — shows follow-up then stops ──
+  const followupChecker = setInterval(() => {
+    if(checkAndShowFollowup()) clearInterval(followupChecker);
+  }, 60000);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1666,32 +1665,56 @@ function showUpsellInitial() {
   }, 1200);
 }
 
+// ── FOLLOW-UP: timestamp-based, 2h minimum, shown only once ──
+// Returns true if the followup was shown (so callers can clear intervals)
+function checkAndShowFollowup() {
+  const start = localStorage.getItem('followupStartTime');
+  const shown = localStorage.getItem('followupShown');
+  if(!start || shown === 'true') return true; // nothing to do
+  const TWO_HOURS = 2 * 60 * 60 * 1000;
+  if(Date.now() - parseInt(start) < TWO_HOURS) return false; // not yet
+  showUpsellFollowup();
+  return true;
+}
+
 function showUpsellFollowup() {
-  if(localStorage.getItem(upsellKey('followup'))) return;
-  localStorage.setItem(upsellKey('followup'), 'true');
+  if(localStorage.getItem('followupShown') === 'true') return;
+  localStorage.setItem('followupShown', 'true');
 
   const t = T[selectedLangCode] || T['en'];
   const cb = document.getElementById('chat-box');
 
-  const msg = document.createElement('div');
-  msg.className = 'msg msg-bot';
-  msg.style.whiteSpace = 'pre-line';
-  msg.textContent = t.upsellFollowup;
-  cb.appendChild(msg);
+  // Check-in message
+  const firstName = reservationName ? reservationName.split(' ')[0] : '';
+  const checkIn = document.createElement('div');
+  checkIn.className = 'msg msg-bot';
+  checkIn.textContent = t.followUpMsg(firstName);
+  cb.appendChild(checkIn);
 
+  // Upsell message + buttons
   setTimeout(() => {
-    const card = document.createElement('div');
-    card.className = 'action-card';
-    card.style.cssText = 'border-color:#C8BC5A;background:linear-gradient(135deg,#fffdf0,#fff);';
-    card.innerHTML = `
-      <button class="action-btn btn-green" onclick="showSpaForm('hammam')" style="margin-bottom:6px">${t.upsellBtnHammam2}</button>
-      <button class="action-btn btn-green" onclick="showSpaForm('massage')" style="margin-bottom:6px">${t.upsellBtnMassage2}</button>
-      <button class="action-btn" onclick="showExcursions()" style="background:#F5F0E8;color:#5C3D1E;border:1px solid #C8BC5A;border-radius:8px;display:block;width:100%;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;margin-bottom:0">${t.upsellBtnExc2}</button>
-    `;
-    cb.appendChild(card);
+    const msg = document.createElement('div');
+    msg.className = 'msg msg-bot';
+    msg.style.whiteSpace = 'pre-line';
+    msg.textContent = t.upsellFollowup;
+    cb.appendChild(msg);
+
+    setTimeout(() => {
+      const card = document.createElement('div');
+      card.className = 'action-card';
+      card.style.cssText = 'border-color:#C8BC5A;background:linear-gradient(135deg,#fffdf0,#fff);';
+      card.innerHTML = `
+        <button class="action-btn btn-green" onclick="showSpaForm('hammam')" style="margin-bottom:6px">${t.upsellBtnHammam2}</button>
+        <button class="action-btn btn-green" onclick="showSpaForm('massage')" style="margin-bottom:6px">${t.upsellBtnMassage2}</button>
+        <button class="action-btn" onclick="showExcursions()" style="background:#F5F0E8;color:#5C3D1E;border:1px solid #C8BC5A;border-radius:8px;display:block;width:100%;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;font-family:inherit;margin-bottom:0">${t.upsellBtnExc2}</button>
+      `;
+      cb.appendChild(card);
+      cb.scrollTop = cb.scrollHeight;
+      saveSession();
+    }, 800);
+
     cb.scrollTop = cb.scrollHeight;
-    saveSession();
-  }, 600);
+  }, 1000);
 }
 
 // ── EXCURSIONS SCREEN ──
