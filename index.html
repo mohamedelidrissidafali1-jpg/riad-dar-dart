@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +37,16 @@
   .riad-sub { font-size: 12px; color: #999; margin-top: 3px; }
 
   /* CHAT */
-  #chat-box { background: #fff; border-radius: 14px; border: 1px solid #ece9e2; padding: 14px; min-height: 360px; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+  #chat-box {
+    background: #fff;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(29,158,117,0.04) 0px, rgba(29,158,117,0.04) 1px, transparent 1px, transparent 8px),
+      repeating-linear-gradient(-45deg, rgba(200,188,90,0.04) 0px, rgba(200,188,90,0.04) 1px, transparent 1px, transparent 8px),
+      repeating-linear-gradient(0deg, rgba(139,90,43,0.03) 0px, rgba(139,90,43,0.03) 1px, transparent 1px, transparent 16px),
+      repeating-linear-gradient(90deg, rgba(139,90,43,0.03) 0px, rgba(139,90,43,0.03) 1px, transparent 1px, transparent 16px);
+    border-radius: 14px; border: 1px solid #ece9e2; padding: 14px; min-height: 360px; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
+  }
+  #suggestions-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.5px; margin-bottom: 4px; text-transform: uppercase; }
   .msg { max-width: 88%; padding: 10px 13px; border-radius: 10px; font-size: 13px; line-height: 1.6; }
   .msg-bot { background: #f7f5f0; border: 1px solid #ece9e2; color: #1a1a1a; align-self: flex-start; border-radius: 4px 10px 10px 10px; }
   .msg-user { background: #1D9E75; color: #fff; align-self: flex-end; border-radius: 10px 4px 10px 10px; }
@@ -122,14 +132,24 @@
   <div class="lang-title">Riad Dar D'Art</div>
   <div class="lang-sub">Welcome! Please choose your language.</div>
   <div class="lang-grid">
-    <button class="lang-btn" onclick="selectLang('English','en')"><span class="lang-flag">🇬🇧</span>English</button>
-    <button class="lang-btn" onclick="selectLang('French','fr')"><span class="lang-flag">🇫🇷</span>Français</button>
-    <button class="lang-btn" onclick="selectLang('Spanish','es')"><span class="lang-flag">🇪🇸</span>Español</button>
-    <button class="lang-btn" onclick="selectLang('Italian','it')"><span class="lang-flag">🇮🇹</span>Italiano</button>
-    <button class="lang-btn" onclick="selectLang('German','de')"><span class="lang-flag">🇩🇪</span>Deutsch</button>
-    <button class="lang-btn" onclick="selectLang('Arabic','ar')"><span class="lang-flag">🇲🇦</span>العربية</button>
+    <button class="lang-btn" onclick="selectLang('English','en')" style="background:linear-gradient(135deg,#012169 45%,#C8102E 55%);color:#fff;border-color:#012169"><span class="lang-flag">🇬🇧</span>English</button>
+    <button class="lang-btn" onclick="selectLang('French','fr')" style="background:linear-gradient(135deg,#002395 40%,#fff 50%,#ED2939 60%);color:#002395;border-color:#002395"><span class="lang-flag">🇫🇷</span>Français</button>
+    <button class="lang-btn" onclick="selectLang('Spanish','es')" style="background:linear-gradient(135deg,#AA151B 30%,#F1BF00 50%,#AA151B 70%);color:#fff;border-color:#AA151B"><span class="lang-flag">🇪🇸</span>Español</button>
+    <button class="lang-btn" onclick="selectLang('Italian','it')" style="background:linear-gradient(135deg,#009246 35%,#fff 50%,#CE2B37 65%);color:#333;border-color:#009246"><span class="lang-flag">🇮🇹</span>Italiano</button>
+    <button class="lang-btn" onclick="selectLang('German','de')" style="background:linear-gradient(135deg,#000 33%,#D00 55%,#FFCE00 77%);color:#fff;border-color:#000"><span class="lang-flag">🇩🇪</span>Deutsch</button>
+    <button class="lang-btn" onclick="selectLang('Arabic','ar')" style="background:linear-gradient(135deg,#C1272D 40%,#006233 60%);color:#fff;border-color:#C1272D"><span class="lang-flag">🇲🇦</span>العربية</button>
   </div>
 </div>
+
+  <!-- USAGE INSTRUCTIONS SCREEN -->
+  <div id="instruction-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;background:#f7f5f0;text-align:center">
+    <div style="font-size:40px;margin-bottom:16px">🌿</div>
+    <div id="instr-title" style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:16px"></div>
+    <div style="background:#fff;border:1px solid #ece9e2;border-radius:14px;padding:20px;width:100%;max-width:340px;margin-bottom:28px;text-align:left">
+      <div id="instr-body" style="font-size:13px;color:#444;line-height:1.8"></div>
+    </div>
+    <button id="instr-btn" onclick="enterSaveScreen()" style="width:100%;max-width:340px;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit"></button>
+  </div>
 
   <!-- SAVE TO HOME SCREEN -->
   <div id="save-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;background:#f7f5f0;text-align:center">
@@ -137,27 +157,36 @@
     <div id="save-title" style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:8px">Save to your home screen</div>
     <div id="save-sub" style="font-size:13px;color:#666;margin-bottom:28px;line-height:1.7;max-width:300px"></div>
 
-    <!-- iPhone instructions -->
-    <div style="background:#fff;border:1px solid #ece9e2;border-radius:14px;padding:18px;width:100%;max-width:340px;margin-bottom:12px;text-align:left">
-      <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px">🍎 iPhone / Safari</div>
-      <div style="font-size:12px;color:#555;line-height:1.9">
-        1. Tap the <strong>Share button</strong> at the bottom of Safari<br>
-        2. Scroll down and tap <strong>"Add to Home Screen"</strong><br>
-        3. Tap <strong>"Add"</strong> — done!
+    <!-- Device selector -->
+    <div id="device-selector" style="width:100%;max-width:340px;margin-bottom:20px">
+      <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:12px">What phone do you have?</div>
+      <div style="display:flex;gap:10px">
+        <button onclick="showDeviceInstructions('iphone')" style="flex:1;padding:14px;background:#fff;border:1.5px solid #ddd;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:#333">🍎 iPhone</button>
+        <button onclick="showDeviceInstructions('android')" style="flex:1;padding:14px;background:#fff;border:1.5px solid #ddd;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:#333">🤖 Android</button>
       </div>
     </div>
 
-    <!-- Android instructions -->
-    <div style="background:#fff;border:1px solid #ece9e2;border-radius:14px;padding:18px;width:100%;max-width:340px;margin-bottom:24px;text-align:left">
-      <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px">🤖 Android / Chrome</div>
+    <!-- iPhone instructions (hidden by default) -->
+    <div id="iphone-instructions" style="display:none;background:#fff;border:1px solid #ece9e2;border-radius:14px;padding:18px;width:100%;max-width:340px;margin-bottom:12px;text-align:left">
+      <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px">🍎 iPhone — Safari</div>
       <div style="font-size:12px;color:#555;line-height:1.9">
-        1. Tap the <strong>three dots ⋮</strong> at the top right<br>
+        1. Tap the <strong>Share button</strong> at the bottom ↑<br>
+        2. Scroll and tap <strong>"Add to Home Screen"</strong><br>
+        3. Tap <strong>"Add"</strong> — done! ✅
+      </div>
+    </div>
+
+    <!-- Android instructions (hidden by default) -->
+    <div id="android-instructions" style="display:none;background:#fff;border:1px solid #ece9e2;border-radius:14px;padding:18px;width:100%;max-width:340px;margin-bottom:12px;text-align:left">
+      <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px">🤖 Android — Chrome</div>
+      <div style="font-size:12px;color:#555;line-height:1.9">
+        1. Tap the <strong>three dots ⋮</strong> at top right<br>
         2. Tap <strong>"Add to Home Screen"</strong><br>
-        3. Tap <strong>"Add"</strong> — done!
+        3. Tap <strong>"Add"</strong> — done! ✅
       </div>
     </div>
 
-    <button id="save-continue-btn" onclick="enterApp()" style="width:100%;max-width:340px;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px"></button>
+    <button id="save-continue-btn" onclick="enterApp()" style="width:100%;max-width:340px;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;margin-top:8px"></button>
     <div id="save-skip" onclick="enterApp()" style="font-size:12px;color:#999;cursor:pointer;text-decoration:underline"></div>
   </div>
 <!-- NAME SCREEN -->
@@ -174,8 +203,8 @@
       <polygon points="53,100 60,114 67,100" fill="#D4849A"/>
     </svg>
   </div>
-  <div id="name-screen-title" style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:8px">What is your name?</div>
-  <div id="name-screen-sub" style="font-size:13px;color:#666;margin-bottom:28px;line-height:1.7;max-width:300px">So we can personalize your experience and contact you when needed.</div>
+  <div id="name-screen-title" style="font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:8px">What is the name on your reservation?</div>
+  <div id="name-screen-sub" style="font-size:13px;color:#666;margin-bottom:28px;line-height:1.7;max-width:300px">This helps us personalize your experience and identify your booking when you request services.</div>
   <div style="width:100%;max-width:340px">
     <input id="guest-name-input" type="text" placeholder="e.g. Sarah Johnson" 
       style="width:100%;padding:14px 16px;border:1px solid #ddd;border-radius:12px;font-size:16px;font-family:inherit;outline:none;background:#fff;color:#1a1a1a;margin-bottom:12px;box-sizing:border-box"
@@ -202,6 +231,7 @@
       <div class="riad-sub" id="header-sub">Available 24/7 · Ask anything about your stay</div>
     </div>
     <div id="chat-box"></div>
+    <div id="suggestions-label">💡 Quick help — tap any button below</div>
     <div id="suggestions">
       <span class="sug" id="sug-wifi" onclick="askSug('wifi')">📶 WiFi</span>
       <span class="sug" id="sug-breakfast" onclick="askSug('breakfast')">🍳 Breakfast</span>
@@ -289,6 +319,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const RECEPTION_WA = 'https://wa.me/212699814919';
+const MANAGER_WA = 'https://wa.me/212634320834';
 
 const GMAPS = 'https://maps.app.goo.gl/peCF8ekeoyFvNP248';
 const BOOKING_URL = 'https://www.booking.com/hotel/ma/dar-d-39-art-marrakech.html';
@@ -298,6 +329,19 @@ const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbw-PGygu58Nc1XOKY
 
 // Track all bookings made during session
 const sessionBookings = [];
+// Track suggestion buttons clicked
+const sessionButtons = [];
+// Track AI conversation topics
+const sessionTopics = [];
+
+function trackButton(label) {
+  if (!sessionButtons.includes(label)) sessionButtons.push(label);
+}
+function trackTopic(text) {
+  // Extract short topic label from user message (first 40 chars)
+  const topic = text.trim().substring(0, 40) + (text.length > 40 ? '…' : '');
+  if (sessionTopics.length < 15) sessionTopics.push(topic);
+}
 
 let selectedLang = 'English';
 let selectedLangCode = 'en';
@@ -647,10 +691,36 @@ const SAVE_TEXT = {
   de: { title:"Zum Startbildschirm hinzufügen", sub:"Speichern Sie diesen Assistenten auf Ihrem Telefon — kein erneutes Scannen nötig!", continue:"Verstanden — Assistenten öffnen", skip:"Überspringen" },
   ar: { title:"احفظه على شاشتك الرئيسية", sub:"احفظ هذا المساعد على هاتفك حتى تتمكن من فتحه في أي وقت — بدون مسح مرة أخرى!", continue:"فهمت — افتح المساعد", skip:"تخطي" }
 };
+function showDeviceInstructions(device) {
+  document.getElementById('iphone-instructions').style.display = device==='iphone' ? 'block' : 'none';
+  document.getElementById('android-instructions').style.display = device==='android' ? 'block' : 'none';
+}
+
 function selectLang(lang, code) {
   selectedLang = lang;
   selectedLangCode = code;
   document.getElementById('lang-screen').style.display = 'none';
+
+  // Show usage instructions screen first
+  const instructionMsgs = {
+    en: { title: "Welcome to Riad Dar D'Art 🌿", body: "This assistant is here to help you 24/7 during your stay. You can ask it anything — WiFi, breakfast, pool, hammam, taxi, excursions, and more. If the staff don't speak your language, don't worry — just use this assistant and we will take care of you. Tap any button below or type your question.", btn: "Start →" },
+    fr: { title: "Bienvenue au Riad Dar D'Art 🌿", body: "Cet assistant est disponible 24h/24 pendant votre séjour. Posez-lui n'importe quelle question — WiFi, petit-déjeuner, piscine, hammam, taxi, excursions, et plus encore. Si notre équipe ne parle pas votre langue, pas de souci — utilisez cet assistant et nous prendrons soin de vous. Appuyez sur un bouton ou tapez votre question.", btn: "Commencer →" },
+    es: { title: "Bienvenido al Riad Dar D'Art 🌿", body: "Este asistente está disponible 24/7 durante su estancia. Puede preguntarle cualquier cosa — WiFi, desayuno, piscina, hammam, taxi, excursiones y más. Si el personal no habla su idioma, no se preocupe — use este asistente y cuidaremos de usted.", btn: "Empezar →" },
+    it: { title: "Benvenuto al Riad Dar D'Art 🌿", body: "Questo assistente è disponibile 24/7 durante il suo soggiorno. Può chiedergli qualsiasi cosa — WiFi, colazione, piscina, hammam, taxi, escursioni e altro. Se il personale non parla la sua lingua, nessun problema — usi questo assistente e ci prenderemo cura di lei.", btn: "Inizia →" },
+    de: { title: "Willkommen im Riad Dar D'Art 🌿", body: "Dieser Assistent steht Ihnen rund um die Uhr während Ihres Aufenthalts zur Verfügung. Sie können alles fragen — WLAN, Frühstück, Pool, Hammam, Taxi, Ausflüge und mehr. Falls das Personal Ihre Sprache nicht spricht, kein Problem — nutzen Sie diesen Assistenten und wir kümmern uns um Sie.", btn: "Starten →" },
+    ar: { title: "مرحباً بكم في رياض دار دارت 🌿", body: "هذا المساعد متاح على مدار الساعة طوال إقامتك. يمكنك أن تسأله أي شيء — واي فاي، إفطار، مسبح، حمام، تاكسي، رحلات والمزيد. إذا كان الموظفون لا يتحدثون لغتك، لا تقلق — فقط استخدم هذا المساعد وسنعتني بك.", btn: "ابدأ →" }
+  };
+  const im = instructionMsgs[code] || instructionMsgs.en;
+  const instrScreen = document.getElementById('instruction-screen');
+  document.getElementById('instr-title').textContent = im.title;
+  document.getElementById('instr-body').textContent = im.body;
+  document.getElementById('instr-btn').textContent = im.btn;
+  instrScreen.style.display = 'flex';
+}
+
+function enterSaveScreen() {
+  document.getElementById('instruction-screen').style.display = 'none';
+  const code = selectedLangCode;
   const st = SAVE_TEXT[code];
   const saveScreen = document.getElementById('save-screen');
   document.getElementById('save-title').textContent = st.title;
@@ -674,6 +744,7 @@ window.addEventListener('load', () => {
     }
     // Skip all intro screens
     document.getElementById('lang-screen').style.display = 'none';
+    document.getElementById('instruction-screen').style.display = 'none';
     document.getElementById('save-screen').style.display = 'none';
     document.getElementById('name-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
@@ -755,20 +826,16 @@ function submitGuestName(skip) {
   applyTranslations(t);
   const welcome = document.createElement('div');
   welcome.className = 'msg msg-bot';
-  // Personalize welcome with guest name
-  let welcomeText = t.welcome;
-  if(guestName) {
-    const greetings = {
-      en: `Welcome, ${guestName}! 🌿`,
-      fr: `Bienvenue, ${guestName}! 🌿`,
-      es: `¡Bienvenido, ${guestName}! 🌿`,
-      it: `Benvenuto, ${guestName}! 🌿`,
-      de: `Willkommen, ${guestName}! 🌿`,
-      ar: `مرحباً ${guestName}! 🌿`
-    };
-    welcomeText = (greetings[selectedLangCode] || greetings.en) + '\n\n' + t.welcome.split('\n\n').slice(1).join('\n\n');
-  }
-  welcome.textContent = welcomeText;
+  // Short, warm welcome — no feature listing
+  const warmWelcome = {
+    en: guestName ? `Welcome to Riad Dar D'Art, ${guestName}! 🌿 We are so happy to have you here. I hope your stay will be truly special.` : `Welcome to Riad Dar D'Art! 🌿 We are so happy to have you here. I hope your stay will be truly special.`,
+    fr: guestName ? `Bienvenue au Riad Dar D'Art, ${guestName}! 🌿 Nous sommes ravis de vous accueillir. Nous espérons que votre séjour sera inoubliable.` : `Bienvenue au Riad Dar D'Art! 🌿 Nous sommes ravis de vous accueillir. Nous espérons que votre séjour sera inoubliable.`,
+    es: guestName ? `¡Bienvenido al Riad Dar D'Art, ${guestName}! 🌿 Estamos muy felices de recibirle. Esperamos que su estancia sea especial.` : `¡Bienvenido al Riad Dar D'Art! 🌿 Estamos muy felices de recibirle. Esperamos que su estancia sea especial.`,
+    it: guestName ? `Benvenuto al Riad Dar D'Art, ${guestName}! 🌿 Siamo felici di averla qui. Speriamo che il suo soggiorno sia indimenticabile.` : `Benvenuto al Riad Dar D'Art! 🌿 Siamo felici di averla qui. Speriamo che il suo soggiorno sia indimenticabile.`,
+    de: guestName ? `Willkommen im Riad Dar D'Art, ${guestName}! 🌿 Wir freuen uns sehr, Sie hier zu begrüßen. Wir wünschen Ihnen einen unvergesslichen Aufenthalt.` : `Willkommen im Riad Dar D'Art! 🌿 Wir freuen uns sehr, Sie hier zu begrüßen. Wir wünschen Ihnen einen unvergesslichen Aufenthalt.`,
+    ar: guestName ? `مرحباً بك في رياض دار دارت${guestName ? ' يا ' + guestName : ''}! 🌿 يسعدنا استقبالك. نتمنى أن تكون إقامتك رائعة لا تُنسى.` : `مرحباً بك في رياض دار دارت! 🌿 يسعدنا استقبالك. نتمنى أن تكون إقامتك رائعة لا تُنسى.`
+  };
+  welcome.textContent = warmWelcome[selectedLangCode] || warmWelcome.en;
   document.getElementById('chat-box').appendChild(welcome);
 
   // IMPROVEMENT 1: Show quick info card (WiFi, breakfast, location)
@@ -849,6 +916,7 @@ function showTab(tab) {
 
 // TOWELS
 function requestTowels() {
+  trackButton('Extra Towels / Pillows');
   const c = document.createElement('div'); c.className='action-card';
   c.innerHTML=`<div class="action-card-title">🛁 Extra towels / pillows</div>
     <p style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">No problem! Tap below and Mohamed will bring them to your room as soon as possible.</p>
@@ -858,6 +926,7 @@ function requestTowels() {
 
 // NOISE COMPLAINT
 function noiseComplaint() {
+  trackButton('Noise Complaint');
   const c = document.createElement('div'); c.className='action-card';
   c.innerHTML=`<div class="action-card-title">🔇 Noise complaint</div>
     <p style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.6">We are sorry to hear that. Please contact Mohamed directly and he will take care of it immediately.</p>
@@ -867,6 +936,7 @@ function noiseComplaint() {
 
 // SHOW LOCATION
 function showLocation() {
+  trackButton('Find the Riad');
   const tr = T[selectedLangCode];
   const c = document.createElement('div'); c.className='action-card';
   c.innerHTML=`<div class="action-card-title">${tr.locationTitle}</div>
@@ -878,6 +948,7 @@ function showLocation() {
 
 // SHOW EMERGENCY
 function showEmergency() {
+  trackButton('Emergency Numbers');
   const lc = selectedLangCode;
   const c = document.createElement('div'); c.className='action-card';
   c.innerHTML=`
@@ -925,6 +996,7 @@ function showUrgentHelp() {
 // SPA BOOKING
 let spaService='',spaDuration='',spaPeople='',spaTime='';
 function showSpaBooking() {
+  trackButton('Hammam / Massage (Spa)');
   // Show relax sub-menu first
   const tr = T[selectedLangCode];
   const old2 = document.getElementById('relax-menu'); if(old2) old2.remove();
@@ -1069,6 +1141,15 @@ const sendBtn=document.getElementById('send-btn');
 
 function askSug(key){
   const t=T[selectedLangCode];
+  // Track button clicks
+  const buttonLabels = {
+    checkin:'Check-in / Check-out', wifi:'WiFi', breakfast:'Breakfast',
+    taxi:'Airport Taxi', dinner:'Dinner booking', excursions:'Excursions',
+    pool:'Pool', location:'Find the riad', towels:'Towels / Pillows',
+    noise:'Noise complaint', currency:'Currency exchange',
+    reception:'Contact reception', emergency:'Emergency', checkout:'Checkout'
+  };
+  if(buttonLabels[key]) trackButton(buttonLabels[key]);
   if(key==='taxi') { showTaxiFlow(); return; }
   const map={checkin:t.checkin,wifi:t.wifi,breakfast:t.breakfast,taxi:t.taxi,dinner:t.dinner,excursions:t.excursions,pool:t.pool};
   chatInput.value=map[key]||''; sendChat();
@@ -1151,6 +1232,7 @@ function processReply(text){
 
 async function sendChat(){
   const text=chatInput.value.trim();if(!text)return;
+  trackTopic(text);
   chatInput.value='';sendBtn.disabled=true;
   const um=document.createElement('div');um.className='msg msg-user';um.textContent=text;chatBox.appendChild(um);
   history.push({role:'user',content:text});
@@ -1260,18 +1342,29 @@ function submitSurvey(){
     }).catch(() => {});
   }
 
-  // ── WHATSAPP CHECKOUT SUMMARY TO BOTH NUMBERS ──
+  // ── WHATSAPP CHECKOUT SUMMARY TO MANAGER ──
   let summary = `📋 *Checkout Summary — Riad Dar D'Art*\n\n`;
   summary += `📅 Date: ${today}\n`;
   summary += `👤 Guest: *${name}*\n`;
   summary += `🌐 Language: ${selectedLang}\n\n`;
 
   if(sessionBookings.length > 0) {
-    summary += `🛎️ *Services booked during stay:*\n`;
+    summary += `🛎️ *Services booked:*\n`;
     sessionBookings.forEach(b => { summary += `• ${b}\n`; });
     summary += '\n';
   } else {
     summary += `🛎️ No extra services booked\n\n`;
+  }
+
+  if(sessionButtons.length > 0) {
+    summary += `🔘 *Topics explored:*\n`;
+    summary += sessionButtons.map(b => `• ${b}`).join('\n') + '\n\n';
+  }
+
+  if(sessionTopics.length > 0) {
+    summary += `💬 *Questions asked to assistant:*\n`;
+    sessionTopics.slice(0,8).forEach(q => { summary += `• ${q}\n`; });
+    summary += '\n';
   }
 
   const ratedSections = sections.filter(s => ratings[s.key] > 0);
@@ -1283,13 +1376,13 @@ function submitSurvey(){
       summary += '\n';
     });
   }
-  if(finalComment) summary += `\n💬 *Guest comment:*\n"${finalComment}"`;
+  if(finalComment) summary += `\n💬 *Guest message:*\n"${finalComment}"`;
 
-  // Send checkout summary to Mohamed
+  // Always send checkout summary to manager
   setTimeout(() => {
     const enc = encodeURIComponent(summary);
     const l1 = document.createElement('a');
-    l1.href = RECEPTION_WA + '?text=' + enc;
+    l1.href = MANAGER_WA + '?text=' + enc;
     l1.target = '_blank'; l1.style.display = 'none';
     document.body.appendChild(l1); l1.click();
     setTimeout(() => document.body.removeChild(l1), 1000);
