@@ -1590,19 +1590,37 @@ async function sendChat() {
   trackTopic(text);
   chatInput.value = ''; sendBtn.disabled = true;
   const um = document.createElement('div'); um.className = 'msg msg-user'; um.textContent = text; chatBox.appendChild(um);
-  history.push({ role: 'user', content: text });
+  history.push({ role: 'user', content: text || '' });
   saveSession();
   const loading = document.createElement('div'); loading.className = 'msg msg-bot msg-loading'; loading.textContent = '...'; chatBox.appendChild(loading);
   chatBox.scrollTop = chatBox.scrollHeight;
   const systemPrompt = SYSTEM_BASE.replace('{LANG}', selectedLang);
+  console.log("SENDING HISTORY:", JSON.stringify(history));
   try {
-    const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ system: systemPrompt, messages: history }) });
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system: systemPrompt, messages: history })
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    const reply = data.content?.[0]?.text || '[SHOW_CONTACT]';
-    loading.remove(); processReply(reply);
-    history.push({ role: 'assistant', content: reply });
+    console.log("API RESPONSE:", data);
+    const reply =
+      data?.content?.[0]?.text ||
+      data?.output_text ||
+      data?.message ||
+      '';
+    if(!reply) throw new Error('Empty response from API');
+    loading.remove();
+    processReply(reply);
+    console.log("REPLY:", reply);
+    // Strip action tags before saving — Anthropic API rejects non-empty tags in assistant turns
+    // Also guard against empty string after stripping (would cause API error on next call)
+    const cleanReply = reply.replace(/\[SHOW_CONTACT\]|\[SHOW_BOOKING\]|\[SHOW_REVIEW\]/g, '').trim();
+    history.push({ role: 'assistant', content: cleanReply || '...' });
     saveSession();
   } catch(e) {
+    console.error('CHAT ERROR:', e);
     loading.remove();
     const t = T[selectedLangCode] || T['en'];
     const c = document.createElement('div'); c.className = 'action-card';
