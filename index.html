@@ -1779,6 +1779,37 @@ function toggleTried(service, yes) {
   document.getElementById(`${service}-rate`).style.display = yes ? 'block' : 'none';
 }
 
+// ── STAR FORMAT: converts numeric rating to emoji stars for sheet ──
+function toStars(n) {
+  if(!n) return '';
+  return '⭐'.repeat(n);
+}
+
+// ── USEFUL QUESTIONS: filters out routine topics, keeps only new/unexpected ones ──
+function getUsefulQuestions() {
+  const ignoreKeywords = [
+    'wifi','wi-fi','password',
+    'breakfast',
+    'pool',
+    'taxi','airport',
+    'spa','hammam','massage',
+    'checkout',
+    'location',
+    'riad',
+    'hello','hi'
+  ];
+  const filtered = sessionTopics.filter(q => {
+    const text = q.toLowerCase();
+    if(text.length < 8) return false;
+    for (let k of ignoreKeywords) {
+      if(text.includes(k)) return false;
+    }
+    return true;
+  });
+  const unique = [...new Set(filtered)];
+  return unique.slice(0, 5);
+}
+
 function submitSurvey() {
   const btn = document.getElementById('submit-survey-btn');
   btn.disabled = true; btn.textContent = '...';
@@ -1798,15 +1829,17 @@ function submitSurvey() {
 
   // ── GOOGLE SHEET (internal — full data, sent silently in background) ──
   const sheetData = {
-    date: today, guestName: name, reservationNumber: '', language: selectedLang,
+    date: today, guestName: name, language: selectedLang,
     bookings: sessionBookings.length > 0 ? sessionBookings.join(', ') : 'None',
-    staffRating: ratings.staff || '', roomRating: ratings.room || '',
-    breakfastRating: ratings.breakfast || '', hammamRating: ratings.hammam || '',
-    massageRating: ratings.massage || '', transportRating: ratings.transport || '',
+    staffRating: toStars(ratings.staff),
+    roomRating: toStars(ratings.room),
+    breakfastRating: toStars(ratings.breakfast),
+    hammamRating: toStars(ratings.hammam),
+    massageRating: toStars(ratings.massage),
+    transportRating: toStars(ratings.transport),
     finalComment: finalComment || '',
-    allRatings: sections.filter(s => ratings[s.key] > 0).map(s => `${s.label}: ${STAR_LABELS[ratings[s.key]]}${s.comment ? ' — ' + s.comment : ''}`).join(' | ') || 'No ratings',
     topicsExplored: sessionButtons.length > 0 ? sessionButtons.join(', ') : 'None',
-    questionsAsked: sessionTopics.length > 0 ? sessionTopics.join(' | ') : 'None'
+    new_questions: getUsefulQuestions().join(' | ') || 'None'
   };
   if(SHEET_WEBHOOK) {
     fetch(SHEET_WEBHOOK, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sheetData) }).catch(() => {});
