@@ -1864,6 +1864,7 @@ function submitSurvey() {
   if(SHEET_WEBHOOK) {
     fetch(SHEET_WEBHOOK, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(sheetData)
     }).catch(() => {});
