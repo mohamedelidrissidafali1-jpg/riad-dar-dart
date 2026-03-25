@@ -1796,7 +1796,7 @@ function submitSurvey() {
   const finalComment = document.getElementById('cmt-final').value.trim();
   const today = new Date().toLocaleDateString('fr-FR');
 
-  // ── GOOGLE SHEET ──
+  // ── GOOGLE SHEET (internal — full data, sent silently in background) ──
   const sheetData = {
     date: today, guestName: name, reservationNumber: '', language: selectedLang,
     bookings: sessionBookings.length > 0 ? sessionBookings.join(', ') : 'None',
@@ -1804,13 +1804,15 @@ function submitSurvey() {
     breakfastRating: ratings.breakfast || '', hammamRating: ratings.hammam || '',
     massageRating: ratings.massage || '', transportRating: ratings.transport || '',
     finalComment: finalComment || '',
-    allRatings: sections.filter(s => ratings[s.key] > 0).map(s => `${s.label}: ${STAR_LABELS[ratings[s.key]]}${s.comment ? ' — ' + s.comment : ''}`).join(' | ') || 'No ratings'
+    allRatings: sections.filter(s => ratings[s.key] > 0).map(s => `${s.label}: ${STAR_LABELS[ratings[s.key]]}${s.comment ? ' — ' + s.comment : ''}`).join(' | ') || 'No ratings',
+    topicsExplored: sessionButtons.length > 0 ? sessionButtons.join(', ') : 'None',
+    questionsAsked: sessionTopics.length > 0 ? sessionTopics.join(' | ') : 'None'
   };
   if(SHEET_WEBHOOK) {
     fetch(SHEET_WEBHOOK, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sheetData) }).catch(() => {});
   }
 
-  // ── FIX 6: CHECKOUT SUMMARY — sent to reception only (manager number removed) ──
+  // ── WHATSAPP SUMMARY — reception only, no guest questions or tracking data ──
   let summary = `📋 *Checkout Summary — Riad Dar D'Art*\n\n`;
   summary += `📅 Date: ${today}\n`;
   summary += `👤 Guest: *${name}*\n`;
@@ -1820,8 +1822,7 @@ function submitSurvey() {
     sessionBookings.forEach(b => { summary += `• ${b}\n`; });
     summary += '\n';
   } else { summary += `🛎️ No extra services booked\n\n`; }
-  if(sessionButtons.length > 0) { summary += `🔘 *Topics explored:*\n` + sessionButtons.map(b => `• ${b}`).join('\n') + '\n\n'; }
-  if(sessionTopics.length > 0) { summary += `💬 *Questions asked:*\n`; sessionTopics.slice(0, 8).forEach(q => { summary += `• ${q}\n`; }); summary += '\n'; }
+  // NOTE: sessionTopics and sessionButtons intentionally excluded — internal data only
   const ratedSections = sections.filter(s => ratings[s.key] > 0);
   if(ratedSections.length > 0) {
     summary += `⭐ *Satisfaction ratings:*\n`;
