@@ -1588,7 +1588,11 @@ LOCATION: Medina Marrakech near Jemaa el-Fna. Google Maps: https://maps.app.goo.
 CONTACT: Reception WhatsApp 0699814919. Available 24h.
 Use [SHOW_BOOKING] for taxi/excursion/dinner bookings.
 Use [SHOW_REVIEW] when guest thanks you or mentions leaving.
-Use [SHOW_CONTACT] if you don't know. Never invent information.
+QUESTION RULES — IMPORTANT:
+- If the guest asks a general question about Marrakech, Morocco, or things to do/find in the city (restaurants, SIM cards, pharmacies, souks, currency exchange, transport, etc.) — answer helpfully with general local knowledge, then end with: "For a specific recommendation or help, contact reception:" and add [SHOW_CONTACT].
+- If the guest asks something specific to this riad that is NOT listed above (a specific room detail, a specific price not listed, a specific service not mentioned) — say you don't have that specific information and add [SHOW_CONTACT].
+- Never use [SHOW_CONTACT] alone without first giving a helpful answer for general Marrakech questions.
+- Never invent riad-specific facts (prices, room names, staff names).
 Strip all markdown from your responses — no bold, no headers, no bullet points.`;
 
 const chatBox = document.getElementById('chat-box');
