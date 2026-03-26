@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwYLtNDCOJZK-gQypOtdTZzYJcYcy7UbMmcaXsWvCbGTcnS67qoSGvPgI1j84uGitUJpA/exec';
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzfIugKNZlz1NncrXe3o2pMZZMC0cDWGs-eQvF2pbHoVF4sDQSH--Z80282C2igkUPr/exec';
 
   try {
     const body = req.body;
