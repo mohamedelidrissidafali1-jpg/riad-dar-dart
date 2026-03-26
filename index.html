@@ -1489,11 +1489,11 @@ function showSpaForm(preservice) {
         <button class="bf-opt" onclick="selectSpa(this,'people','5+')">5+</button>
       </div></div>
     <div class="bf-section"><div class="bf-label">${t.timeLabel}</div>
-      <input class="bf-input" id="spa-time-input" type="text" placeholder="${t.timePlaceholder}" oninput="spaTime=this.value;updateSpaPrice()"/></div>
+      <input class="bf-input" id="spa-time-input" type="text" placeholder="${t.timePlaceholder}" oninput="spaTime=this.value;updateSpaPrice();validateSpaForm()"/></div>
     <div class="bf-price" id="spa-price-label"></div>
     <div class="bf-section"><div class="bf-label">${t.reservNameLabel}</div>
-      <input class="bf-input" id="spa-name-input" type="text" placeholder="${t.reservNamePlaceholder}" value="${reservationName}"/></div>
-    <button class="bf-submit" onclick="confirmSpa()">${t.sendRequest}</button>`;
+      <input class="bf-input" id="spa-name-input" type="text" placeholder="${t.reservNamePlaceholder}" value="${reservationName}" oninput="validateSpaForm()"/></div>
+    <a id="spa-wa-btn" class="bf-submit btn-teal" style="display:none;text-align:center;text-decoration:none" onclick="onSpaBooked()" target="_blank"></a>`;
   chatBox.appendChild(form); chatBox.scrollTop = chatBox.scrollHeight;
 }
 
@@ -1508,6 +1508,7 @@ function selectSpa(btn, type, val) {
   if(type === 'duration') spaDuration = val;
   if(type === 'people') spaPeople = val;
   updateSpaPrice();
+  validateSpaForm();
 }
 
 function updateSpaPrice() {
@@ -1519,24 +1520,29 @@ function updateSpaPrice() {
   el.textContent = p;
 }
 
-function confirmSpa() {
+function validateSpaForm() {
   const t = T[selectedLangCode] || T['en'];
-  const name = document.getElementById('spa-name-input').value.trim() || reservationName;
-  const time = document.getElementById('spa-time-input').value.trim();
-  if(!spaService || !spaPeople || !time) { return; }
-  if((spaService === 'massage' || spaService === 'both') && !spaDuration) return;
-  if(spaService === 'hammam' && parseInt(spaPeople) < 2) return;
-  const svcText = spaService === 'hammam' ? 'Hammam' : spaService === 'massage' ? `Massage (${spaDuration} min)` : `Hammam + Massage (${spaDuration} min)`;
-  const msg = `Hello! Spa booking request — Riad Dar D'Art:\n\n🌿 Service: ${svcText}\n👥 People: ${spaPeople}\n📅 Date & Time: ${time}\n👤 Reservation: ${name}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
-  sessionBookings.push(`🌿 ${svcText} — ${time} (${spaPeople} people)`);
-  const form = document.getElementById('spa-form'); if(form) form.remove();
-  const conf = document.createElement('div'); conf.className = 'msg msg-bot';
-  conf.textContent = t.bookConfirm;
-  chatBox.appendChild(conf);
-  const card = document.createElement('div'); card.className = 'action-card';
-  card.innerHTML = `<div class="action-card-title">${t.bookingReq}</div>
-    <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent(msg)}" target="_blank">${t.sendWa}</a>`;
-  chatBox.appendChild(card); chatBox.scrollTop = chatBox.scrollHeight;
+  const btn = document.getElementById('spa-wa-btn'); if (!btn) return;
+  const time = (document.getElementById('spa-time-input') || {}).value?.trim() || '';
+  const name = (document.getElementById('spa-name-input') || {}).value?.trim() || reservationName;
+  const durationOk = (spaService !== 'massage' && spaService !== 'both') || !!spaDuration;
+  const peopleOk = spaService !== 'hammam' || parseInt(spaPeople) >= 2;
+  const valid = spaService && spaPeople && time && durationOk && peopleOk;
+  if (valid) {
+    const svcText = spaService === 'hammam' ? 'Hammam' : spaService === 'massage' ? `Massage (${spaDuration} min)` : `Hammam + Massage (${spaDuration} min)`;
+    const msg = `Hello! Spa booking request — Riad Dar D'Art:\n\n🌿 Service: ${svcText}\n👥 People: ${spaPeople}\n📅 Date & Time: ${time}\n👤 Reservation: ${name}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
+    btn.href = `${RECEPTION_WA}?text=${encodeURIComponent(msg)}`;
+    btn.textContent = t.sendWa;
+    btn.style.display = 'block';
+    btn._svcText = svcText; btn._time = time; btn._people = spaPeople;
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+function onSpaBooked() {
+  const btn = document.getElementById('spa-wa-btn');
+  if (btn && btn._svcText) sessionBookings.push(`🌿 ${btn._svcText} — ${btn._time} (${btn._people} people)`);
 }
 
 // ── TAXI FLOW ──
@@ -1550,24 +1556,30 @@ function showTaxiFlow() {
     <p style="font-size:11px;color:#666;margin-bottom:8px">${t.taxiPrice}</p>
     <div style="font-size:12px;font-weight:600;color:#333;margin-bottom:6px">${t.taxiQ}</div>
     <div style="display:flex;gap:8px;margin-bottom:10px">
-      <input id="taxi-time" type="text" placeholder="${t.taxiP}" style="flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:12px;font-family:inherit;outline:none"/>
+      <input id="taxi-time" type="text" placeholder="${t.taxiP}" style="flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:12px;font-family:inherit;outline:none" oninput="validateTaxiForm()"/>
     </div>
-    <button class="action-btn btn-teal" onclick="confirmTaxi()">${t.taxiBtn}</button>`;
+    <a id="taxi-wa-btn" class="action-btn btn-teal" style="display:none;text-align:center;text-decoration:none" onclick="onTaxiBooked()" target="_blank"></a>`;
   chatBox.appendChild(c); chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function confirmTaxi() {
+function validateTaxiForm() {
   const t = T[selectedLangCode] || T['en'];
-  const time = document.getElementById('taxi-time').value.trim();
-  if(!time) return;
-  const msg = `Hello! Airport transfer request — Riad Dar D'Art:\n\n🚕 Flight time: ${time}\n👤 Reservation: ${reservationName}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
-  sessionBookings.push(`🚕 Airport Transfer — ${time}`);
-  const card = document.getElementById('taxi-card');
-  if(card) {
-    card.innerHTML = `<div class="action-card-title">${t.taxiConfirm}</div>
-      <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${encodeURIComponent(msg)}" target="_blank">${t.sendWa}</a>`;
+  const btn = document.getElementById('taxi-wa-btn'); if (!btn) return;
+  const time = (document.getElementById('taxi-time') || {}).value?.trim() || '';
+  if (time) {
+    const msg = `Hello! Airport transfer request — Riad Dar D'Art:\n\n🚕 Flight time: ${time}\n👤 Reservation: ${reservationName}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
+    btn.href = `${RECEPTION_WA}?text=${encodeURIComponent(msg)}`;
+    btn.textContent = t.sendWa;
+    btn.style.display = 'block';
+    btn._time = time;
+  } else {
+    btn.style.display = 'none';
   }
-  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function onTaxiBooked() {
+  const btn = document.getElementById('taxi-wa-btn');
+  if (btn && btn._time) sessionBookings.push(`🚕 Airport Transfer — ${btn._time}`);
 }
 
 // ── CHAT AI ──
