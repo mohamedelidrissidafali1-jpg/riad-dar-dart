@@ -1962,14 +1962,11 @@ function submitSurvey() {
   };
   console.log("SESSION TOPICS:", sessionTopics);
   console.log("FILTERED QUESTIONS:", getUsefulQuestions());
-  if(SHEET_WEBHOOK) {
-    fetch(SHEET_WEBHOOK, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(sheetData)
-    }).catch(() => {});
-  }
+  fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sheetData: sheetData })
+  }).catch(() => {});
 
   // ── WHATSAPP SUMMARY — reception only, no guest questions or tracking data ──
   let summary = `📋 *Checkout Summary — Riad Dar D'Art*\n\n`;

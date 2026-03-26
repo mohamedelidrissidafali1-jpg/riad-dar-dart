@@ -1,5 +1,9 @@
 // api/chat.js — Vercel serverless function
 // The API key lives HERE on the server, never in the browser
+
+// Google Sheet webhook URL — server-side only, avoids browser CORS block
+const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYLtNDCOJZK-gQypOtdTZzYJcYcy7UbMmcaXsWvCbGTcnS67qoSGvPgI1j84uGitUJpA/exec';
+
 export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
@@ -12,7 +16,17 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   try {
-    const { messages, system } = req.body;
+    const { messages, system, sheetData } = req.body;
+
+    // ── GOOGLE SHEET WEBHOOK — if sheetData present, forward and return ──
+    if (sheetData) {
+      await fetch(SHEET_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(sheetData)
+      });
+      return res.status(200).json({ ok: true });
+    }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
