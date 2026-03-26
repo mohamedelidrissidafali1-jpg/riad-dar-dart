@@ -1,38 +1,31 @@
-// api/chat.js — Vercel serverless function
-// The API key lives HERE on the server, never in the browser
-
-// Google Sheet webhook URL — server-side only, avoids browser CORS block
-const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYLtNDCOJZK-gQypOtdTZzYJcYcy7UbMmcaXsWvCbGTcnS67qoSGvPgI1j84uGitUJpA/exec';
-
 export default async function handler(req, res) {
-  // Only allow POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // CORS — allow your domain only
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  try {
-    const { messages, system, sheetData } = req.body;
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwYLtNDCOJZK-gQypOtdTZzYJcYcy7UbMmcaXsWvCbGTcnS67qoSGvPgI1j84uGitUJpA/exec';
 
-    // ── GOOGLE SHEET WEBHOOK — if sheetData present, forward and return ──
-    if (sheetData) {
-      await fetch(SHEET_WEBHOOK, {
+  try {
+    const body = req.body;
+
+    // If sheetData is present, forward to Google Sheet
+    if (body.sheetData) {
+      const sheetRes = await fetch(SHEET_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(sheetData)
+        body: JSON.stringify(body.sheetData)
       });
-      return res.status(200).json({ ok: true });
+      return res.status(200).json({ status: 'ok' });
     }
 
+    // Otherwise handle normal chat
+    const { messages, system } = body;
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY, // ← stored securely in Vercel
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
@@ -42,7 +35,6 @@ export default async function handler(req, res) {
         messages,
       }),
     });
-
     const data = await response.json();
     return res.status(200).json(data);
 
