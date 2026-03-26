@@ -110,6 +110,7 @@
   .sug-checkout { background: #fef3e2; border-color: #f0a500; color: #854F0B; font-weight: 500; }
   .sug-emergency { background: #FCEBEB; border-color: #E24B4A; color: #A32D2D; font-weight: 500; }
   .sug-location { background: #E8F0FE; border-color: #4285f4; color: #1a56db; font-weight: 500; }
+  .sug-restaurants { background: #fff5e6; border-color: #e8a838; color: #7a4a05; font-weight: 500; }
 
   #input-row { display: flex; gap: 8px; }
   #chat-input { flex: 1; padding: 10px 13px; font-size: 13px; border-radius: 8px; border: 1px solid #ddd; background: #fff; color: #1a1a1a; font-family: inherit; outline: none; }
@@ -322,6 +323,7 @@
       <span class="sug sug-location" onclick="showLocation()" id="sug-location"></span>
       <span class="sug sug-emergency" onclick="showUrgentHelp()" id="sug-emergency"></span>
       <span class="sug sug-checkout" onclick="showTab('checkout')" id="sug-checkout"></span>
+      <span class="sug sug-restaurants" onclick="showRestaurants()" id="sug-restaurants"></span>
     </div>
     <div id="input-row">
       <input id="chat-input" type="text" onkeydown="if(event.key==='Enter') sendChat()"/>
@@ -589,6 +591,15 @@ const T = {
     excOuzoud: "Ouzoud Waterfalls", excOuzoudDesc: "Beautiful waterfalls, nature, monkeys, relaxing day",
     excAtlas: "Atlas Mountains", excAtlasDesc: "Mountains, Berber villages, fresh air, local culture",
     excCity: "City Tour Guide", excCityDesc: "Explore Marrakech with a local guide, history & hidden places",
+    sugRestaurants: "🍽️ Restaurants",
+    restTitle: "🍽️ Restaurants nearby",
+    restSubtitle: "Curated picks — all within walking distance of the riad",
+    restNote: "Ask reception for directions or to make a reservation",
+    rest1Name: "Le Jardin", rest1Type: "Moroccan / Mediterranean", rest1Price: "€€", rest1Desc: "Beautiful garden restaurant in the medina. Fresh salads, tagines, and grilled fish in a lush green setting.",
+    rest2Name: "Nomad", rest2Type: "Modern Moroccan", rest2Price: "€€", rest2Desc: "Trendy rooftop terrace with views over the spice souks. Creative takes on Moroccan classics — great cocktails too.",
+    rest3Name: "Café des Épices", rest3Type: "Café / Moroccan", rest3Price: "€", rest3Desc: "Relaxed terrace café overlooking Place Rahba Kedima. Perfect for mint tea, fresh juices, and light Moroccan snacks.",
+    rest4Name: "Al Fassia", rest4Type: "Traditional Moroccan", rest4Price: "€€€", rest4Desc: "One of Marrakech's most celebrated restaurants, run entirely by women. Exceptional couscous, pastilla, and slow-cooked tagines.",
+    rest5Name: "Amal Restaurant", rest5Type: "Traditional Moroccan", rest5Price: "€", rest5Desc: "A beloved social enterprise serving authentic home-style Moroccan food. Excellent value, very popular with locals.",
   },
   fr: {
     headerSub: "Disponible 24h/24 · Posez toutes vos questions",
@@ -687,6 +698,15 @@ const T = {
     excOuzoud: "Cascades d'Ouzoud", excOuzoudDesc: "Belles cascades, nature, singes, journée relaxante",
     excAtlas: "Montagnes de l'Atlas", excAtlasDesc: "Montagnes, villages berbères, air frais, culture locale",
     excCity: "Guide de la ville", excCityDesc: "Explorez Marrakech avec un guide local, histoire et lieux cachés",
+    sugRestaurants: "🍽️ Restaurants",
+    restTitle: "🍽️ Restaurants à proximité",
+    restSubtitle: "Sélection curatée — à distance à pied du riad",
+    restNote: "Demandez à la réception les directions ou pour une réservation",
+    rest1Name: "Le Jardin", rest1Type: "Marocain / Méditerranéen", rest1Price: "€€", rest1Desc: "Restaurant-jardin magnifique au cœur de la médina. Salades fraîches, tajines et poissons grillés dans un cadre verdoyant.",
+    rest2Name: "Nomad", rest2Type: "Marocain moderne", rest2Price: "€€", rest2Desc: "Terrasse tendance avec vue sur les souks aux épices. Cuisine marocaine revisitée et excellents cocktails.",
+    rest3Name: "Café des Épices", rest3Type: "Café / Marocain", rest3Price: "€", rest3Desc: "Café en terrasse donnant sur la Place Rahba Kedima. Idéal pour le thé à la menthe, jus frais et petits plats.",
+    rest4Name: "Al Fassia", rest4Type: "Marocain traditionnel", rest4Price: "€€€", rest4Desc: "L'un des restaurants les plus réputés de Marrakech, géré entièrement par des femmes. Couscous, pastilla et tajines d'exception.",
+    rest5Name: "Amal Restaurant", rest5Type: "Marocain traditionnel", rest5Price: "€", rest5Desc: "Entreprise sociale servant une cuisine marocaine maison authentique. Excellent rapport qualité-prix, très apprécié des locaux.",
   },
   es: {
     headerSub: "Disponible 24/7 · Pregunte lo que quiera",
@@ -785,6 +805,15 @@ const T = {
     excOuzoud: "Cascadas de Ouzoud", excOuzoudDesc: "Hermosas cascadas, naturaleza, monos, día relajante",
     excAtlas: "Montañas del Atlas", excAtlasDesc: "Montañas, pueblos beréberes, aire fresco, cultura local",
     excCity: "Guía de la ciudad", excCityDesc: "Explore Marrakech con un guía local, historia y lugares escondidos",
+    sugRestaurants: "🍽️ Restaurantes",
+    restTitle: "🍽️ Restaurantes cercanos",
+    restSubtitle: "Selección curada — a pie desde el riad",
+    restNote: "Pregunte en recepción por indicaciones o para hacer una reserva",
+    rest1Name: "Le Jardin", rest1Type: "Marroquí / Mediterráneo", rest1Price: "€€", rest1Desc: "Hermoso restaurante-jardín en el corazón de la medina. Ensaladas frescas, tajines y pescado a la plancha en entorno verde.",
+    rest2Name: "Nomad", rest2Type: "Marroquí moderno", rest2Price: "€€", rest2Desc: "Terraza de moda con vistas a los zocos de especias. Cocina marroquí revisitada y excelentes cócteles.",
+    rest3Name: "Café des Épices", rest3Type: "Café / Marroquí", rest3Price: "€", rest3Desc: "Café terraza frente a la Plaza Rahba Kedima. Ideal para té de menta, zumos frescos y aperitivos marroquíes.",
+    rest4Name: "Al Fassia", rest4Type: "Marroquí tradicional", rest4Price: "€€€", rest4Desc: "Uno de los restaurantes más reconocidos de Marrakech, gestionado íntegramente por mujeres. Cuscús, pastilla y tajines excepcionales.",
+    rest5Name: "Amal Restaurant", rest5Type: "Marroquí tradicional", rest5Price: "€", rest5Desc: "Empresa social con auténtica comida marroquí casera. Excelente relación calidad-precio, muy popular entre los locales.",
   },
   it: {
     headerSub: "Disponibile 24/7 · Chiedete qualsiasi cosa",
@@ -883,6 +912,15 @@ const T = {
     excOuzoud: "Cascate di Ouzoud", excOuzoudDesc: "Bellissime cascate, natura, scimmie, giornata rilassante",
     excAtlas: "Montagne dell'Atlante", excAtlasDesc: "Montagne, villaggi berberi, aria fresca, cultura locale",
     excCity: "Guida della città", excCityDesc: "Esplora Marrakech con una guida locale, storia e luoghi nascosti",
+    sugRestaurants: "🍽️ Ristoranti",
+    restTitle: "🍽️ Ristoranti vicini",
+    restSubtitle: "Selezione curata — a piedi dal riad",
+    restNote: "Chiedete alla reception indicazioni o per una prenotazione",
+    rest1Name: "Le Jardin", rest1Type: "Marocchino / Mediterraneo", rest1Price: "€€", rest1Desc: "Splendido ristorante-giardino nel cuore della medina. Insalate fresche, tajine e pesce alla griglia in un'oasi verde.",
+    rest2Name: "Nomad", rest2Type: "Marocchino moderno", rest2Price: "€€", rest2Desc: "Terrazza alla moda con vista sui souk delle spezie. Cucina marocchina rivisitata e ottimi cocktail.",
+    rest3Name: "Café des Épices", rest3Type: "Caffè / Marocchino", rest3Price: "€", rest3Desc: "Caffè terrazza affacciato su Place Rahba Kedima. Perfetto per tè alla menta, succhi freschi e spuntini marocchini.",
+    rest4Name: "Al Fassia", rest4Type: "Marocchino tradizionale", rest4Price: "€€€", rest4Desc: "Uno dei ristoranti più celebri di Marrakech, gestito interamente da donne. Couscous, pastilla e tajine eccezionali.",
+    rest5Name: "Amal Restaurant", rest5Type: "Marocchino tradizionale", rest5Price: "€", rest5Desc: "Amata impresa sociale con autentica cucina marocchina casalinga. Ottimo rapporto qualità-prezzo, molto amato dai locali.",
   },
   de: {
     headerSub: "24/7 verfügbar · Fragen Sie alles",
@@ -981,6 +1019,15 @@ const T = {
     excOuzoud: "Ouzoud-Wasserfälle", excOuzoudDesc: "Wunderschöne Wasserfälle, Natur, Affen, entspannter Tag",
     excAtlas: "Atlasgebirge", excAtlasDesc: "Berge, Berberdörfer, frische Luft, lokale Kultur",
     excCity: "Stadtführer", excCityDesc: "Marrakesch mit einem lokalen Führer entdecken, Geschichte und verborgene Orte",
+    sugRestaurants: "🍽️ Restaurants",
+    restTitle: "🍽️ Restaurants in der Nähe",
+    restSubtitle: "Kuratierte Auswahl — zu Fuß vom Riad erreichbar",
+    restNote: "Fragen Sie die Rezeption nach Wegbeschreibungen oder Reservierungen",
+    rest1Name: "Le Jardin", rest1Type: "Marokkanisch / Mediterran", rest1Price: "€€", rest1Desc: "Wunderschönes Gartenrestaurant im Herzen der Medina. Frische Salate, Tajines und gegrillter Fisch in grüner Umgebung.",
+    rest2Name: "Nomad", rest2Type: "Modernes Marokkanisch", rest2Price: "€€", rest2Desc: "Trendige Dachterrasse mit Blick auf die Gewürzbazare. Kreative marokkanische Küche und tolle Cocktails.",
+    rest3Name: "Café des Épices", rest3Type: "Café / Marokkanisch", rest3Price: "€", rest3Desc: "Entspanntes Terrassencafé am Place Rahba Kedima. Ideal für Minztee, frische Säfte und leichte marokkanische Snacks.",
+    rest4Name: "Al Fassia", rest4Type: "Traditionelles Marokkanisch", rest4Price: "€€€", rest4Desc: "Eines der bekanntesten Restaurants Marrakesch, vollständig von Frauen geführt. Ausgezeichneter Couscous, Pastilla und Tajines.",
+    rest5Name: "Amal Restaurant", rest5Type: "Traditionelles Marokkanisch", rest5Price: "€", rest5Desc: "Beliebtes Sozialprojekt mit authentischer marokkanischer Hausmannskost. Hervorragendes Preis-Leistungs-Verhältnis, bei Einheimischen sehr beliebt.",
   },
   ar: {
     headerSub: "متاح 24/7 · اسألنا أي شيء",
@@ -1079,6 +1126,15 @@ const T = {
     excOuzoud: "شلالات أوزود", excOuzoudDesc: "شلالات جميلة، طبيعة، قرود، يوم مريح",
     excAtlas: "جبال الأطلس", excAtlasDesc: "جبال، قرى أمازيغية، هواء نقي، ثقافة محلية",
     excCity: "مرشد المدينة", excCityDesc: "استكشف مراكش مع مرشد محلي، التاريخ والأماكن الخفية",
+    sugRestaurants: "🍽️ مطاعم",
+    restTitle: "🍽️ مطاعم قريبة",
+    restSubtitle: "اختيارات مُنتقاة — على مسافة مشي من الرياض",
+    restNote: "اسأل الاستقبال عن الاتجاهات أو لحجز طاولة",
+    rest1Name: "Le Jardin", rest1Type: "مغربي / متوسطي", rest1Price: "€€", rest1Desc: "مطعم حديقة جميل في قلب المدينة القديمة. سلطات طازجة وطاجين وأسماك مشوية في أجواء خضراء رائعة.",
+    rest2Name: "Nomad", rest2Type: "مغربي عصري", rest2Price: "€€", rest2Desc: "تراس أنيق على السطح مع إطلالة على أسواق التوابل. مطبخ مغربي مبتكر وكوكتيلات رائعة.",
+    rest3Name: "Café des Épices", rest3Type: "مقهى / مغربي", rest3Price: "€", rest3Desc: "مقهى على التراس المطل على ساحة رحبة قديمة. مثالي للشاي بالنعناع والعصائر الطازجة والمقبلات الخفيفة.",
+    rest4Name: "Al Fassia", rest4Type: "مغربي تقليدي", rest4Price: "€€€", rest4Desc: "أحد أشهر مطاعم مراكش، تديره نساء بالكامل. كسكس وبسطيلة وطاجين استثنائيين لا مثيل لهم.",
+    rest5Name: "Amal Restaurant", rest5Type: "مغربي تقليدي", rest5Price: "€", rest5Desc: "مطعم اجتماعي محبوب يقدم طعاماً مغربياً أصيلاً على الطريقة المنزلية. قيمة ممتازة ومحبوب جداً من السكان المحليين.",
   }
 };
 
@@ -1293,7 +1349,8 @@ function applyAllTranslations() {
   const sugs = {
     'sug-wifi': t.sugWifi, 'sug-breakfast': t.sugBreakfast, 'sug-spa': t.sugSpa,
     'sug-taxi': t.sugTaxi, 'sug-excursions': t.sugExcursions, 'sug-location': t.sugLocation,
-    'sug-emergency': t.sugEmergency, 'sug-checkout': t.sugCheckout
+    'sug-emergency': t.sugEmergency, 'sug-checkout': t.sugCheckout,
+    'sug-restaurants': t.sugRestaurants
   };
   Object.entries(sugs).forEach(([id, label]) => {
     const el = document.getElementById(id);
@@ -1770,6 +1827,50 @@ function showExcursions() {
         <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${waMsg}" target="_blank" style="margin-bottom:0;font-size:11px;padding:7px 10px">${t.excBook}</a>
       </div>`;
   });
+
+  card.innerHTML = html;
+  cb.appendChild(card);
+  cb.scrollTop = cb.scrollHeight;
+}
+
+// ── RESTAURANT RECOMMENDATIONS ──
+function showRestaurants() {
+  trackButton('Restaurants');
+  const t = T[selectedLangCode] || T['en'];
+  const cb = document.getElementById('chat-box');
+  const old = document.getElementById('rest-card'); if(old) old.remove();
+
+  const restaurants = [
+    { name: t.rest1Name, type: t.rest1Type, price: t.rest1Price, desc: t.rest1Desc, emoji: '🌿' },
+    { name: t.rest2Name, type: t.rest2Type, price: t.rest2Price, desc: t.rest2Desc, emoji: '🏙️' },
+    { name: t.rest3Name, type: t.rest3Type, price: t.rest3Price, desc: t.rest3Desc, emoji: '☕' },
+    { name: t.rest4Name, type: t.rest4Type, price: t.rest4Price, desc: t.rest4Desc, emoji: '⭐' },
+    { name: t.rest5Name, type: t.rest5Type, price: t.rest5Price, desc: t.rest5Desc, emoji: '🤝' },
+  ];
+
+  const card = document.createElement('div');
+  card.className = 'action-card'; card.id = 'rest-card';
+  card.style.cssText = 'border-color:#e8a838;';
+
+  let html = `<div class="action-card-title" style="color:#7a4a05;font-size:13px">${t.restTitle}</div>
+    <p style="font-size:11px;color:#8a7d6a;margin-bottom:12px">${t.restSubtitle}</p>`;
+
+  restaurants.forEach(r => {
+    html += `
+      <div style="background:#faf8f4;border:1px solid #e8e2d8;border-radius:10px;padding:11px 13px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px">
+          <div style="font-size:13px;font-weight:600;color:#1a1a1a">${r.emoji} ${r.name}</div>
+          <div style="font-size:13px;font-weight:700;color:#7a4a05;white-space:nowrap;margin-left:8px">${r.price}</div>
+        </div>
+        <div style="font-size:10px;color:#999;margin-bottom:5px;font-style:italic">${r.type}</div>
+        <div style="font-size:11px;color:#666;line-height:1.5">${r.desc}</div>
+      </div>`;
+  });
+
+  const waMsg = encodeURIComponent(
+    `Hello! Restaurant recommendation request — Riad Dar D'Art:\n\n👤 Reservation: ${reservationName}\n🌐 Language: ${selectedLang}\n\nCould you recommend a restaurant and help with directions? Thank you!`
+  );
+  html += `<a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${waMsg}" target="_blank" style="font-size:12px;margin-top:4px">${t.restNote}</a>`;
 
   card.innerHTML = html;
   cb.appendChild(card);
