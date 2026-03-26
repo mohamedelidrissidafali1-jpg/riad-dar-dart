@@ -1531,14 +1531,35 @@ function validateSpaForm() {
   btn.style.display = valid ? 'block' : 'none';
 }
 
+function parseHour(timeStr) {
+  if(!timeStr) return NaN;
+  timeStr = timeStr.trim().toLowerCase();
+  const pmMatch = timeStr.match(/(\d+)(?::(\d+))?\s*pm/);
+  if(pmMatch) {
+    let h = parseInt(pmMatch[1]);
+    if(h !== 12) h += 12;
+    return h;
+  }
+  const amMatch = timeStr.match(/(\d+)(?::(\d+))?\s*am/);
+  if(amMatch) {
+    let h = parseInt(amMatch[1]);
+    if(h === 12) h = 0;
+    return h;
+  }
+  const colonMatch = timeStr.match(/^(\d+):(\d+)/);
+  if(colonMatch) return parseInt(colonMatch[1]);
+  const numMatch = timeStr.match(/^(\d+)/);
+  if(numMatch) return parseInt(numMatch[1]);
+  return NaN;
+}
+
 function confirmSpa() {
   const t = T[selectedLangCode] || T['en'];
   const time = (document.getElementById('spa-time-input') || {}).value.trim();
   const name = (document.getElementById('spa-name-input') || {}).value.trim() || reservationName;
-  // Time validation: hammam & massage available 10:00 AM – 9:00 PM only
-  const hour = parseInt(time.split(':')[0]) || parseInt(time.split(' ')[0]);
-  if (isNaN(hour) || hour < 10 || hour >= 21) {
-    alert('Hammam and massage are available 10:00 AM to 9:00 PM only. Please choose another time or book for tomorrow.');
+  const hour = parseHour(time);
+  if(isNaN(hour) || hour < 10 || hour >= 21) {
+    alert('Hammam and massage are available 10:00 AM to 9:00 PM only. Please choose a time between 10 AM and 9 PM.');
     return;
   }
   const svcText = spaService === 'hammam' ? 'Hammam' : spaService === 'massage' ? `Massage (${spaDuration} min)` : `Hammam + Massage (${spaDuration} min)`;
