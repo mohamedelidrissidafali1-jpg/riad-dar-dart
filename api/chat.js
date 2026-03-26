@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       const sheetRes = await fetch(SHEET_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(body.sheetData)
+        body: JSON.stringify({ ...body.sheetData, factureNumber: '' })
       });
       return res.status(200).json({ status: 'ok' });
     }
