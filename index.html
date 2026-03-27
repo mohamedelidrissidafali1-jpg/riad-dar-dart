@@ -547,7 +547,7 @@ const T = {
     reservNameLabel: "Your reservation name",
     reservNamePlaceholder: "Name on your reservation",
     sendRequest: "Send booking request",
-    bookConfirm: "Your booking request is ready. Tap below to send it to reception!",
+    bookConfirm: "✅ Your request has been sent to reception. Please wait — they will confirm your booking shortly.",
     sendWa: "Send via WhatsApp",
     locationTitle: "Find us — Riad Dar D'Art",
     locationBtn: "Open in Google Maps",
@@ -654,7 +654,7 @@ const T = {
     reservNameLabel: "Nom de réservation",
     reservNamePlaceholder: "Nom sur la réservation",
     sendRequest: "Envoyer la demande",
-    bookConfirm: "Votre demande est prête. Appuyez ci-dessous pour l'envoyer !",
+    bookConfirm: "✅ Votre demande a été envoyée à la réception. Veuillez patienter — ils confirmeront votre réservation sous peu.",
     sendWa: "Envoyer via WhatsApp",
     locationTitle: "Nous trouver — Riad Dar D'Art",
     locationBtn: "Ouvrir dans Google Maps",
@@ -761,7 +761,7 @@ const T = {
     reservNameLabel: "Nombre de reserva",
     reservNamePlaceholder: "Nombre en la reserva",
     sendRequest: "Enviar solicitud",
-    bookConfirm: "¡Su solicitud está lista! Toque abajo para enviarla.",
+    bookConfirm: "✅ Su solicitud ha sido enviada a recepción. Por favor espere — confirmarán su reserva en breve.",
     sendWa: "Enviar por WhatsApp",
     locationTitle: "Encuéntrenos — Riad Dar D'Art",
     locationBtn: "Abrir en Google Maps",
@@ -868,7 +868,7 @@ const T = {
     reservNameLabel: "Nome di prenotazione",
     reservNamePlaceholder: "Nome sulla prenotazione",
     sendRequest: "Invia richiesta",
-    bookConfirm: "La sua richiesta è pronta! Tocca qui sotto per inviarla.",
+    bookConfirm: "✅ La sua richiesta è stata inviata alla reception. Attenda — confermeranno la sua prenotazione a breve.",
     sendWa: "Invia via WhatsApp",
     locationTitle: "Trovateci — Riad Dar D'Art",
     locationBtn: "Apri in Google Maps",
@@ -975,7 +975,7 @@ const T = {
     reservNameLabel: "Buchungsname",
     reservNamePlaceholder: "Name auf der Buchung",
     sendRequest: "Anfrage senden",
-    bookConfirm: "Ihre Anfrage ist fertig! Tippen Sie unten, um sie zu senden.",
+    bookConfirm: "✅ Ihre Anfrage wurde an die Rezeption gesendet. Bitte warten — sie werden Ihre Buchung in Kürze bestätigen.",
     sendWa: "Per WhatsApp senden",
     locationTitle: "Finden Sie uns — Riad Dar D'Art",
     locationBtn: "In Google Maps öffnen",
@@ -1082,7 +1082,7 @@ const T = {
     reservNameLabel: "اسم الحجز",
     reservNamePlaceholder: "الاسم على الحجز",
     sendRequest: "إرسال طلب الحجز",
-    bookConfirm: "طلبك جاهز! اضغط أدناه لإرساله.",
+    bookConfirm: "✅ تم إرسال طلبك إلى الاستقبال. يرجى الانتظار — سيؤكدون حجزك قريباً.",
     sendWa: "إرسال عبر واتساب",
     locationTitle: "اعثر علينا — رياض دار دارت",
     locationBtn: "فتح في خرائط جوجل",
@@ -1637,7 +1637,12 @@ QUESTION RULES — IMPORTANT:
 - If the guest asks something specific to this riad that is NOT listed above (a specific room detail, a specific price not listed, a specific service not mentioned) — say you don't have that specific information and add [SHOW_CONTACT].
 - Never use [SHOW_CONTACT] alone without first giving a helpful answer for general Marrakech questions.
 - Never invent riad-specific facts (prices, room names, staff names).
-Strip all markdown from your responses — no bold, no headers, no bullet points.`;
+RESPONSE STYLE — CRITICAL:
+- Keep all answers short and simple. Maximum 3-4 lines.
+- Use emojis to structure your answer (example: 🕗 Breakfast: 8:00 AM – 10:30 AM)
+- Never write long paragraphs. Break info into short lines with emojis.
+- Only include the most important information.
+- Strip all markdown — no bold, no headers, no bullet points.`;
 
 const chatBox = document.getElementById('chat-box');
 const chatInput = document.getElementById('chat-input');
