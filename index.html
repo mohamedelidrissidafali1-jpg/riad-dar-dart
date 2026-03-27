@@ -341,6 +341,7 @@
       <span class="sug sug-emergency" onclick="showUrgentHelp()" id="sug-emergency"></span>
       <span class="sug sug-checkout" onclick="showTab('checkout')" id="sug-checkout"></span>
       <span class="sug sug-restaurants" onclick="showRestaurants()" id="sug-restaurants"></span>
+      <span class="sug" onclick="showLocalExperiences()" id="sug-experiences"></span>
     </div>
     <div id="input-row">
       <input id="chat-input" type="text" onkeydown="if(event.key==='Enter') sendChat()"/>
@@ -640,6 +641,9 @@ const T = {
     spaOfferMsg: "Looking to unwind during your stay? We offer hammam and massage right here at the riad.\n\n🧖 Hammam — €20/person (min. 2 people)\n💆 Massage — 30min €30 · 1h €40",
     spaOfferBtnHammam: "🛁 Book Hammam",
     spaOfferBtnMassage: "💆 Book Massage",
+    sugExperiences: "🎨 Experiences",
+    localExpTitle: "Local Experiences",
+    localExpSub: "Discover Marrakech like a local",
   },
   fr: {
     headerSub: "Disponible 24h/24 · Posez toutes vos questions",
@@ -762,6 +766,9 @@ const T = {
     spaOfferMsg: "Envie de vous détendre ? Nous proposons hammam et massage ici au riad.\n\n🧖 Hammam — 20€/pers. (min. 2)\n💆 Massage — 30min 30€ · 1h 40€",
     spaOfferBtnHammam: "🛁 Réserver Hammam",
     spaOfferBtnMassage: "💆 Réserver Massage",
+    sugExperiences: "🎨 Expériences",
+    localExpTitle: "Expériences Locales",
+    localExpSub: "Découvrez Marrakech comme un local",
   },
   es: {
     headerSub: "Disponible 24/7 · Pregunte lo que quiera",
@@ -884,6 +891,9 @@ const T = {
     spaOfferMsg: "¿Quiere relajarse? Ofrecemos hammam y masaje aquí en el riad.\n\n🧖 Hammam — 20€/pers. (mín. 2)\n💆 Masaje — 30min 30€ · 1h 40€",
     spaOfferBtnHammam: "🛁 Reservar Hammam",
     spaOfferBtnMassage: "💆 Reservar Masaje",
+    sugExperiences: "🎨 Experiencias",
+    localExpTitle: "Experiencias Locales",
+    localExpSub: "Descubre Marrakech como un local",
   },
   it: {
     headerSub: "Disponibile 24/7 · Chiedete qualsiasi cosa",
@@ -1006,6 +1016,9 @@ const T = {
     spaOfferMsg: "Vuole rilassarsi? Offriamo hammam e massaggio qui al riad.\n\n🧖 Hammam — 20€/pers. (min. 2)\n💆 Massaggio — 30min 30€ · 1h 40€",
     spaOfferBtnHammam: "🛁 Prenota Hammam",
     spaOfferBtnMassage: "💆 Prenota Massaggio",
+    sugExperiences: "🎨 Esperienze",
+    localExpTitle: "Esperienze Locali",
+    localExpSub: "Scopri Marrakech come un locale",
   },
   de: {
     headerSub: "24/7 verfügbar · Fragen Sie alles",
@@ -1128,6 +1141,9 @@ const T = {
     spaOfferMsg: "Möchten Sie entspannen? Wir bieten Hammam und Massage direkt im Riad.\n\n🧖 Hammam — 20€/Pers. (min. 2)\n💆 Massage — 30min 30€ · 1h 40€",
     spaOfferBtnHammam: "🛁 Hammam buchen",
     spaOfferBtnMassage: "💆 Massage buchen",
+    sugExperiences: "🎨 Erlebnisse",
+    localExpTitle: "Lokale Erlebnisse",
+    localExpSub: "Entdecke Marrakesch wie ein Einheimischer",
   },
   ar: {
     headerSub: "متاح 24/7 · اسألنا أي شيء",
@@ -1250,6 +1266,9 @@ const T = {
     spaOfferMsg: "هل تريد الاسترخاء خلال إقامتك؟ نقدم حمام مغربي ومساج هنا في الرياض.\n\n🧖 حمام — 20€ للشخص (2 أشخاص كحد أدنى)\n💆 مساج — 30د 30€ · ساعة 40€",
     spaOfferBtnHammam: "🛁 احجز الحمام",
     spaOfferBtnMassage: "💆 احجز المساج",
+    sugExperiences: "🎨 تجارب",
+    localExpTitle: "تجارب محلية",
+    localExpSub: "اكتشف مراكش كالسكان المحليين",
   }
 };
 
@@ -1486,7 +1505,8 @@ function applyAllTranslations() {
     'sug-wifi': t.sugWifi, 'sug-breakfast': t.sugBreakfast, 'sug-spa': t.sugSpa,
     'sug-taxi': t.sugTaxi, 'sug-excursions': t.sugExcursions, 'sug-location': t.sugLocation,
     'sug-emergency': t.sugEmergency, 'sug-checkout': t.sugCheckout,
-    'sug-restaurants': t.sugRestaurants
+    'sug-restaurants': t.sugRestaurants,
+    'sug-experiences': t.sugExperiences
   };
   Object.entries(sugs).forEach(([id, label]) => {
     const el = document.getElementById(id);
@@ -2101,6 +2121,34 @@ function showRestaurantDetail(key) {
     <div style="font-size:12px;color:#444;line-height:2;white-space:pre-line">${detail}</div>
     <a class="action-btn btn-teal" href="${RECEPTION_WA}?text=${waMsg}" target="_blank" style="font-size:12px;margin-top:12px;display:block;text-align:center;text-decoration:none">🍽️ ${t.restReserveBtn}</a>
     <button onclick="document.getElementById('rest-detail-card').remove()" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid #ddd;border-radius:8px;font-size:11px;color:#999;cursor:pointer;font-family:inherit">${t.restBackBtn}</button>`;
+  cb.appendChild(card);
+  cb.scrollTop = cb.scrollHeight;
+}
+
+// ── LOCAL EXPERIENCES ──
+function showLocalExperiences() {
+  trackButton('Local Experiences');
+  const t = T[selectedLangCode] || T['en'];
+  const cb = document.getElementById('chat-box');
+  const old = document.getElementById('local-exp-card'); if(old) old.remove();
+
+  const waMsg = encodeURIComponent(
+    'Hello, I would like to book a local experience (cooking class / henna / pottery / perfume workshop). My name is ' + reservationName
+  );
+
+  const card = document.createElement('div');
+  card.className = 'action-card'; card.id = 'local-exp-card';
+  card.style.cssText = 'border-color:#C8BC5A;background:linear-gradient(135deg,#fffdf0,#fff);';
+  card.innerHTML = `
+    <div class="action-card-title" style="color:#7a4a05;font-size:13px;margin-bottom:4px">🌟 ${t.localExpTitle}</div>
+    <p style="font-size:11px;color:#8a7d6a;margin-bottom:12px">${t.localExpSub}</p>
+    <div style="font-size:12px;color:#333;line-height:2.2;margin-bottom:14px">
+      🧑‍🍳 Moroccan Cooking Class — €35/person<br>
+      🎨 Henna Art — €10/person<br>
+      🏺 Pottery Workshop — €25/person<br>
+      🌿 Perfume Workshop — €30/person
+    </div>
+    <a class="action-btn btn-wa" href="${RECEPTION_WA}?text=${waMsg}" target="_blank" style="display:block;text-align:center;text-decoration:none">📩 Book via WhatsApp</a>`;
   cb.appendChild(card);
   cb.scrollTop = cb.scrollHeight;
 }
