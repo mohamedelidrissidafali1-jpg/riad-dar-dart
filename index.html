@@ -63,17 +63,23 @@
 
   /* CHAT */
   #chat-box {
-    background: #fff;
-    background-image:
-      repeating-linear-gradient(45deg, rgba(29,158,117,0.04) 0px, rgba(29,158,117,0.04) 1px, transparent 1px, transparent 8px),
-      repeating-linear-gradient(-45deg, rgba(200,188,90,0.04) 0px, rgba(200,188,90,0.04) 1px, transparent 1px, transparent 8px),
-      repeating-linear-gradient(0deg, rgba(139,90,43,0.03) 0px, rgba(139,90,43,0.03) 1px, transparent 1px, transparent 16px),
-      repeating-linear-gradient(90deg, rgba(139,90,43,0.03) 0px, rgba(139,90,43,0.03) 1px, transparent 1px, transparent 16px);
-    border-radius: 14px; border: 1px solid #ece9e2; padding: 14px; min-height: 360px; max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
+    background: #ffffff;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid #f0ede8;
+    border-bottom: 1px solid #f0ede8;
+    padding: 16px 14px;
+    min-height: 420px;
+    max-height: calc(100vh - 280px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 10px;
   }
   #suggestions-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.5px; margin-bottom: 4px; text-transform: uppercase; }
   .msg { max-width: 88%; padding: 10px 13px; border-radius: 10px; font-size: 13px; line-height: 1.6; }
-  .msg-bot { background: #f7f5f0; border: 1px solid #ece9e2; color: #1a1a1a; align-self: flex-start; border-radius: 4px 10px 10px 10px; }
+  .msg-bot { background: #f4f4f4; border: none; color: #1a1a1a; align-self: flex-start; border-radius: 4px 14px 14px 14px; }
   .msg-user { background: #1D9E75; color: #fff; align-self: flex-end; border-radius: 10px 4px 10px 10px; }
   .msg-loading { color: #bbb; font-style: italic; }
 
@@ -296,20 +302,8 @@
 
   <!-- CHAT -->
   <div id="tab-chat" class="screen active">
-    <div class="riad-header">
-      <div class="riad-icon">
-        <svg class="riad-logo-sm" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="60" cy="50" rx="40" ry="28" fill="#C8BC5A" stroke="#8B7A20" stroke-width="2"/>
-          <ellipse cx="74" cy="42" rx="13" ry="9" fill="#D4849A" opacity="0.9"/>
-          <ellipse cx="47" cy="54" rx="7" ry="5" fill="#f7f5f0"/>
-          <rect x="57" y="72" width="6" height="30" rx="2.5" fill="#5C3D1E"/>
-          <ellipse cx="60" cy="72" rx="5" ry="7" fill="#8B5E3C"/>
-          <text x="26" y="57" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#2C2C2A">D</text>
-          <text x="66" y="96" font-family="Georgia,serif" font-size="19" font-style="italic" font-weight="600" fill="#9B4E2E">'art</text>
-          <polygon points="53,100 60,114 67,100" fill="#D4849A"/>
-        </svg>
-      </div>
-      <div class="riad-title">Riad Dar D'Art</div>
+    <div class="riad-header" style="padding: 12px 0 8px;">
+      <div class="riad-title" style="font-size:18px">Riad Dar D'Art</div>
       <div class="riad-sub" id="header-sub"></div>
     </div>
     <div id="chat-box"></div>
