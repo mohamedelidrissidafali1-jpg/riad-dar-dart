@@ -342,6 +342,7 @@
       <span class="sug sug-checkout" onclick="showTab('checkout')" id="sug-checkout"></span>
       <span class="sug sug-restaurants" onclick="showRestaurants()" id="sug-restaurants"></span>
       <span class="sug" onclick="showLocalExperiences()" id="sug-experiences"></span>
+      <span class="sug" onclick="showDarijaLearn()" id="sug-darija"></span>
     </div>
     <div id="input-row">
       <input id="chat-input" type="text" onkeydown="if(event.key==='Enter') sendChat()"/>
@@ -645,6 +646,10 @@ const T = {
     spaOfferBtnHammam: "🛁 Book Hammam",
     spaOfferBtnMassage: "💆 Book Massage",
     sugExperiences: "🎨 Experiences",
+    sugDarija: "🗣️ Learn Darija",
+    darijaIntro: "Type any word or phrase and I'll translate it to Darija! 🇲🇦",
+    darijaPlaceholder: "e.g. Thank you, How much?, Good morning...",
+    darijaBtn: "Translate 🗣️",
     localExpTitle: "Local Experiences",
     localExpSub: "Discover Marrakech like a local",
     cookingName: "🧑‍🍳 Moroccan Cooking Class", cookingDesc: "Cook a real tagine with a local chef — then eat it! 🍽️",
@@ -776,6 +781,10 @@ const T = {
     spaOfferBtnHammam: "🛁 Réserver Hammam",
     spaOfferBtnMassage: "💆 Réserver Massage",
     sugExperiences: "🎨 Expériences",
+    sugDarija: "🗣️ Apprendre le Darija",
+    darijaIntro: "Tapez un mot ou une phrase et je le traduis en Darija ! 🇲🇦",
+    darijaPlaceholder: "ex. Merci, C'est combien ?, Bonjour...",
+    darijaBtn: "Traduire 🗣️",
     localExpTitle: "Expériences Locales",
     localExpSub: "Découvrez Marrakech comme un local",
     cookingName: "🧑‍🍳 Cours de Cuisine Marocaine", cookingDesc: "Cuisinez un vrai tajine avec un chef local — puis dégustez-le ! 🍽️",
@@ -907,6 +916,10 @@ const T = {
     spaOfferBtnHammam: "🛁 Reservar Hammam",
     spaOfferBtnMassage: "💆 Reservar Masaje",
     sugExperiences: "🎨 Experiencias",
+    sugDarija: "🗣️ Aprender Darija",
+    darijaIntro: "¡Escribe una palabra o frase y la traduzco al Darija! 🇲🇦",
+    darijaPlaceholder: "ej. Gracias, ¿Cuánto cuesta?, Buenos días...",
+    darijaBtn: "Traducir 🗣️",
     localExpTitle: "Experiencias Locales",
     localExpSub: "Descubre Marrakech como un local",
     cookingName: "🧑‍🍳 Clase de Cocina Marroquí", cookingDesc: "¡Cocina un tagine real con un chef local y luego cómelo! 🍽️",
@@ -1038,6 +1051,10 @@ const T = {
     spaOfferBtnHammam: "🛁 Prenota Hammam",
     spaOfferBtnMassage: "💆 Prenota Massaggio",
     sugExperiences: "🎨 Esperienze",
+    sugDarija: "🗣️ Imparare il Darija",
+    darijaIntro: "Scrivi una parola o frase e la traduco in Darija! 🇲🇦",
+    darijaPlaceholder: "es. Grazie, Quanto costa?, Buongiorno...",
+    darijaBtn: "Traduci 🗣️",
     localExpTitle: "Esperienze Locali",
     localExpSub: "Scopri Marrakech come un locale",
     cookingName: "🧑‍🍳 Corso di Cucina Marocchina", cookingDesc: "Cucina un vero tajine con uno chef locale — poi mangialo! 🍽️",
@@ -1169,6 +1186,10 @@ const T = {
     spaOfferBtnHammam: "🛁 Hammam buchen",
     spaOfferBtnMassage: "💆 Massage buchen",
     sugExperiences: "🎨 Erlebnisse",
+    sugDarija: "🗣️ Darija lernen",
+    darijaIntro: "Schreib ein Wort oder einen Satz und ich übersetze es ins Darija! 🇲🇦",
+    darijaPlaceholder: "z.B. Danke, Wie viel kostet das?, Guten Morgen...",
+    darijaBtn: "Übersetzen 🗣️",
     localExpTitle: "Lokale Erlebnisse",
     localExpSub: "Entdecke Marrakesch wie ein Einheimischer",
     cookingName: "🧑‍🍳 Marokkanischer Kochkurs", cookingDesc: "Koche ein echtes Tajine mit einem lokalen Koch — dann iss es! 🍽️",
@@ -1300,6 +1321,10 @@ const T = {
     spaOfferBtnHammam: "🛁 احجز الحمام",
     spaOfferBtnMassage: "💆 احجز المساج",
     sugExperiences: "🎨 تجارب",
+    sugDarija: "🗣️ تعلم الدارجة",
+    darijaIntro: "اكتب أي كلمة وسأترجمها إلى الدارجة المغربية! 🇲🇦",
+    darijaPlaceholder: "مثال: شكراً، كم الثمن؟، صباح الخير...",
+    darijaBtn: "ترجم 🗣️",
     localExpTitle: "تجارب محلية",
     localExpSub: "اكتشف مراكش كالسكان المحليين",
     cookingName: "🧑‍🍳 درس طبخ مغربي", cookingDesc: "اطبخ طاجين حقيقي مع طاهٍ محلي ثم تناوله! 🍽️",
@@ -1545,7 +1570,8 @@ function applyAllTranslations() {
     'sug-taxi': t.sugTaxi, 'sug-excursions': t.sugExcursions, 'sug-location': t.sugLocation,
     'sug-emergency': t.sugEmergency, 'sug-checkout': t.sugCheckout,
     'sug-restaurants': t.sugRestaurants,
-    'sug-experiences': t.sugExperiences
+    'sug-experiences': t.sugExperiences,
+    'sug-darija': t.sugDarija
   };
   Object.entries(sugs).forEach(([id, label]) => {
     const el = document.getElementById(id);
@@ -2225,6 +2251,106 @@ function showLocalExpDetail(key) {
     <button onclick="document.getElementById('local-exp-detail-card').remove()" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid #ddd;border-radius:8px;font-size:11px;color:#999;cursor:pointer;font-family:inherit">${t.expBackBtn}</button>`;
   cb.appendChild(card);
   cb.scrollTop = cb.scrollHeight;
+}
+
+// ── LEARN DARIJA ──
+function showDarijaLearn() {
+  trackButton('Learn Darija');
+  const t = T[selectedLangCode] || T['en'];
+  const cb = document.getElementById('chat-box');
+  const old = document.getElementById('darija-card'); if(old) old.remove();
+
+  const card = document.createElement('div');
+  card.className = 'action-card'; card.id = 'darija-card';
+  card.style.cssText = 'border-color:#C8BC5A;';
+  card.innerHTML = `
+    <div class="action-card-title" style="color:#7a4a05;font-size:13px;margin-bottom:8px">🇲🇦 ${t.sugDarija}</div>
+    <p style="font-size:12px;color:#555;margin-bottom:10px">${t.darijaIntro}</p>
+    <input id="darija-input" class="onb-input" type="text" placeholder="${t.darijaPlaceholder}" style="margin-bottom:8px;font-size:14px" onkeydown="if(event.key==='Enter') translateToDarija()"/>
+    <button class="action-btn btn-teal" onclick="translateToDarija()" style="margin-bottom:0">${t.darijaBtn}</button>`;
+  cb.appendChild(card);
+  cb.scrollTop = cb.scrollHeight;
+  setTimeout(() => { const inp = document.getElementById('darija-input'); if(inp) inp.focus(); }, 100);
+}
+
+async function translateToDarija() {
+  const input = document.getElementById('darija-input');
+  if(!input) return;
+  const text = input.value.trim();
+  if(!text) return;
+
+  const cb = document.getElementById('chat-box');
+
+  // Show user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg msg-user';
+  userMsg.textContent = text;
+  cb.appendChild(userMsg);
+
+  // Show loading
+  const loading = document.createElement('div');
+  loading.className = 'msg msg-bot msg-loading';
+  loading.textContent = '...';
+  cb.appendChild(loading);
+  cb.scrollTop = cb.scrollHeight;
+
+  const darijaSystem = `You are a Moroccan Darija translator. The user will give you a word or phrase in any language. Reply ONLY with:
+1. The Darija translation in Arabic script
+2. The pronunciation written in Latin letters (how to say it phonetically)
+3. A very short usage tip if helpful
+Keep it short, clean, use emojis. Example format:
+🇲🇦 شكراً — "Shukran"
+💡 Used to say thank you to anyone`;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system: darijaSystem, messages: [{ role: 'user', content: text }] })
+    });
+    const data = await res.json();
+    const reply = data?.content?.[0]?.text || data?.output_text || data?.message || '';
+    loading.remove();
+
+    if(!reply) throw new Error('Empty response');
+
+    const botMsg = document.createElement('div');
+    botMsg.className = 'msg msg-bot';
+    botMsg.textContent = reply;
+    cb.appendChild(botMsg);
+
+    // Extract Arabic script from reply for speech synthesis
+    const arabicMatch = reply.match(/[\u0600-\u06FF\u0750-\u077F]+(?:\s+[\u0600-\u06FF\u0750-\u077F]+)*/);
+    if(arabicMatch) {
+      const arabicText = arabicMatch[0];
+      const listenBtn = document.createElement('button');
+      listenBtn.className = 'action-btn btn-green';
+      listenBtn.style.cssText = 'margin-top:4px;max-width:160px;align-self:flex-start;';
+      listenBtn.textContent = '🔊 Listen';
+      listenBtn.onclick = () => {
+        const utterance = new SpeechSynthesisUtterance(arabicText);
+        // Try ar-MA first, fall back to ar-SA
+        const voices = window.speechSynthesis.getVoices();
+        const arMA = voices.find(v => v.lang === 'ar-MA');
+        utterance.lang = arMA ? 'ar-MA' : 'ar-SA';
+        utterance.rate = 0.8;
+        window.speechSynthesis.speak(utterance);
+      };
+      cb.appendChild(listenBtn);
+    }
+
+    // Clear input for next translation
+    input.value = '';
+    input.focus();
+    cb.scrollTop = cb.scrollHeight;
+  } catch(err) {
+    loading.remove();
+    const errMsg = document.createElement('div');
+    errMsg.className = 'msg msg-bot';
+    errMsg.textContent = '⚠️ Translation failed. Please try again.';
+    cb.appendChild(errMsg);
+    cb.scrollTop = cb.scrollHeight;
+  }
 }
 
 // ── STARS / SURVEY ──
