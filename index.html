@@ -294,6 +294,29 @@
   <div id="name-required-msg" style="font-size:12px;color:#E24B4A;margin-top:8px;display:none"></div>
 </div>
 
+<!-- RIAD SELECTION SCREEN — shown after name, before main chat -->
+<div id="riad-screen" class="onboarding-screen" style="display:none">
+  <div style="margin-bottom:16px">
+    <svg width="64" height="64" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="60" cy="50" rx="40" ry="28" fill="#C8BC5A" stroke="#8B7A20" stroke-width="2"/>
+      <ellipse cx="74" cy="42" rx="13" ry="9" fill="#D4849A" opacity="0.9"/>
+      <rect x="57" y="72" width="6" height="30" rx="2.5" fill="#5C3D1E"/>
+      <ellipse cx="60" cy="72" rx="5" ry="7" fill="#8B5E3C"/>
+      <text x="26" y="57" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#2C2C2A">D</text>
+      <text x="66" y="96" font-family="Georgia,serif" font-size="19" font-style="italic" font-weight="600" fill="#9B4E2E">'art</text>
+      <polygon points="53,100 60,114 67,100" fill="#D4849A"/>
+    </svg>
+  </div>
+  <div id="riad-select-title" class="onb-title" style="margin-bottom:16px"></div>
+  <div class="onb-card" style="max-width:340px;margin-bottom:20px">
+    <div id="riad-warning-msg" style="font-size:13px;color:#7a4a05;background:#fff8e8;border:1px solid #f0d080;border-radius:10px;padding:12px 14px;line-height:1.6;text-align:left"></div>
+  </div>
+  <div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px">
+    <button id="riad-btn-19" class="onb-btn" onclick="selectRiad('19')" style="font-size:16px;padding:16px;background:#1D9E75;color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:inherit;font-weight:600"></button>
+    <button id="riad-btn-141" class="onb-btn" onclick="selectRiad('141')" style="font-size:16px;padding:16px;background:#0F6E56;color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:inherit;font-weight:600"></button>
+  </div>
+</div>
+
 <div id="main-app" style="display:none">
   <div id="tab-bar">
     <div class="tab active" onclick="showTab('chat')" id="tab-chat-btn">Guest Assistant</div>
@@ -436,9 +459,10 @@
 //  CONFIGURATION
 //  FIX 6: ONLY reception number — manager number removed entirely
 // ══════════════════════════════════════════════════════════
-const RECEPTION_WA = 'https://wa.me/212699814919';
+let RECEPTION_WA = 'https://wa.me/212699814919';
 // MANAGER NUMBER REMOVED — all alerts go to reception only
-const ALERT_WA = 'https://wa.me/212699814919';
+let ALERT_WA = 'https://wa.me/212699814919';
+let WIFI_PASSWORD = '19531954';
 
 const GMAPS = 'https://maps.app.goo.gl/peCF8ekeoyFvNP248';
 const BOOKING_URL = 'https://www.booking.com/hotel/ma/dar-d-39-art-marrakech.html';
@@ -603,6 +627,10 @@ const T = {
     rest5Name: "Amal Restaurant", rest5Type: "Traditional Moroccan", rest5Price: "€", rest5Desc: "A beloved social enterprise serving authentic home-style Moroccan food. Excellent value, very popular with locals.",
     restReserveBtn: "Reserve my table",
     restBackBtn: "← Back to restaurants",
+    riadSelectTitle: "Which riad are you staying in?",
+    riadWarning: "⚠️ Please make sure you select the correct riad. If you're not sure, ask reception before continuing.",
+    riadBtn19: "Riad Dar D'Art 19",
+    riadBtn141: "Riad Dar D'Art 141",
     rest1Detail: "🌿 Garden & atmosphere: Lush garden in the heart of the medina\n💑 Perfect for: Couples & groups of friends\n💰 Price: Moderate (€€)\n🥗 Known for: Fresh salads, tagines, grilled fish\n🌙 Romantic dinner? Yes — beautiful setting at night\n✅ Verdict: Great all-around choice",
     rest2Detail: "🏙️ Setting: Trendy rooftop with views over the spice souks\n💑 Perfect for: Friends, young couples\n💰 Price: Moderate (€€)\n🍹 Known for: Creative Moroccan dishes, great cocktails\n🌙 Romantic dinner? Yes — rooftop sunsets are stunning\n✅ Verdict: Best for a fun modern vibe",
     rest3Detail: "☕ Setting: Relaxed terrace on Place Rahba Kedima\n👨‍👩‍👧 Perfect for: Everyone — families, solo, couples\n💰 Price: Budget (€)\n🍵 Known for: Mint tea, fresh juices, light snacks\n🌙 Romantic dinner? Not really — better for daytime\n✅ Verdict: Perfect for a relaxed break while exploring",
@@ -717,6 +745,10 @@ const T = {
     rest5Name: "Amal Restaurant", rest5Type: "Marocain traditionnel", rest5Price: "€", rest5Desc: "Entreprise sociale servant une cuisine marocaine maison authentique. Excellent rapport qualité-prix, très apprécié des locaux.",
     restReserveBtn: "Réserver ma table",
     restBackBtn: "← Retour aux restaurants",
+    riadSelectTitle: "Dans quel riad séjournez-vous ?",
+    riadWarning: "⚠️ Veuillez vous assurer de sélectionner le bon riad. Si vous n'êtes pas sûr, demandez à la réception avant de continuer.",
+    riadBtn19: "Riad Dar D'Art 19",
+    riadBtn141: "Riad Dar D'Art 141",
     rest1Detail: "🌿 Cadre & atmosphère: Jardin verdoyant au cœur de la médina\n💑 Idéal pour: Couples & groupes d'amis\n💰 Prix: Modéré (€€)\n🥗 Connu pour: Salades fraîches, tajines, poissons grillés\n🌙 Dîner romantique? Oui — cadre magnifique le soir\n✅ Notre avis: Excellent choix polyvalent",
     rest2Detail: "🏙️ Cadre: Rooftop tendance avec vue sur les souks aux épices\n💑 Idéal pour: Amis, jeunes couples\n💰 Prix: Modéré (€€)\n🍹 Connu pour: Cuisine marocaine créative, cocktails délicieux\n🌙 Dîner romantique? Oui — couchers de soleil sur les toits sublimes\n✅ Notre avis: Meilleur pour une ambiance moderne et festive",
     rest3Detail: "☕ Cadre: Terrasse détendue sur la Place Rahba Kedima\n👨‍👩‍👧 Idéal pour: Tout le monde — familles, solo, couples\n💰 Prix: Économique (€)\n🍵 Connu pour: Thé à la menthe, jus frais, petites collations\n🌙 Dîner romantique? Pas vraiment — mieux en journée\n✅ Notre avis: Parfait pour une pause lors de l'exploration",
@@ -831,6 +863,10 @@ const T = {
     rest5Name: "Amal Restaurant", rest5Type: "Marroquí tradicional", rest5Price: "€", rest5Desc: "Empresa social con auténtica comida marroquí casera. Excelente relación calidad-precio, muy popular entre los locales.",
     restReserveBtn: "Reservar mi mesa",
     restBackBtn: "← Volver a restaurantes",
+    riadSelectTitle: "¿En qué riad se hospeda?",
+    riadWarning: "⚠️ Por favor asegúrese de seleccionar el riad correcto. Si no está seguro, pregunte en recepción antes de continuar.",
+    riadBtn19: "Riad Dar D'Art 19",
+    riadBtn141: "Riad Dar D'Art 141",
     rest1Detail: "🌿 Jardín & ambiente: Jardín exuberante en el corazón de la medina\n💑 Perfecto para: Parejas y grupos de amigos\n💰 Precio: Moderado (€€)\n🥗 Conocido por: Ensaladas frescas, tajines, pescado a la parrilla\n🌙 ¿Cena romántica? Sí — entorno precioso por la noche\n✅ Veredicto: Excelente opción para todo",
     rest2Detail: "🏙️ Ambiente: Terraza de moda con vistas a los zocos de especias\n💑 Perfecto para: Amigos, parejas jóvenes\n💰 Precio: Moderado (€€)\n🍹 Conocido por: Cocina marroquí creativa, cócteles increíbles\n🌙 ¿Cena romántica? Sí — los atardeceres desde la terraza son espectaculares\n✅ Veredicto: Mejor para un ambiente moderno y divertido",
     rest3Detail: "☕ Ambiente: Terraza relajada en la Plaza Rahba Kedima\n👨‍👩‍👧 Perfecto para: Todos — familias, solos, parejas\n💰 Precio: Económico (€)\n🍵 Conocido por: Té de menta, zumos frescos, aperitivos ligeros\n🌙 ¿Cena romántica? No realmente — mejor de día\n✅ Veredicto: Perfecto para un descanso mientras exploras",
@@ -945,6 +981,10 @@ const T = {
     rest5Name: "Amal Restaurant", rest5Type: "Marocchino tradizionale", rest5Price: "€", rest5Desc: "Amata impresa sociale con autentica cucina marocchina casalinga. Ottimo rapporto qualità-prezzo, molto amato dai locali.",
     restReserveBtn: "Prenota il mio tavolo",
     restBackBtn: "← Torna ai ristoranti",
+    riadSelectTitle: "In quale riad alloggia?",
+    riadWarning: "⚠️ Assicurarsi di selezionare il riad corretto. Se non è sicuro, chieda alla reception prima di continuare.",
+    riadBtn19: "Riad Dar D'Art 19",
+    riadBtn141: "Riad Dar D'Art 141",
     rest1Detail: "🌿 Giardino & atmosfera: Rigoglioso giardino nel cuore della medina\n💑 Perfetto per: Coppie e gruppi di amici\n💰 Prezzo: Moderato (€€)\n🥗 Famoso per: Insalate fresche, tajine, pesce alla griglia\n🌙 Cena romantica? Sì — cornice meravigliosa di sera\n✅ Verdetto: Ottima scelta per tutti",
     rest2Detail: "🏙️ Ambiente: Moderno rooftop con vista sui souq delle spezie\n💑 Perfetto per: Amici, coppie giovani\n💰 Prezzo: Moderato (€€)\n🍹 Famoso per: Piatti marocchini creativi, cocktail ottimi\n🌙 Cena romantica? Sì — i tramonti dal rooftop sono spettacolari\n✅ Verdetto: Il migliore per un'atmosfera moderna e vivace",
     rest3Detail: "☕ Ambiente: Terrazza rilassante su Piazza Rahba Kedima\n👨‍👩‍👧 Perfetto per: Tutti — famiglie, single, coppie\n💰 Prezzo: Economico (€)\n🍵 Famoso per: Tè alla menta, succhi freschi, spuntini leggeri\n🌙 Cena romantica? Non proprio — meglio di giorno\n✅ Verdetto: Perfetto per una pausa durante l'esplorazione",
@@ -1059,6 +1099,10 @@ const T = {
     rest5Name: "Amal Restaurant", rest5Type: "Traditionelles Marokkanisch", rest5Price: "€", rest5Desc: "Beliebtes Sozialprojekt mit authentischer marokkanischer Hausmannskost. Hervorragendes Preis-Leistungs-Verhältnis, bei Einheimischen sehr beliebt.",
     restReserveBtn: "Tisch reservieren",
     restBackBtn: "← Zurück zu Restaurants",
+    riadSelectTitle: "In welchem Riad übernachten Sie?",
+    riadWarning: "⚠️ Bitte stellen Sie sicher, dass Sie das richtige Riad auswählen. Falls Sie unsicher sind, fragen Sie bitte die Rezeption.",
+    riadBtn19: "Riad Dar D'Art 19",
+    riadBtn141: "Riad Dar D'Art 141",
     rest1Detail: "🌿 Garten & Atmosphäre: Üppiger Garten im Herzen der Medina\n💑 Perfekt für: Paare & Freundesgruppen\n💰 Preis: Moderat (€€)\n🥗 Bekannt für: Frische Salate, Tajines, gegrillter Fisch\n🌙 Romantisches Dinner? Ja — wunderschönes Ambiente am Abend\n✅ Fazit: Tolle Wahl für jeden Anlass",
     rest2Detail: "🏙️ Ambiente: Trendiges Rooftop mit Blick auf die Gewürzsouks\n💑 Perfekt für: Freunde, junge Paare\n💰 Preis: Moderat (€€)\n🍹 Bekannt für: Kreative marokkanische Küche, tolle Cocktails\n🌙 Romantisches Dinner? Ja — Sonnenuntergänge auf dem Dach sind atemberaubend\n✅ Fazit: Beste Wahl für modernes Flair",
     rest3Detail: "☕ Ambiente: Entspannte Terrasse am Place Rahba Kedima\n👨‍👩‍👧 Perfekt für: Alle — Familien, Alleinreisende, Paare\n💰 Preis: Günstig (€)\n🍵 Bekannt für: Minztee, frische Säfte, leichte Snacks\n🌙 Romantisches Dinner? Nicht wirklich — besser tagsüber\n✅ Fazit: Perfekt für eine Pause beim Erkunden",
@@ -1173,6 +1217,10 @@ const T = {
     rest5Name: "Amal Restaurant", rest5Type: "مغربي تقليدي", rest5Price: "€", rest5Desc: "مطعم اجتماعي محبوب يقدم طعاماً مغربياً أصيلاً على الطريقة المنزلية. قيمة ممتازة ومحبوب جداً من السكان المحليين.",
     restReserveBtn: "احجز طاولتي",
     restBackBtn: "← العودة إلى المطاعم",
+    riadSelectTitle: "في أي رياض تقيم؟",
+    riadWarning: "⚠️ يرجى التأكد من اختيار الرياض الصحيح. إذا لم تكن متأكداً، اسأل الاستقبال قبل المتابعة.",
+    riadBtn19: "Riad Dar D'Art 19",
+    riadBtn141: "Riad Dar D'Art 141",
     rest1Detail: "🌿 الحديقة والأجواء: حديقة خضراء في قلب المدينة القديمة\n💑 مثالي لـ: الأزواج ومجموعات الأصدقاء\n💰 السعر: معتدل (€€)\n🥗 مشهور بـ: السلطات الطازجة والطاجين والسمك المشوي\n🌙 عشاء رومانسي؟ نعم — أجواء رائعة في المساء\n✅ الحكم: خيار ممتاز لجميع المناسبات",
     rest2Detail: "🏙️ الأجواء: سطح عصري مع إطلالة على أسواق التوابل\n💑 مثالي لـ: الأصدقاء والأزواج الشباب\n💰 السعر: معتدل (€€)\n🍹 مشهور بـ: أطباق مغربية إبداعية وكوكتيلات رائعة\n🌙 عشاء رومانسي؟ نعم — غروب الشمس على السطح رائع\n✅ الحكم: الأفضل للأجواء الحديثة والمرحة",
     rest3Detail: "☕ الأجواء: تراس هادئ في ساحة رحبة كديمة\n👨‍👩‍👧 مثالي لـ: الجميع — العائلات والمسافرين منفردين والأزواج\n💰 السعر: اقتصادي (€)\n🍵 مشهور بـ: الشاي بالنعناع والعصائر الطازجة والوجبات الخفيفة\n🌙 عشاء رومانسي؟ ليس تماماً — أفضل خلال النهار\n✅ الحكم: مثالي لاستراحة أثناء التجوال",
@@ -1265,6 +1313,28 @@ function submitGuestName() {
   }
   reservationName = input;
   document.getElementById('name-screen').style.display = 'none';
+  // Show riad selection before main chat
+  const t = T[selectedLangCode] || T['en'];
+  document.getElementById('riad-select-title').textContent = t.riadSelectTitle;
+  document.getElementById('riad-warning-msg').textContent = t.riadWarning;
+  document.getElementById('riad-btn-19').textContent = t.riadBtn19;
+  document.getElementById('riad-btn-141').textContent = t.riadBtn141;
+  const dir = selectedLangCode === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('riad-screen').setAttribute('dir', dir);
+  document.getElementById('riad-screen').style.display = 'flex';
+}
+
+function selectRiad(riad) {
+  if(riad === '19') {
+    WIFI_PASSWORD = '0908070605';
+    RECEPTION_WA = 'https://wa.me/212702617999';
+    ALERT_WA = 'https://wa.me/212702617999';
+  } else {
+    WIFI_PASSWORD = '19531954';
+    RECEPTION_WA = 'https://wa.me/212699814919';
+    ALERT_WA = 'https://wa.me/212699814919';
+  }
+  document.getElementById('riad-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
   applyAllTranslations();
   launchWelcome();
@@ -1338,7 +1408,7 @@ function launchWelcome() {
     infoCard.innerHTML = `
       <div class="action-card-title" style="color:#0F6E56;font-size:13px;margin-bottom:10px">${t.quickInfoTitle}</div>
       <div style="font-size:12px;color:#333;line-height:2.1">
-        📶 <strong>${wifiLabel}:</strong> 19531954<br>
+        📶 <strong>${wifiLabel}:</strong> ${WIFI_PASSWORD}<br>
         🍳 <strong>${bfastLabel}:</strong> 8:00 – 10:30<br>
         🏊 <strong>${poolLabel}:</strong> ${freeLabel}
       </div>
@@ -1659,7 +1729,7 @@ function confirmTaxi() {
 const SYSTEM_BASE = `You are a warm, professional guest assistant for Riad Dar D'Art, a beautiful traditional riad in the Medina of Marrakech, Morocco. Always be friendly, warm, and concise.
 CRITICAL: ALWAYS respond exclusively in {LANG}. Never mix languages. Never respond in any other language regardless of what the guest writes.
 CHECK-IN & CHECK-OUT: Check-in 2:00 PM, early if room ready. Check-out 12:00 PM, late possible ask reception. Free luggage storage.
-WIFI: Password 19531954.
+WIFI: Password {WIFI}.
 BREAKFAST: Included. Traditional Moroccan. 8:00 AM to 10:30 AM courtyard.
 POOL: Free. Towels provided. Shower before entering.
 HAMMAM: Inside riad. Min 2 people. 20€/person.
@@ -1745,7 +1815,7 @@ async function sendChat() {
   saveSession();
   const loading = document.createElement('div'); loading.className = 'msg msg-bot msg-loading'; loading.textContent = '...'; chatBox.appendChild(loading);
   chatBox.scrollTop = chatBox.scrollHeight;
-  const systemPrompt = SYSTEM_BASE.replace('{LANG}', selectedLang);
+  const systemPrompt = SYSTEM_BASE.replace('{LANG}', selectedLang).replace('{WIFI}', WIFI_PASSWORD);
   console.log("SENDING HISTORY:", JSON.stringify(history));
   try {
     const res = await fetch('/api/chat', {
