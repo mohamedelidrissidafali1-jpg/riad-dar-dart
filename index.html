@@ -237,7 +237,7 @@
   <div style="font-size:40px;margin-bottom:16px">🌿</div>
   <div id="instr-title" class="onb-title"></div>
   <div class="onb-card">
-    <div id="instr-body" class="onb-body"></div>
+    <div id="instr-body" class="onb-body" style="white-space:pre-line"></div>
   </div>
   <button id="instr-btn" class="onb-btn" onclick="enterSaveScreen()"></button>
 </div>
@@ -514,6 +514,9 @@ function clearSession() {
   // Clear upsell_initial key for this guest
   const upsellInitKey = 'upsell_initial_' + (reservationName || 'guest').replace(/\s+/g,'_').toLowerCase();
   localStorage.removeItem(upsellInitKey);
+  // Clear spa offer key for this guest
+  const spaKey = 'spaOfferShown_' + (reservationName || 'guest').replace(/\s+/g,'_').toLowerCase();
+  localStorage.removeItem(spaKey);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -528,7 +531,7 @@ const T = {
     sugLocation: "📍 Find the riad", sugEmergency: "🆘 Urgent help", sugCheckout: "✅ Checkout",
     sendBtn: "Send", placeholder: "Ask anything about your stay...",
     instrTitle: "Welcome to Riad Dar D'Art 🌿",
-    instrBody: "This assistant is available 24/7 during your stay. You can ask anything — WiFi password, breakfast time, hammam & massage booking, excursions, airport transfers, and questions about Marrakech. Tap any quick button or type your question below.",
+    instrBody: "✅ Ask me anything, anytime\n📶 WiFi & breakfast info\n🛁 Hammam & massage booking\n🏜️ Excursions & city tours\n🚖 Airport transfers\n🍽️ Restaurant recommendations\n🎨 Local experiences\n\nJust tap a button or type your question below.",
     instrBtn: "Continue →",
     saveTitle: "Save to your home screen", saveSub: "Save this assistant so you can open it anytime — no need to scan again.",
     saveDeviceQ: "What phone do you have?",
@@ -659,7 +662,7 @@ const T = {
     sugLocation: "📍 Trouver le riad", sugEmergency: "🆘 Urgence", sugCheckout: "✅ Départ",
     sendBtn: "Envoyer", placeholder: "Posez votre question...",
     instrTitle: "Bienvenue au Riad Dar D'Art 🌿",
-    instrBody: "Cet assistant est disponible 24h/24 pendant votre séjour. Posez-lui n'importe quelle question — mot de passe WiFi, heure du petit-déjeuner, réservation hammam et massage, excursions, transferts aéroport, et questions sur Marrakech. Appuyez sur un bouton ou tapez votre question.",
+    instrBody: "✅ Posez-moi n'importe quelle question\n📶 WiFi & petit-déjeuner\n🛁 Réservation hammam & massage\n🏜️ Excursions & visites\n🚖 Transferts aéroport\n🍽️ Restaurants recommandés\n🎨 Expériences locales\n\nAppuyez sur un bouton ou tapez votre question.",
     instrBtn: "Continuer →",
     saveTitle: "Enregistrez sur votre écran d'accueil", saveSub: "Enregistrez l'assistant pour l'ouvrir à tout moment — sans rescanner.",
     saveDeviceQ: "Quel téléphone avez-vous ?",
@@ -790,7 +793,7 @@ const T = {
     sugLocation: "📍 Encontrar el riad", sugEmergency: "🆘 Emergencia", sugCheckout: "✅ Checkout",
     sendBtn: "Enviar", placeholder: "Haga su pregunta...",
     instrTitle: "Bienvenido al Riad Dar D'Art 🌿",
-    instrBody: "Este asistente está disponible 24/7 durante su estancia. Puede preguntar cualquier cosa — contraseña WiFi, horario del desayuno, reserva de hammam y masaje, excursiones, traslados al aeropuerto y preguntas sobre Marrakech. Toque un botón o escriba su pregunta.",
+    instrBody: "✅ Pregúntame cualquier cosa\n📶 WiFi & desayuno\n🛁 Reserva hammam & masaje\n🏜️ Excursiones & tours\n🚖 Traslados al aeropuerto\n🍽️ Restaurantes recomendados\n🎨 Experiencias locales\n\nToca un botón o escribe tu pregunta.",
     instrBtn: "Continuar →",
     saveTitle: "Guardar en pantalla de inicio", saveSub: "Guarde este asistente para abrirlo en cualquier momento — sin escanear de nuevo.",
     saveDeviceQ: "¿Qué teléfono tiene?",
@@ -921,7 +924,7 @@ const T = {
     sugLocation: "📍 Trovare il riad", sugEmergency: "🆘 Urgenza", sugCheckout: "✅ Checkout",
     sendBtn: "Invia", placeholder: "Fai la tua domanda...",
     instrTitle: "Benvenuto al Riad Dar D'Art 🌿",
-    instrBody: "Questo assistente è disponibile 24/7 durante il suo soggiorno. Può chiedergli qualsiasi cosa — password WiFi, orario colazione, prenotazione hammam e massaggio, escursioni, trasferimenti aeroporto e domande su Marrakech. Tocca un pulsante o scrivi la tua domanda.",
+    instrBody: "✅ Chiedimi qualsiasi cosa\n📶 WiFi & colazione\n🛁 Prenotazione hammam & massaggio\n🏜️ Escursioni & tour\n🚖 Transfer aeroporto\n🍽️ Ristoranti consigliati\n🎨 Esperienze locali\n\nTocca un pulsante o scrivi la tua domanda.",
     instrBtn: "Continua →",
     saveTitle: "Salva nella schermata iniziale", saveSub: "Salva l'assistente per aprirlo in qualsiasi momento — senza scansionare di nuovo.",
     saveDeviceQ: "Che telefono hai?",
@@ -1052,7 +1055,7 @@ const T = {
     sugLocation: "📍 Riad finden", sugEmergency: "🆘 Notfall", sugCheckout: "✅ Auschecken",
     sendBtn: "Senden", placeholder: "Stellen Sie Ihre Frage...",
     instrTitle: "Willkommen im Riad Dar D'Art 🌿",
-    instrBody: "Dieser Assistent steht Ihnen rund um die Uhr zur Verfügung. Sie können alles fragen — WLAN-Passwort, Frühstückszeiten, Hammam- und Massagebuchung, Ausflüge, Flughafentransfers und Fragen über Marrakesch. Tippen Sie auf einen Button oder schreiben Sie Ihre Frage.",
+    instrBody: "✅ Frag mich jederzeit alles\n📶 WLAN & Frühstück\n🛁 Hammam & Massage buchen\n🏜️ Ausflüge & Touren\n🚖 Flughafentransfer\n🍽️ Restaurantempfehlungen\n🎨 Lokale Erlebnisse\n\nTippe einen Button oder schreibe deine Frage.",
     instrBtn: "Weiter →",
     saveTitle: "Zum Startbildschirm hinzufügen", saveSub: "Speichern Sie den Assistenten, um ihn jederzeit zu öffnen — kein erneutes Scannen.",
     saveDeviceQ: "Welches Telefon haben Sie?",
@@ -1183,7 +1186,7 @@ const T = {
     sugLocation: "📍 إيجاد الرياض", sugEmergency: "🆘 طوارئ", sugCheckout: "✅ المغادرة",
     sendBtn: "إرسال", placeholder: "اسألني أي شيء...",
     instrTitle: "مرحباً بك في رياض دار دارت 🌿",
-    instrBody: "هذا المساعد متاح على مدار الساعة طوال إقامتك. يمكنك أن تسأله أي شيء — كلمة مرور الواي فاي، وقت الإفطار، حجز الحمام والمساج، الرحلات، النقل إلى المطار، وأسئلة عن مراكش. اضغط أي زر أو اكتب سؤالك.",
+    instrBody: "✅ اسألني أي شيء في أي وقت\n📶 واي فاي والإفطار\n🛁 حجز الحمام والمساج\n🏜️ رحلات وجولات\n🚖 نقل المطار\n🍽️ مطاعم مقترحة\n🎨 تجارب محلية\n\nاضغط أي زر أو اكتب سؤالك.",
     instrBtn: "متابعة →",
     saveTitle: "احفظه على شاشتك الرئيسية", saveSub: "احفظ هذا المساعد لفتحه في أي وقت — بدون مسح مرة أخرى.",
     saveDeviceQ: "ما نوع هاتفك؟",
