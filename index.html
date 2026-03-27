@@ -482,7 +482,14 @@ function loadSession() {
   } catch(e) { return null; }
 }
 
-function clearSession() { localStorage.removeItem(STORAGE_KEY); }
+function clearSession() {
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem('followupStartTime');
+  localStorage.removeItem('followupShown');
+  // Clear upsell_initial key for this guest
+  const upsellInitKey = 'upsell_initial_' + (reservationName || 'guest').replace(/\s+/g,'_').toLowerCase();
+  localStorage.removeItem(upsellInitKey);
+}
 
 // ══════════════════════════════════════════════════════════
 //  FIX 1: COMPLETE TRANSLATION OBJECT (all 6 languages, every string)
@@ -1346,10 +1353,8 @@ function launchWelcome() {
   }, 800);
 
   // ── Save timestamp when welcome first loads (for 2h follow-up logic) ──
-  if(!localStorage.getItem('followupStartTime')) {
-    localStorage.setItem('followupStartTime', Date.now().toString());
-    localStorage.setItem('followupShown', 'false');
-  }
+  localStorage.setItem('followupStartTime', Date.now().toString());
+  localStorage.setItem('followupShown', 'false');
 
   // ── Check every 60 seconds if 2h have passed — shows follow-up then stops ──
   const followupChecker = setInterval(() => {
