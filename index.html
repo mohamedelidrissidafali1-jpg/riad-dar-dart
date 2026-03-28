@@ -1898,13 +1898,29 @@ function showTaxiFlow() {
   c.innerHTML = `
     <div class="action-card-title">${t.taxiTitle}</div>
     <p style="font-size:11px;color:#666;margin-bottom:4px">${t.taxiPrice}</p>
-    <p style="font-size:11px;color:#888;margin-bottom:8px">${t.taxiTip}</p>
-    <div style="font-size:12px;font-weight:600;color:#333;margin-bottom:6px">${t.taxiQ}</div>
+    <p style="font-size:11px;color:#888;margin-bottom:10px">${t.taxiTip}</p>
     <div style="display:flex;gap:8px;margin-bottom:10px">
-      <input id="taxi-time" type="text" placeholder="${t.taxiP}" style="flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:12px;font-family:inherit;outline:none" oninput="validateTaxiForm()"/>
+      <button class="tried-btn" id="chat-taxi-opt-small" onclick="selectChatTaxiOption('small')" style="flex:1">${t.taxi1to4}</button>
+      <button class="tried-btn" id="chat-taxi-opt-large" onclick="selectChatTaxiOption('large')" style="flex:1">${t.taxi5plus}</button>
     </div>
-    <button id="taxi-wa-btn" class="action-btn btn-teal" style="display:none" onclick="confirmTaxi()"></button>`;
+    <a id="chat-taxi-wa-btn" class="action-btn btn-wa" target="_blank" style="display:none;text-align:center;text-decoration:none"></a>`;
   chatBox.appendChild(c); chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function selectChatTaxiOption(size) {
+  const t = T[selectedLangCode] || T['en'];
+  const isSmall = size === 'small';
+  document.getElementById('chat-taxi-opt-small').classList.toggle('selected', isSmall);
+  document.getElementById('chat-taxi-opt-large').classList.toggle('selected', !isSmall);
+  const label = isSmall ? t.taxi1to4 : t.taxi5plus;
+  const waMsg = encodeURIComponent(
+    `Hi, I'd like to book an airport transfer: ${label}. Guest: ${reservationName || 'guest'}`
+  );
+  const btn = document.getElementById('chat-taxi-wa-btn');
+  btn.href = `${RECEPTION_WA}?text=${waMsg}`;
+  btn.textContent = `🚖 ${t.taxiBook || 'Book via WhatsApp'} — ${label}`;
+  btn.onclick = () => { sessionBookings.push(`🚕 Airport Transfer — ${label}`); };
+  btn.style.display = 'block';
 }
 
 function validateTaxiForm() {
