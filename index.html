@@ -451,6 +451,8 @@
         </div>
       </div>
       <button id="submit-survey-btn" onclick="submitSurvey()"></button>
+      <!-- TEASER — shown immediately when survey is submitted, before WA opens -->
+      <div id="farewell-teaser-box" style="display:none;margin-top:14px;background:#fdf8f0;border:1.5px solid #C8BC5A;border-radius:12px;padding:14px 16px;font-size:13px;color:#5a4a30;text-align:center;line-height:1.6;font-weight:500"></div>
     </div>
     <div id="thankyou-screen">
       <div class="ty-icon">
@@ -704,6 +706,8 @@ const T = {
     farewellCardDirect: "📲 Book directly with us next time:",
     farewellCardShare: "💾 Save as Photo",
     farewellBack: "⬅️ Back to see your card",
+    farewellTeaser: "🎁 We have a little gift for you — after sending your message on WhatsApp, come back here to see it!",
+    farewellSaved: "✅ Image saved! Share it with your friends 😊",
     drinksTitle: "🍷 Wine & Beer",
     drinksIntro: "Enjoy a drink in the comfort of the riad.",
     drinksWine: "🍷 Wine — €15",
@@ -876,6 +880,8 @@ const T = {
     farewellCardDirect: "📲 Réservez directement avec nous la prochaine fois :",
     farewellCardShare: "💾 Enregistrer comme photo",
     farewellBack: "⬅️ Retour à votre carte",
+    farewellTeaser: "🎁 Nous avons une petite surprise pour vous — après avoir envoyé votre message sur WhatsApp, revenez ici pour la découvrir !",
+    farewellSaved: "✅ Image enregistrée ! Partagez-la avec vos amis 😊",
     drinksTitle: "🍷 Vin & Bière",
     drinksIntro: "Profitez d'un verre dans le confort du riad.",
     drinksWine: "🍷 Vin — 15€",
@@ -1048,6 +1054,8 @@ const T = {
     farewellCardDirect: "📲 Reserva directamente con nosotros la próxima vez:",
     farewellCardShare: "💾 Guardar como foto",
     farewellBack: "⬅️ Volver a ver su tarjeta",
+    farewellTeaser: "🎁 Tenemos un pequeño regalo para usted — después de enviar su mensaje en WhatsApp, ¡vuelva aquí para verlo!",
+    farewellSaved: "✅ ¡Imagen guardada! Compártela con tus amigos 😊",
     drinksTitle: "🍷 Vino & Cerveza",
     drinksIntro: "Disfrute de una bebida en la comodidad del riad.",
     drinksWine: "🍷 Vino — €15",
@@ -1220,6 +1228,8 @@ const T = {
     farewellCardDirect: "📲 Prenota direttamente con noi la prossima volta:",
     farewellCardShare: "💾 Salva come foto",
     farewellBack: "⬅️ Torna a vedere la tua card",
+    farewellTeaser: "🎁 Abbiamo un piccolo regalo per te — dopo aver inviato il messaggio su WhatsApp, torna qui per vederlo!",
+    farewellSaved: "✅ Immagine salvata! Condividila con i tuoi amici 😊",
     drinksTitle: "🍷 Vino & Birra",
     drinksIntro: "Godetevi un drink nel comfort del riad.",
     drinksWine: "🍷 Vino — €15",
@@ -1392,6 +1402,8 @@ const T = {
     farewellCardDirect: "📲 Buchen Sie beim nächsten Mal direkt bei uns:",
     farewellCardShare: "💾 Als Foto speichern",
     farewellBack: "⬅️ Zurück zu Ihrer Karte",
+    farewellTeaser: "🎁 Wir haben eine kleine Überraschung für Sie — kommen Sie nach dem Senden Ihrer WhatsApp-Nachricht zurück, um sie zu sehen!",
+    farewellSaved: "✅ Bild gespeichert! Teilen Sie es mit Ihren Freunden 😊",
     drinksTitle: "🍷 Wein & Bier",
     drinksIntro: "Genießen Sie ein Getränk im Komfort des Riads.",
     drinksWine: "🍷 Wein — 15€",
@@ -1564,6 +1576,8 @@ const T = {
     farewellCardDirect: "📲 احجز مباشرة معنا في المرة القادمة:",
     farewellCardShare: "💾 حفظ كصورة",
     farewellBack: "⬅️ العودة لرؤية بطاقتك",
+    farewellTeaser: "🎁 لدينا مفاجأة صغيرة لك — بعد إرسال رسالتك على واتساب، عُد هنا لتراها!",
+    farewellSaved: "✅ تم حفظ الصورة! شاركها مع أصدقائك 😊",
     drinksTitle: "🍷 نبيذ وبيرة",
     drinksIntro: "استمتع بمشروب في راحة الرياض.",
     drinksWine: "🍷 نبيذ — 15€",
@@ -2805,6 +2819,10 @@ function submitSurvey() {
   }
   if(finalComment) summary += `\n💬 *Guest message:*\n"${finalComment}"`;
 
+  // Show teaser before WhatsApp opens
+  const teaserBox = document.getElementById('farewell-teaser-box');
+  if(teaserBox) { teaserBox.textContent = (T[selectedLangCode] || T['en']).farewellTeaser; teaserBox.style.display = 'block'; }
+
   // Send checkout summary to reception only
   setTimeout(() => {
     const enc = encodeURIComponent(summary);
@@ -2904,22 +2922,59 @@ function showFarewellCard(name) {
 function saveFarewellCardAsImage() {
   const inner = document.getElementById('farewell-card-inner');
   const btn = document.getElementById('farewell-share-btn');
-  if(!inner || typeof html2canvas === 'undefined') return;
-  if(btn) { btn.disabled = true; btn.textContent = '...'; }
-  html2canvas(inner, { scale: 2, useCORS: true, backgroundColor: '#fdf8f0' }).then(canvas => {
-    const link = document.createElement('a');
-    link.download = 'riad-dar-dart-farewell.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    if(btn) {
-      const t = T[selectedLangCode] || T['en'];
-      btn.disabled = false;
-      btn.textContent = '✓ Saved!';
-      setTimeout(() => { btn.textContent = t.farewellCardShare; }, 2500);
-    }
-  }).catch(() => {
-    if(btn) { btn.disabled = false; const t = T[selectedLangCode]||T['en']; btn.textContent = t.farewellCardShare; }
-  });
+  const t = T[selectedLangCode] || T['en'];
+  if(!inner) return;
+
+  // Load html2canvas dynamically if CDN failed to load
+  function runCapture() {
+    if(btn) { btn.disabled = true; btn.textContent = '...'; }
+    html2canvas(inner, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#fdf8f0',
+      logging: false
+    }).then(canvas => {
+      const dataURL = canvas.toDataURL('image/png');
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      let downloaded = false;
+
+      if(!isIOS) {
+        // Android, desktop: anchor download
+        const link = document.createElement('a');
+        link.download = 'riad-dar-dart.png';
+        link.href = dataURL;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        downloaded = true;
+      }
+
+      if(isIOS || !downloaded) {
+        // iOS Safari: open in new tab so guest can long-press to save
+        window.open(dataURL, '_blank');
+      }
+
+      if(btn) {
+        btn.disabled = false;
+        btn.textContent = t.farewellSaved || '✅ Saved!';
+        setTimeout(() => { btn.textContent = t.farewellCardShare; }, 3500);
+      }
+    }).catch(() => {
+      if(btn) { btn.disabled = false; btn.textContent = t.farewellCardShare; }
+    });
+  }
+
+  if(typeof html2canvas !== 'undefined') {
+    runCapture();
+  } else {
+    // Dynamically load if CDN script failed
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = runCapture;
+    s.onerror = () => { if(btn) { btn.disabled = false; btn.textContent = t.farewellCardShare; } };
+    document.head.appendChild(s);
+  }
 }
 
 function scrollToFarewellCard() {
