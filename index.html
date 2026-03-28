@@ -435,7 +435,8 @@
       <div class="card" id="survey-taxi-card" style="border:1px solid #C8BC5A;background:linear-gradient(135deg,#fffdf0,#fff);margin-bottom:12px">
         <div class="card-title" id="survey-taxi-title"></div>
         <div class="card-sub" id="survey-taxi-intro" style="margin-bottom:8px"></div>
-        <div style="font-size:11px;color:#c0392b;margin-bottom:12px" id="survey-taxi-note"></div>
+        <div style="font-size:11px;color:#c0392b;margin-bottom:6px" id="survey-taxi-note"></div>
+        <div style="font-size:11px;color:#888;margin-bottom:12px" id="survey-taxi-tip"></div>
         <div style="display:flex;gap:8px">
           <button class="tried-btn" id="taxi-opt-small" onclick="selectTaxiOption('small')" style="flex:1"></button>
           <button class="tried-btn" id="taxi-opt-large" onclick="selectTaxiOption('large')" style="flex:1"></button>
@@ -663,6 +664,7 @@ const T = {
     taxiTitle: "🚖 Airport Transfer",
     taxiIntro: "Need a ride to the airport?",
     taxiNote: "⚠️ Minimum 2 hours advance notice.",
+    taxiTip: "💡 The airport is 30 min away — book your taxi 2h30 before your flight to arrive 2 hours early.",
     taxi1to4: "1–4 people — €20",
     taxi5plus: "5+ people — €30",
     drinksTitle: "🍷 Wine & Beer",
@@ -809,6 +811,7 @@ const T = {
     taxiTitle: "🚖 Transfert Aéroport",
     taxiIntro: "Besoin d'un taxi pour l'aéroport ?",
     taxiNote: "⚠️ Minimum 2 heures de préavis.",
+    taxiTip: "💡 L'aéroport est à 30 min — réservez votre taxi 2h30 avant votre vol pour arriver 2 heures à l'avance.",
     taxi1to4: "1–4 personnes — 20€",
     taxi5plus: "5+ personnes — 30€",
     drinksTitle: "🍷 Vin & Bière",
@@ -955,6 +958,7 @@ const T = {
     taxiTitle: "🚖 Traslado al Aeropuerto",
     taxiIntro: "¿Necesita un taxi al aeropuerto?",
     taxiNote: "⚠️ Mínimo 2 horas de antelación.",
+    taxiTip: "💡 El aeropuerto está a 30 min — reserve su taxi 2h30 antes del vuelo para llegar 2 horas antes.",
     taxi1to4: "1–4 personas — €20",
     taxi5plus: "5+ personas — €30",
     drinksTitle: "🍷 Vino & Cerveza",
@@ -1101,6 +1105,7 @@ const T = {
     taxiTitle: "🚖 Transfer Aeroporto",
     taxiIntro: "Serve un taxi per l'aeroporto?",
     taxiNote: "⚠️ Minimo 2 ore di preavviso.",
+    taxiTip: "💡 L'aeroporto è a 30 min — prenota il taxi 2h30 prima del volo per arrivare 2 ore in anticipo.",
     taxi1to4: "1–4 persone — €20",
     taxi5plus: "5+ persone — €30",
     drinksTitle: "🍷 Vino & Birra",
@@ -1247,6 +1252,7 @@ const T = {
     taxiTitle: "🚖 Flughafentransfer",
     taxiIntro: "Brauchen Sie ein Taxi zum Flughafen?",
     taxiNote: "⚠️ Mindestens 2 Stunden Vorlaufzeit.",
+    taxiTip: "💡 Der Flughafen ist 30 Min. entfernt — buchen Sie 2h30 vor dem Flug, um 2 Stunden früh anzukommen.",
     taxi1to4: "1–4 Personen — 20€",
     taxi5plus: "5+ Personen — 30€",
     drinksTitle: "🍷 Wein & Bier",
@@ -1393,6 +1399,7 @@ const T = {
     taxiTitle: "🚖 نقل المطار",
     taxiIntro: "تحتاج إلى سيارة أجرة للمطار؟",
     taxiNote: "⚠️ يلزم الحجز قبل ساعتين على الأقل.",
+    taxiTip: "💡 المطار على بعد 30 دقيقة — احجز سيارتك قبل 2 ساعة و30 دقيقة من رحلتك للوصول قبل ساعتين.",
     taxi1to4: "1–4 أشخاص — 20€",
     taxi5plus: "5+ أشخاص — 30€",
     drinksTitle: "🍷 نبيذ وبيرة",
@@ -1678,6 +1685,7 @@ function applyAllTranslations() {
     'survey-taxi-title': t.taxiTitle,
     'survey-taxi-intro': t.taxiIntro,
     'survey-taxi-note': t.taxiNote,
+    'survey-taxi-tip': t.taxiTip,
     'taxi-opt-small': t.taxi1to4,
     'taxi-opt-large': t.taxi5plus
   };
@@ -1889,7 +1897,8 @@ function showTaxiFlow() {
   const c = document.createElement('div'); c.className = 'action-card'; c.id = 'taxi-card';
   c.innerHTML = `
     <div class="action-card-title">${t.taxiTitle}</div>
-    <p style="font-size:11px;color:#666;margin-bottom:8px">${t.taxiPrice}</p>
+    <p style="font-size:11px;color:#666;margin-bottom:4px">${t.taxiPrice}</p>
+    <p style="font-size:11px;color:#888;margin-bottom:8px">${t.taxiTip}</p>
     <div style="font-size:12px;font-weight:600;color:#333;margin-bottom:6px">${t.taxiQ}</div>
     <div style="display:flex;gap:8px;margin-bottom:10px">
       <input id="taxi-time" type="text" placeholder="${t.taxiP}" style="flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:12px;font-family:inherit;outline:none" oninput="validateTaxiForm()"/>
