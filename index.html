@@ -343,6 +343,7 @@
       <span class="sug sug-restaurants" onclick="showRestaurants()" id="sug-restaurants"></span>
       <span class="sug" onclick="showLocalExperiences()" id="sug-experiences"></span>
       <span class="sug" onclick="showDarijaLearn()" id="sug-darija"></span>
+      <span class="sug" onclick="showDrinksCard()" id="sug-drinks"></span>
     </div>
     <div id="input-row">
       <input id="chat-input" type="text" onkeydown="if(event.key==='Enter') sendChat()"/>
@@ -647,6 +648,12 @@ const T = {
     spaOfferBtnMassage: "💆 Book Massage",
     sugExperiences: "🎨 Experiences",
     sugDarija: "🗣️ Learn Darija",
+    sugDrinks: "🍷 Wine & Beer",
+    drinksTitle: "🍷 Wine & Beer",
+    drinksIntro: "Enjoy a drink in the comfort of the riad.",
+    drinksWine: "🍷 Wine — €15",
+    drinksBeer: "🍺 Beer — €5",
+    drinksOrder: "Order via WhatsApp",
     darijaIntro: "Type any word or phrase and I'll translate it to Darija! 🇲🇦",
     darijaPlaceholder: "e.g. Thank you, How much?, Good morning...",
     darijaBtn: "Translate 🗣️",
@@ -782,6 +789,12 @@ const T = {
     spaOfferBtnMassage: "💆 Réserver Massage",
     sugExperiences: "🎨 Expériences",
     sugDarija: "🗣️ Apprendre le Darija",
+    sugDrinks: "🍷 Vin & Bière",
+    drinksTitle: "🍷 Vin & Bière",
+    drinksIntro: "Profitez d'un verre dans le confort du riad.",
+    drinksWine: "🍷 Vin — 15€",
+    drinksBeer: "🍺 Bière — 5€",
+    drinksOrder: "Commander via WhatsApp",
     darijaIntro: "Tapez un mot ou une phrase et je le traduis en Darija ! 🇲🇦",
     darijaPlaceholder: "ex. Merci, C'est combien ?, Bonjour...",
     darijaBtn: "Traduire 🗣️",
@@ -917,6 +930,12 @@ const T = {
     spaOfferBtnMassage: "💆 Reservar Masaje",
     sugExperiences: "🎨 Experiencias",
     sugDarija: "🗣️ Aprender Darija",
+    sugDrinks: "🍷 Vino & Cerveza",
+    drinksTitle: "🍷 Vino & Cerveza",
+    drinksIntro: "Disfrute de una bebida en la comodidad del riad.",
+    drinksWine: "🍷 Vino — €15",
+    drinksBeer: "🍺 Cerveza — €5",
+    drinksOrder: "Pedir por WhatsApp",
     darijaIntro: "¡Escribe una palabra o frase y la traduzco al Darija! 🇲🇦",
     darijaPlaceholder: "ej. Gracias, ¿Cuánto cuesta?, Buenos días...",
     darijaBtn: "Traducir 🗣️",
@@ -1052,6 +1071,12 @@ const T = {
     spaOfferBtnMassage: "💆 Prenota Massaggio",
     sugExperiences: "🎨 Esperienze",
     sugDarija: "🗣️ Imparare il Darija",
+    sugDrinks: "🍷 Vino & Birra",
+    drinksTitle: "🍷 Vino & Birra",
+    drinksIntro: "Godetevi un drink nel comfort del riad.",
+    drinksWine: "🍷 Vino — €15",
+    drinksBeer: "🍺 Birra — €5",
+    drinksOrder: "Ordina via WhatsApp",
     darijaIntro: "Scrivi una parola o frase e la traduco in Darija! 🇲🇦",
     darijaPlaceholder: "es. Grazie, Quanto costa?, Buongiorno...",
     darijaBtn: "Traduci 🗣️",
@@ -1187,6 +1212,12 @@ const T = {
     spaOfferBtnMassage: "💆 Massage buchen",
     sugExperiences: "🎨 Erlebnisse",
     sugDarija: "🗣️ Darija lernen",
+    sugDrinks: "🍷 Wein & Bier",
+    drinksTitle: "🍷 Wein & Bier",
+    drinksIntro: "Genießen Sie ein Getränk im Komfort des Riads.",
+    drinksWine: "🍷 Wein — 15€",
+    drinksBeer: "🍺 Bier — 5€",
+    drinksOrder: "Per WhatsApp bestellen",
     darijaIntro: "Schreib ein Wort oder einen Satz und ich übersetze es ins Darija! 🇲🇦",
     darijaPlaceholder: "z.B. Danke, Wie viel kostet das?, Guten Morgen...",
     darijaBtn: "Übersetzen 🗣️",
@@ -1322,6 +1353,12 @@ const T = {
     spaOfferBtnMassage: "💆 احجز المساج",
     sugExperiences: "🎨 تجارب",
     sugDarija: "🗣️ تعلم الدارجة",
+    sugDrinks: "🍷 نبيذ وبيرة",
+    drinksTitle: "🍷 نبيذ وبيرة",
+    drinksIntro: "استمتع بمشروب في راحة الرياض.",
+    drinksWine: "🍷 نبيذ — 15€",
+    drinksBeer: "🍺 بيرة — 5€",
+    drinksOrder: "اطلب عبر واتساب",
     darijaIntro: "اكتب أي كلمة وسأترجمها إلى الدارجة المغربية! 🇲🇦",
     darijaPlaceholder: "مثال: شكراً، كم الثمن؟، صباح الخير...",
     darijaBtn: "ترجم 🗣️",
@@ -1573,7 +1610,8 @@ function applyAllTranslations() {
     'sug-emergency': t.sugEmergency, 'sug-checkout': t.sugCheckout,
     'sug-restaurants': t.sugRestaurants,
     'sug-experiences': t.sugExperiences,
-    'sug-darija': t.sugDarija
+    'sug-darija': t.sugDarija,
+    'sug-drinks': t.sugDrinks
   };
   Object.entries(sugs).forEach(([id, label]) => {
     const el = document.getElementById(id);
@@ -2251,6 +2289,30 @@ function showLocalExpDetail(key) {
     <div style="font-size:13px;font-weight:700;color:#7a4a05;margin-bottom:12px">${exp.price}</div>
     <a class="action-btn btn-wa" href="${RECEPTION_WA}?text=${waMsg}" target="_blank" onclick="sessionBookings.push('${expName}')" style="display:block;text-align:center;text-decoration:none">✅ ${t.expBookBtn}</a>
     <button onclick="document.getElementById('local-exp-detail-card').remove()" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid #ddd;border-radius:8px;font-size:11px;color:#999;cursor:pointer;font-family:inherit">${t.expBackBtn}</button>`;
+  cb.appendChild(card);
+  cb.scrollTop = cb.scrollHeight;
+}
+
+// ── DRINKS ──
+function showDrinksCard() {
+  trackButton('Wine & Beer');
+  const t = T[selectedLangCode] || T['en'];
+  const cb = document.getElementById('chat-box');
+  const old = document.getElementById('drinks-card'); if(old) old.remove();
+
+  const guestPrefix = reservationName ? reservationName + ': ' : '';
+
+  const waMsgWine = encodeURIComponent(guestPrefix + 'Hi, I\'d like to order: 🍷 Wine (€15)');
+  const waMsgBeer = encodeURIComponent(guestPrefix + 'Hi, I\'d like to order: 🍺 Beer (€5)');
+
+  const card = document.createElement('div');
+  card.className = 'action-card'; card.id = 'drinks-card';
+  card.style.cssText = 'border-color:#C8BC5A;';
+  card.innerHTML = `
+    <div class="action-card-title" style="color:#7a4a05;font-size:13px;margin-bottom:6px">${t.drinksTitle}</div>
+    <p style="font-size:12px;color:#555;margin-bottom:12px">${t.drinksIntro}</p>
+    <a class="action-btn btn-wa" href="${RECEPTION_WA}?text=${waMsgWine}" target="_blank" style="display:block;text-align:center;text-decoration:none;margin-bottom:8px">${t.drinksWine} — ${t.drinksOrder}</a>
+    <a class="action-btn btn-wa" href="${RECEPTION_WA}?text=${waMsgBeer}" target="_blank" style="display:block;text-align:center;text-decoration:none">${t.drinksBeer} — ${t.drinksOrder}</a>`;
   cb.appendChild(card);
   cb.scrollTop = cb.scrollHeight;
 }
