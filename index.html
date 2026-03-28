@@ -5,7 +5,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Riad Dar D'Art — Guest Assistant</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f0e8; min-height: 100vh; }
@@ -450,9 +450,9 @@
           <button class="tried-btn" id="taxi-opt-large" onclick="selectTaxiOption('large')" style="flex:1"></button>
         </div>
       </div>
+      <!-- TEASER — always visible above submit button -->
+      <div id="farewell-teaser-txt" style="background:#fdf8f0;border:1.5px solid #C8BC5A;border-radius:12px;padding:12px 14px;font-size:13px;color:#5a4a30;text-align:center;line-height:1.6;font-weight:500;margin-bottom:12px"></div>
       <button id="submit-survey-btn" onclick="submitSurvey()"></button>
-      <!-- TEASER — shown immediately when survey is submitted, before WA opens -->
-      <div id="farewell-teaser-box" style="display:none;margin-top:14px;background:#fdf8f0;border:1.5px solid #C8BC5A;border-radius:12px;padding:14px 16px;font-size:13px;color:#5a4a30;text-align:center;line-height:1.6;font-weight:500"></div>
     </div>
     <div id="thankyou-screen">
       <div class="ty-icon">
@@ -704,9 +704,9 @@ const T = {
     farewellCardTitle: "It was a pleasure having you with us",
     farewellCardSub: "We hope to welcome you back soon.",
     farewellCardDirect: "📲 Book directly with us next time:",
-    farewellCardShare: "💾 Save as Photo",
+    farewellCardShare: "💾 Save as PDF",
     farewellBack: "⬅️ Back to see your card",
-    farewellTeaser: "🎁 We have a little gift for you — after sending your message on WhatsApp, come back here to see it!",
+    farewellTeaser: "🎁 A little gift is waiting for you — complete your checkout and come back here to discover it!",
     farewellSaved: "✅ Image saved! Share it with your friends 😊",
     drinksTitle: "🍷 Wine & Beer",
     drinksIntro: "Enjoy a drink in the comfort of the riad.",
@@ -878,9 +878,9 @@ const T = {
     farewellCardTitle: "Ce fut un plaisir de vous accueillir",
     farewellCardSub: "Nous espérons vous revoir bientôt.",
     farewellCardDirect: "📲 Réservez directement avec nous la prochaine fois :",
-    farewellCardShare: "💾 Enregistrer comme photo",
+    farewellCardShare: "💾 Enregistrer en PDF",
     farewellBack: "⬅️ Retour à votre carte",
-    farewellTeaser: "🎁 Nous avons une petite surprise pour vous — après avoir envoyé votre message sur WhatsApp, revenez ici pour la découvrir !",
+    farewellTeaser: "🎁 Un petit cadeau vous attend — finalisez votre départ et revenez ici pour le découvrir !",
     farewellSaved: "✅ Image enregistrée ! Partagez-la avec vos amis 😊",
     drinksTitle: "🍷 Vin & Bière",
     drinksIntro: "Profitez d'un verre dans le confort du riad.",
@@ -1052,9 +1052,9 @@ const T = {
     farewellCardTitle: "Ha sido un placer tenerte con nosotros",
     farewellCardSub: "Esperamos darte la bienvenida de nuevo pronto.",
     farewellCardDirect: "📲 Reserva directamente con nosotros la próxima vez:",
-    farewellCardShare: "💾 Guardar como foto",
+    farewellCardShare: "💾 Guardar como PDF",
     farewellBack: "⬅️ Volver a ver su tarjeta",
-    farewellTeaser: "🎁 Tenemos un pequeño regalo para usted — después de enviar su mensaje en WhatsApp, ¡vuelva aquí para verlo!",
+    farewellTeaser: "🎁 Un pequeño regalo le espera — complete su checkout y vuelva aquí para descubrirlo!",
     farewellSaved: "✅ ¡Imagen guardada! Compártela con tus amigos 😊",
     drinksTitle: "🍷 Vino & Cerveza",
     drinksIntro: "Disfrute de una bebida en la comodidad del riad.",
@@ -1226,9 +1226,9 @@ const T = {
     farewellCardTitle: "È stato un piacere averti con noi",
     farewellCardSub: "Speriamo di darti il benvenuto di nuovo presto.",
     farewellCardDirect: "📲 Prenota direttamente con noi la prossima volta:",
-    farewellCardShare: "💾 Salva come foto",
+    farewellCardShare: "💾 Salva come PDF",
     farewellBack: "⬅️ Torna a vedere la tua card",
-    farewellTeaser: "🎁 Abbiamo un piccolo regalo per te — dopo aver inviato il messaggio su WhatsApp, torna qui per vederlo!",
+    farewellTeaser: "🎁 Un piccolo regalo ti aspetta — completa il checkout e torna qui per scoprirlo!",
     farewellSaved: "✅ Immagine salvata! Condividila con i tuoi amici 😊",
     drinksTitle: "🍷 Vino & Birra",
     drinksIntro: "Godetevi un drink nel comfort del riad.",
@@ -1400,9 +1400,9 @@ const T = {
     farewellCardTitle: "Es war uns eine Freude, Sie bei uns zu haben",
     farewellCardSub: "Wir hoffen, Sie bald wieder begrüßen zu dürfen.",
     farewellCardDirect: "📲 Buchen Sie beim nächsten Mal direkt bei uns:",
-    farewellCardShare: "💾 Als Foto speichern",
+    farewellCardShare: "💾 Als PDF speichern",
     farewellBack: "⬅️ Zurück zu Ihrer Karte",
-    farewellTeaser: "🎁 Wir haben eine kleine Überraschung für Sie — kommen Sie nach dem Senden Ihrer WhatsApp-Nachricht zurück, um sie zu sehen!",
+    farewellTeaser: "🎁 Ein kleines Geschenk wartet auf Sie — schließen Sie Ihren Checkout ab und kommen Sie zurück, um es zu entdecken!",
     farewellSaved: "✅ Bild gespeichert! Teilen Sie es mit Ihren Freunden 😊",
     drinksTitle: "🍷 Wein & Bier",
     drinksIntro: "Genießen Sie ein Getränk im Komfort des Riads.",
@@ -1574,9 +1574,9 @@ const T = {
     farewellCardTitle: "كان من دواعي سرورنا استضافتكم",
     farewellCardSub: "نأمل أن نرحب بكم مجدداً قريباً.",
     farewellCardDirect: "📲 احجز مباشرة معنا في المرة القادمة:",
-    farewellCardShare: "💾 حفظ كصورة",
+    farewellCardShare: "💾 حفظ كـ PDF",
     farewellBack: "⬅️ العودة لرؤية بطاقتك",
-    farewellTeaser: "🎁 لدينا مفاجأة صغيرة لك — بعد إرسال رسالتك على واتساب، عُد هنا لتراها!",
+    farewellTeaser: "🎁 هدية صغيرة تنتظرك — أكمل المغادرة وعُد هنا لاكتشافها!",
     farewellSaved: "✅ تم حفظ الصورة! شاركها مع أصدقائك 😊",
     drinksTitle: "🍷 نبيذ وبيرة",
     drinksIntro: "استمتع بمشروب في راحة الرياض.",
@@ -1863,7 +1863,8 @@ function applyAllTranslations() {
     'survey-taxi-note': t.taxiNote,
     'survey-taxi-tip': t.taxiTip,
     'taxi-opt-small': t.taxi1to4,
-    'taxi-opt-large': t.taxi5plus
+    'taxi-opt-large': t.taxi5plus,
+    'farewell-teaser-txt': t.farewellTeaser
   };
   Object.entries(surveyMap).forEach(([id, val]) => {
     const el = document.getElementById(id);
@@ -2819,10 +2820,6 @@ function submitSurvey() {
   }
   if(finalComment) summary += `\n💬 *Guest message:*\n"${finalComment}"`;
 
-  // Show teaser before WhatsApp opens
-  const teaserBox = document.getElementById('farewell-teaser-box');
-  if(teaserBox) { teaserBox.textContent = (T[selectedLangCode] || T['en']).farewellTeaser; teaserBox.style.display = 'block'; }
-
   // Send checkout summary to reception only
   setTimeout(() => {
     const enc = encodeURIComponent(summary);
@@ -2912,66 +2909,98 @@ function showFarewellCard(name) {
         <div style="font-size:12px;color:#777;margin-bottom:8px">${t.farewellCardDirect}</div>
         <a href="${waLink}" target="_blank" style="font-size:14px;font-weight:700;color:#25D366;text-decoration:none">${waDisplay}</a>
         <div style="margin-top:22px">
-          <button id="farewell-share-btn" onclick="saveFarewellCardAsImage()" style="background:#C8BC5A;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:100%">${t.farewellCardShare}</button>
+          <button id="farewell-share-btn" onclick="saveFarewellCardAsPDF()" style="background:#C8BC5A;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:100%">${t.farewellCardShare}</button>
         </div>
       </div>
     </div>`;
   card.style.display = 'block';
 }
 
-function saveFarewellCardAsImage() {
-  const inner = document.getElementById('farewell-card-inner');
+function saveFarewellCardAsPDF() {
   const btn = document.getElementById('farewell-share-btn');
   const t = T[selectedLangCode] || T['en'];
-  if(!inner) return;
 
-  // Load html2canvas dynamically if CDN failed to load
-  function runCapture() {
+  function runPDF() {
     if(btn) { btn.disabled = true; btn.textContent = '...'; }
-    html2canvas(inner, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#fdf8f0',
-      logging: false
-    }).then(canvas => {
-      const dataURL = canvas.toDataURL('image/png');
-      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-      let downloaded = false;
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const w = 210, h = 297;
 
-      if(!isIOS) {
-        // Android, desktop: anchor download
-        const link = document.createElement('a');
-        link.download = 'riad-dar-dart.png';
-        link.href = dataURL;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        downloaded = true;
-      }
+      // Cream background
+      doc.setFillColor(253, 248, 240);
+      doc.rect(0, 0, w, h, 'F');
 
-      if(isIOS || !downloaded) {
-        // iOS Safari: open in new tab so guest can long-press to save
-        window.open(dataURL, '_blank');
-      }
+      // Gold border
+      doc.setDrawColor(200, 188, 90);
+      doc.setLineWidth(0.8);
+      doc.rect(12, 12, w - 24, h - 24);
+
+      // Riad name — gold serif
+      doc.setTextColor(200, 188, 90);
+      doc.setFont('times', 'bold');
+      doc.setFontSize(26);
+      doc.text("Riad Dar D'Art", w / 2, 55, { align: 'center' });
+
+      // Decorative ornament
+      doc.setFontSize(13);
+      doc.text('- - -', w / 2, 67, { align: 'center' });
+
+      // Guest name
+      doc.setTextColor(26, 26, 26);
+      doc.setFont('times', 'bold');
+      doc.setFontSize(22);
+      const gName = reservationName || 'Guest';
+      doc.text(`${t.farewellCardDear} ${gName},`, w / 2, 90, { align: 'center' });
+
+      // Farewell title
+      doc.setFont('times', 'normal');
+      doc.setFontSize(15);
+      doc.setTextColor(58, 53, 48);
+      const titleLines = doc.splitTextToSize(t.farewellCardTitle, 165);
+      doc.text(titleLines, w / 2, 108, { align: 'center' });
+
+      // Subtitle
+      doc.setFontSize(12);
+      doc.setTextColor(160, 155, 148);
+      doc.text(t.farewellCardSub, w / 2, 126, { align: 'center' });
+
+      // Gold divider line
+      doc.setDrawColor(200, 188, 90);
+      doc.setLineWidth(0.4);
+      doc.line(45, 140, 165, 140);
+
+      // Direct booking label
+      doc.setFont('times', 'normal');
+      doc.setFontSize(11);
+      doc.setTextColor(110, 105, 98);
+      doc.text(t.farewellCardDirect, w / 2, 157, { align: 'center' });
+
+      // WhatsApp number
+      doc.setFont('times', 'bold');
+      doc.setFontSize(14);
+      doc.setTextColor(37, 167, 80);
+      const waDisplay = RECEPTION_WA.replace('https://wa.me/', '+');
+      doc.text(waDisplay, w / 2, 171, { align: 'center' });
+
+      doc.save('riad-dar-dart-farewell.pdf');
 
       if(btn) {
         btn.disabled = false;
         btn.textContent = t.farewellSaved || '✅ Saved!';
-        setTimeout(() => { btn.textContent = t.farewellCardShare; }, 3500);
+        setTimeout(() => { btn.textContent = t.farewellCardShare; }, 3000);
       }
-    }).catch(() => {
+    } catch(e) {
       if(btn) { btn.disabled = false; btn.textContent = t.farewellCardShare; }
-    });
+    }
   }
 
-  if(typeof html2canvas !== 'undefined') {
-    runCapture();
+  if(window.jspdf && window.jspdf.jsPDF) {
+    runPDF();
   } else {
-    // Dynamically load if CDN script failed
     const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = runCapture;
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload = runPDF;
     s.onerror = () => { if(btn) { btn.disabled = false; btn.textContent = t.farewellCardShare; } };
     document.head.appendChild(s);
   }
