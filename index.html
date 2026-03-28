@@ -466,7 +466,7 @@ let RECEPTION_WA = 'https://wa.me/212699814919';
 let ALERT_WA = 'https://wa.me/212699814919';
 let WIFI_PASSWORD = '19531954';
 
-const GMAPS = 'https://maps.app.goo.gl/peCF8ekeoyFvNP248';
+let GMAPS = 'https://maps.app.goo.gl/peCF8ekeoyFvNP248';
 const BOOKING_URL = 'https://www.booking.com/hotel/ma/dar-d-39-art-marrakech.html';
 const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYLtNDCOJZK-gQypOtdTZzYJcYcy7UbMmcaXsWvCbGTcnS67qoSGvPgI1j84uGitUJpA/exec';
 
@@ -1436,10 +1436,12 @@ function selectRiad(riad) {
     WIFI_PASSWORD = '0908070605';
     RECEPTION_WA = 'https://wa.me/212702617999';
     ALERT_WA = 'https://wa.me/212702617999';
+    GMAPS = 'https://www.google.com/maps/place/Riad+Dar+d%E2%80%98Art+2/@31.6322583,-7.9974182,17z/data=!3m1!4b1!4m6!3m5!1s0xdafefbdbdc99443:0x6d6be0e954cf234b!8m2!3d31.6322583!4d-7.9948433!16s%2Fg%2F11jsvvn8x7?entry=ttu&g_ep=EgoyMDI2MDMyNC4wIKXMDSoASAFQAw%3D%3D';
   } else {
     WIFI_PASSWORD = '19531954';
     RECEPTION_WA = 'https://wa.me/212699814919';
     ALERT_WA = 'https://wa.me/212699814919';
+    GMAPS = 'https://maps.app.goo.gl/peCF8ekeoyFvNP248';
   }
   document.getElementById('riad-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
@@ -1519,7 +1521,7 @@ function launchWelcome() {
         🍳 <strong>${bfastLabel}:</strong> 8:00 – 10:30<br>
         🏊 <strong>${poolLabel}:</strong> ${freeLabel}
       </div>
-      <a class="action-btn btn-maps" href="https://maps.app.goo.gl/peCF8ekeoyFvNP248" target="_blank" style="margin-top:10px">${mapsBtnLabel}</a>
+      <a class="action-btn btn-maps" href="${GMAPS}" target="_blank" style="margin-top:10px">${mapsBtnLabel}</a>
     `;
     cb.appendChild(infoCard);
     cb.scrollTop = 99999;
