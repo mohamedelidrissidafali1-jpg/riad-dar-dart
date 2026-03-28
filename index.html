@@ -5,6 +5,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Riad Dar D'Art — Guest Assistant</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f0e8; min-height: 100vh; }
@@ -146,6 +147,11 @@
   #submit-survey-btn { width: 100%; padding: 14px; background: #1D9E75; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 4px; }
   #submit-survey-btn:disabled { opacity: 0.5; }
   #thankyou-screen { display: none; text-align: center; padding: 40px 10px 20px; }
+  @keyframes farewellPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(200,188,90,0.7); }
+    50%  { box-shadow: 0 0 0 12px rgba(200,188,90,0.2); }
+    100% { box-shadow: 0 0 0 0 rgba(200,188,90,0); }
+  }
   .ty-icon { margin-bottom: 12px; display: flex; justify-content: center; }
   .ty-title { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
   .ty-sub { font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 28px; }
@@ -466,8 +472,10 @@
         <a class="review-btn btn-blue" href="https://www.booking.com/hotel/ma/dar-d-39-art-marrakech.html" target="_blank">Booking.com Review</a>
         <a class="review-btn btn-teal" href="https://wa.me/212699814919" target="_blank" id="ty-contact-btn"></a>
       </div>
+      <!-- BACK BUTTON — appears 2s after submission, scrolls to farewell card -->
+      <button id="farewell-back-btn" onclick="scrollToFarewellCard()" style="display:none;margin-top:20px;width:100%;padding:12px;background:#fff;border:1.5px solid #C8BC5A;border-radius:10px;font-size:13px;font-weight:600;color:#8B7A20;cursor:pointer;font-family:inherit"></button>
       <!-- FAREWELL CARD — populated by showFarewellCard() on survey submit -->
-      <div id="farewell-card" style="display:none;margin-top:24px"></div>
+      <div id="farewell-card" style="display:none;margin-top:16px"></div>
     </div>
   </div>
 </div>
@@ -694,7 +702,8 @@ const T = {
     farewellCardTitle: "It was a pleasure having you with us",
     farewellCardSub: "We hope to welcome you back soon.",
     farewellCardDirect: "📲 Book directly with us next time:",
-    farewellCardShare: "💾 Save & Share",
+    farewellCardShare: "💾 Save as Photo",
+    farewellBack: "⬅️ Back to see your card",
     drinksTitle: "🍷 Wine & Beer",
     drinksIntro: "Enjoy a drink in the comfort of the riad.",
     drinksWine: "🍷 Wine — €15",
@@ -865,7 +874,8 @@ const T = {
     farewellCardTitle: "Ce fut un plaisir de vous accueillir",
     farewellCardSub: "Nous espérons vous revoir bientôt.",
     farewellCardDirect: "📲 Réservez directement avec nous la prochaine fois :",
-    farewellCardShare: "💾 Enregistrer & Partager",
+    farewellCardShare: "💾 Enregistrer comme photo",
+    farewellBack: "⬅️ Retour à votre carte",
     drinksTitle: "🍷 Vin & Bière",
     drinksIntro: "Profitez d'un verre dans le confort du riad.",
     drinksWine: "🍷 Vin — 15€",
@@ -1036,7 +1046,8 @@ const T = {
     farewellCardTitle: "Ha sido un placer tenerte con nosotros",
     farewellCardSub: "Esperamos darte la bienvenida de nuevo pronto.",
     farewellCardDirect: "📲 Reserva directamente con nosotros la próxima vez:",
-    farewellCardShare: "💾 Guardar & Compartir",
+    farewellCardShare: "💾 Guardar como foto",
+    farewellBack: "⬅️ Volver a ver su tarjeta",
     drinksTitle: "🍷 Vino & Cerveza",
     drinksIntro: "Disfrute de una bebida en la comodidad del riad.",
     drinksWine: "🍷 Vino — €15",
@@ -1207,7 +1218,8 @@ const T = {
     farewellCardTitle: "È stato un piacere averti con noi",
     farewellCardSub: "Speriamo di darti il benvenuto di nuovo presto.",
     farewellCardDirect: "📲 Prenota direttamente con noi la prossima volta:",
-    farewellCardShare: "💾 Salva & Condividi",
+    farewellCardShare: "💾 Salva come foto",
+    farewellBack: "⬅️ Torna a vedere la tua card",
     drinksTitle: "🍷 Vino & Birra",
     drinksIntro: "Godetevi un drink nel comfort del riad.",
     drinksWine: "🍷 Vino — €15",
@@ -1378,7 +1390,8 @@ const T = {
     farewellCardTitle: "Es war uns eine Freude, Sie bei uns zu haben",
     farewellCardSub: "Wir hoffen, Sie bald wieder begrüßen zu dürfen.",
     farewellCardDirect: "📲 Buchen Sie beim nächsten Mal direkt bei uns:",
-    farewellCardShare: "💾 Speichern & Teilen",
+    farewellCardShare: "💾 Als Foto speichern",
+    farewellBack: "⬅️ Zurück zu Ihrer Karte",
     drinksTitle: "🍷 Wein & Bier",
     drinksIntro: "Genießen Sie ein Getränk im Komfort des Riads.",
     drinksWine: "🍷 Wein — 15€",
@@ -1549,7 +1562,8 @@ const T = {
     farewellCardTitle: "كان من دواعي سرورنا استضافتكم",
     farewellCardSub: "نأمل أن نرحب بكم مجدداً قريباً.",
     farewellCardDirect: "📲 احجز مباشرة معنا في المرة القادمة:",
-    farewellCardShare: "💾 حفظ ومشاركة",
+    farewellCardShare: "💾 حفظ كصورة",
+    farewellBack: "⬅️ العودة لرؤية بطاقتك",
     drinksTitle: "🍷 نبيذ وبيرة",
     drinksIntro: "استمتع بمشروب في راحة الرياض.",
     drinksWine: "🍷 نبيذ — 15€",
@@ -2801,6 +2815,16 @@ function submitSurvey() {
     setTimeout(() => document.body.removeChild(l1), 1000);
   }, 300);
 
+  // Show "back to card" button after WhatsApp has opened
+  setTimeout(() => {
+    const backBtn = document.getElementById('farewell-back-btn');
+    if(backBtn) {
+      const t = T[selectedLangCode] || T['en'];
+      backBtn.textContent = t.farewellBack;
+      backBtn.style.display = 'block';
+    }
+  }, 2000);
+
   // ── FIX 6: LOW RATING ALERT — sent to reception only (manager number completely removed) ──
   const lowRatings = sections.filter(s => ratings[s.key] > 0 && ratings[s.key] <= 3);
   if(lowRatings.length > 0) {
@@ -2858,49 +2882,54 @@ function showFarewellCard(name) {
   const waLink = `${RECEPTION_WA}?text=${waMsg}`;
   const waDisplay = RECEPTION_WA.replace('https://wa.me/', '+');
   const isRTL = selectedLangCode === 'ar';
-  const shareText = `🌿 Riad Dar D'Art\nDear ${name}, it was a pleasure having you with us. We hope to welcome you back soon.\n📲 Book directly: ${RECEPTION_WA}`;
-  card.dataset.shareText = shareText;
   card.innerHTML = `
-    <div style="background:#fdf8f0;border:1.5px solid #C8BC5A;border-radius:16px;padding:28px 20px;position:relative;overflow:hidden;text-align:center" dir="${isRTL ? 'rtl' : 'ltr'}">
-      <div style="position:absolute;inset:0;background-image:url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C8BC5A' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");pointer-events:none"></div>
+    <div id="farewell-card-inner" style="background:#fdf8f0;border:1.5px solid #C8BC5A;border-radius:16px;padding:32px 24px;position:relative;overflow:hidden;text-align:center" dir="${isRTL ? 'rtl' : 'ltr'}">
+      <div style="position:absolute;inset:0;background-image:url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C8BC5A' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");pointer-events:none"></div>
       <div style="position:relative;z-index:1">
-        <div style="margin-bottom:6px">
-          <svg width="40" height="40" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="60" cy="50" rx="40" ry="28" fill="#C8BC5A" stroke="#8B7A20" stroke-width="2"/>
-            <ellipse cx="74" cy="42" rx="13" ry="9" fill="#D4849A" opacity="0.9"/>
-            <rect x="57" y="72" width="6" height="30" rx="2.5" fill="#5C3D1E"/>
-            <ellipse cx="60" cy="72" rx="5" ry="7" fill="#8B5E3C"/>
-            <text x="26" y="57" font-family="Georgia,serif" font-size="24" font-weight="700" fill="#2C2C2A">D</text>
-            <text x="66" y="96" font-family="Georgia,serif" font-size="19" font-style="italic" font-weight="600" fill="#9B4E2E">'art</text>
-            <polygon points="53,100 60,114 67,100" fill="#D4849A"/>
-          </svg>
-        </div>
-        <div style="font-family:Georgia,serif;font-size:12px;color:#C8BC5A;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px">Riad Dar D'Art</div>
-        <div style="font-family:Georgia,serif;font-size:21px;font-weight:700;color:#1a1a1a;margin-bottom:10px">${t.farewellCardDear} ${name},</div>
-        <div style="font-family:Georgia,serif;font-size:14px;color:#3a3530;line-height:1.6;margin-bottom:6px">${t.farewellCardTitle}</div>
-        <div style="font-size:12px;color:#999;margin-bottom:20px">${t.farewellCardSub}</div>
-        <div style="height:1px;background:linear-gradient(to right,transparent,#C8BC5A,transparent);margin-bottom:20px"></div>
-        <div style="font-size:12px;color:#666;margin-bottom:8px">${t.farewellCardDirect}</div>
-        <a href="${waLink}" target="_blank" style="font-size:13px;font-weight:700;color:#25D366;text-decoration:none">${waDisplay}</a>
-        <div style="margin-top:18px">
-          <button id="farewell-share-btn" onclick="shareFarewellCard()" style="background:#1D9E75;color:#fff;border:none;border-radius:10px;padding:11px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:100%">${t.farewellCardShare}</button>
+        <div style="font-family:Georgia,serif;font-size:11px;color:#C8BC5A;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:24px">✦ Riad Dar D'Art ✦</div>
+        <div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:12px">${t.farewellCardDear} ${name},</div>
+        <div style="font-family:Georgia,serif;font-size:15px;color:#3a3530;line-height:1.7;margin-bottom:6px">${t.farewellCardTitle}</div>
+        <div style="font-size:13px;color:#999;margin-bottom:24px">${t.farewellCardSub}</div>
+        <div style="height:1px;background:linear-gradient(to right,transparent,#C8BC5A,transparent);margin-bottom:24px"></div>
+        <div style="font-size:12px;color:#777;margin-bottom:8px">${t.farewellCardDirect}</div>
+        <a href="${waLink}" target="_blank" style="font-size:14px;font-weight:700;color:#25D366;text-decoration:none">${waDisplay}</a>
+        <div style="margin-top:22px">
+          <button id="farewell-share-btn" onclick="saveFarewellCardAsImage()" style="background:#C8BC5A;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:100%">${t.farewellCardShare}</button>
         </div>
       </div>
     </div>`;
   card.style.display = 'block';
 }
 
-function shareFarewellCard() {
-  const card = document.getElementById('farewell-card');
-  const text = card ? card.dataset.shareText : '';
-  if(!text) return;
+function saveFarewellCardAsImage() {
+  const inner = document.getElementById('farewell-card-inner');
   const btn = document.getElementById('farewell-share-btn');
-  if(navigator.share) {
-    navigator.share({ text }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(text).then(() => {
-      if(btn) { const orig = btn.textContent; btn.textContent = '✓ Copied!'; setTimeout(() => { btn.textContent = orig; }, 2000); }
-    }).catch(() => {});
+  if(!inner || typeof html2canvas === 'undefined') return;
+  if(btn) { btn.disabled = true; btn.textContent = '...'; }
+  html2canvas(inner, { scale: 2, useCORS: true, backgroundColor: '#fdf8f0' }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'riad-dar-dart-farewell.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    if(btn) {
+      const t = T[selectedLangCode] || T['en'];
+      btn.disabled = false;
+      btn.textContent = '✓ Saved!';
+      setTimeout(() => { btn.textContent = t.farewellCardShare; }, 2500);
+    }
+  }).catch(() => {
+    if(btn) { btn.disabled = false; const t = T[selectedLangCode]||T['en']; btn.textContent = t.farewellCardShare; }
+  });
+}
+
+function scrollToFarewellCard() {
+  const card = document.getElementById('farewell-card');
+  const inner = document.getElementById('farewell-card-inner');
+  if(card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if(inner) {
+    inner.style.animation = 'none';
+    inner.offsetWidth; // reflow to restart animation
+    inner.style.animation = 'farewellPulse 1.2s ease-out';
   }
 }
 </script>
