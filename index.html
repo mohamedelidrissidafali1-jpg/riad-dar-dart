@@ -431,18 +431,15 @@
         <div class="card-sub" id="lbl-final-sub"></div>
         <textarea class="s-textarea" id="cmt-final" rows="3"></textarea>
       </div>
-      <!-- TAXI UPSELL — optional, shown before submit, fully self-contained -->
+      <!-- TAXI UPSELL — optional, selection included in checkout summary -->
       <div class="card" id="survey-taxi-card" style="border:1px solid #C8BC5A;background:linear-gradient(135deg,#fffdf0,#fff);margin-bottom:12px">
         <div class="card-title" id="survey-taxi-title"></div>
         <div class="card-sub" id="survey-taxi-intro" style="margin-bottom:8px"></div>
-        <div style="font-size:12px;font-weight:600;color:#333;margin-bottom:10px" id="survey-taxi-price"></div>
-        <div style="font-size:12px;color:#c0392b;margin-bottom:12px" id="survey-taxi-note"></div>
-        <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px" id="survey-taxi-people"></div>
-        <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="font-size:11px;color:#c0392b;margin-bottom:12px" id="survey-taxi-note"></div>
+        <div style="display:flex;gap:8px">
           <button class="tried-btn" id="taxi-opt-small" onclick="selectTaxiOption('small')" style="flex:1"></button>
           <button class="tried-btn" id="taxi-opt-large" onclick="selectTaxiOption('large')" style="flex:1"></button>
         </div>
-        <a id="survey-taxi-wa-btn" class="action-btn btn-wa" target="_blank" style="display:none;text-align:center;text-decoration:none"></a>
       </div>
       <button id="submit-survey-btn" onclick="submitSurvey()"></button>
     </div>
@@ -486,6 +483,7 @@ const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYLtNDCOJZK-gQyp
 
 // Session tracking
 const sessionBookings = [];
+let taxiSelection = null;
 const sessionButtons = [];
 const sessionTopics = [];
 
@@ -663,13 +661,10 @@ const T = {
     sugDarija: "🗣️ Learn Darija",
     sugDrinks: "🍷 Wine & Beer",
     taxiTitle: "🚖 Airport Transfer",
-    taxiIntro: "Need a ride to the airport? Book it now before you check out.",
-    taxiPrice: "1–4 people: €20 · 5+ people: €30",
-    taxiNote: "⚠️ Minimum 2 hours advance notice required.",
-    taxiPeople: "How many people?",
+    taxiIntro: "Need a ride to the airport?",
+    taxiNote: "⚠️ Minimum 2 hours advance notice.",
     taxi1to4: "1–4 people — €20",
     taxi5plus: "5+ people — €30",
-    taxiBook: "Book via WhatsApp",
     drinksTitle: "🍷 Wine & Beer",
     drinksIntro: "Enjoy a drink in the comfort of the riad.",
     drinksWine: "🍷 Wine — €15",
@@ -812,13 +807,10 @@ const T = {
     sugDarija: "🗣️ Apprendre le Darija",
     sugDrinks: "🍷 Vin & Bière",
     taxiTitle: "🚖 Transfert Aéroport",
-    taxiIntro: "Besoin d'un taxi pour l'aéroport ? Réservez avant de partir.",
-    taxiPrice: "1–4 personnes : 20€ · 5+ personnes : 30€",
-    taxiNote: "⚠️ Minimum 2 heures de préavis requis.",
-    taxiPeople: "Combien de personnes ?",
+    taxiIntro: "Besoin d'un taxi pour l'aéroport ?",
+    taxiNote: "⚠️ Minimum 2 heures de préavis.",
     taxi1to4: "1–4 personnes — 20€",
     taxi5plus: "5+ personnes — 30€",
-    taxiBook: "Réserver via WhatsApp",
     drinksTitle: "🍷 Vin & Bière",
     drinksIntro: "Profitez d'un verre dans le confort du riad.",
     drinksWine: "🍷 Vin — 15€",
@@ -961,13 +953,10 @@ const T = {
     sugDarija: "🗣️ Aprender Darija",
     sugDrinks: "🍷 Vino & Cerveza",
     taxiTitle: "🚖 Traslado al Aeropuerto",
-    taxiIntro: "¿Necesita un taxi al aeropuerto? Resérvelo antes de salir.",
-    taxiPrice: "1–4 personas: €20 · 5+ personas: €30",
-    taxiNote: "⚠️ Se requiere un mínimo de 2 horas de antelación.",
-    taxiPeople: "¿Cuántas personas?",
+    taxiIntro: "¿Necesita un taxi al aeropuerto?",
+    taxiNote: "⚠️ Mínimo 2 horas de antelación.",
     taxi1to4: "1–4 personas — €20",
     taxi5plus: "5+ personas — €30",
-    taxiBook: "Reservar por WhatsApp",
     drinksTitle: "🍷 Vino & Cerveza",
     drinksIntro: "Disfrute de una bebida en la comodidad del riad.",
     drinksWine: "🍷 Vino — €15",
@@ -1110,13 +1099,10 @@ const T = {
     sugDarija: "🗣️ Imparare il Darija",
     sugDrinks: "🍷 Vino & Birra",
     taxiTitle: "🚖 Transfer Aeroporto",
-    taxiIntro: "Serve un taxi per l'aeroporto? Prenotalo prima del check-out.",
-    taxiPrice: "1–4 persone: €20 · 5+ persone: €30",
-    taxiNote: "⚠️ Minimo 2 ore di preavviso richiesto.",
-    taxiPeople: "Quante persone?",
+    taxiIntro: "Serve un taxi per l'aeroporto?",
+    taxiNote: "⚠️ Minimo 2 ore di preavviso.",
     taxi1to4: "1–4 persone — €20",
     taxi5plus: "5+ persone — €30",
-    taxiBook: "Prenota via WhatsApp",
     drinksTitle: "🍷 Vino & Birra",
     drinksIntro: "Godetevi un drink nel comfort del riad.",
     drinksWine: "🍷 Vino — €15",
@@ -1259,13 +1245,10 @@ const T = {
     sugDarija: "🗣️ Darija lernen",
     sugDrinks: "🍷 Wein & Bier",
     taxiTitle: "🚖 Flughafentransfer",
-    taxiIntro: "Brauchen Sie ein Taxi zum Flughafen? Jetzt vor dem Check-out buchen.",
-    taxiPrice: "1–4 Personen: 20€ · 5+ Personen: 30€",
-    taxiNote: "⚠️ Mindestens 2 Stunden Vorlaufzeit erforderlich.",
-    taxiPeople: "Wie viele Personen?",
+    taxiIntro: "Brauchen Sie ein Taxi zum Flughafen?",
+    taxiNote: "⚠️ Mindestens 2 Stunden Vorlaufzeit.",
     taxi1to4: "1–4 Personen — 20€",
     taxi5plus: "5+ Personen — 30€",
-    taxiBook: "Per WhatsApp buchen",
     drinksTitle: "🍷 Wein & Bier",
     drinksIntro: "Genießen Sie ein Getränk im Komfort des Riads.",
     drinksWine: "🍷 Wein — 15€",
@@ -1408,13 +1391,10 @@ const T = {
     sugDarija: "🗣️ تعلم الدارجة",
     sugDrinks: "🍷 نبيذ وبيرة",
     taxiTitle: "🚖 نقل المطار",
-    taxiIntro: "تحتاج إلى سيارة أجرة للمطار؟ احجزها الآن قبل المغادرة.",
-    taxiPrice: "1–4 أشخاص: 20€ · 5+ أشخاص: 30€",
+    taxiIntro: "تحتاج إلى سيارة أجرة للمطار؟",
     taxiNote: "⚠️ يلزم الحجز قبل ساعتين على الأقل.",
-    taxiPeople: "كم عدد الأشخاص؟",
     taxi1to4: "1–4 أشخاص — 20€",
     taxi5plus: "5+ أشخاص — 30€",
-    taxiBook: "احجز عبر واتساب",
     drinksTitle: "🍷 نبيذ وبيرة",
     drinksIntro: "استمتع بمشروب في راحة الرياض.",
     drinksWine: "🍷 نبيذ — 15€",
@@ -1697,9 +1677,7 @@ function applyAllTranslations() {
     'lbl-final-title': t.finalTitle, 'lbl-final-sub': t.finalSub,
     'survey-taxi-title': t.taxiTitle,
     'survey-taxi-intro': t.taxiIntro,
-    'survey-taxi-price': t.taxiPrice,
     'survey-taxi-note': t.taxiNote,
-    'survey-taxi-people': t.taxiPeople,
     'taxi-opt-small': t.taxi1to4,
     'taxi-opt-large': t.taxi5plus
   };
@@ -2365,22 +2343,9 @@ function showLocalExpDetail(key) {
 function selectTaxiOption(size) {
   const t = T[selectedLangCode] || T['en'];
   const isSmall = size === 'small';
-
+  taxiSelection = isSmall ? t.taxi1to4 : t.taxi5plus;
   document.getElementById('taxi-opt-small').classList.toggle('selected', isSmall);
   document.getElementById('taxi-opt-large').classList.toggle('selected', !isSmall);
-
-  const label = isSmall ? t.taxi1to4 : t.taxi5plus;
-  const price = isSmall ? '€20' : '€30';
-  const people = isSmall ? '1–4' : '5+';
-
-  const waMsg = encodeURIComponent(
-    'Hi, I\'d like to book an airport transfer for ' + people + ' people — ' + price + '. Guest: ' + (reservationName || 'guest')
-  );
-
-  const waBtn = document.getElementById('survey-taxi-wa-btn');
-  waBtn.href = RECEPTION_WA + '?text=' + waMsg;
-  waBtn.textContent = '🚖 ' + t.taxiBook + ' (' + label + ')';
-  waBtn.style.display = 'block';
 }
 
 // ── DRINKS ──
@@ -2607,6 +2572,9 @@ function submitSurvey() {
     sessionBookings.forEach(b => { summary += `• ${b}\n`; });
     summary += '\n';
   } else { summary += `🛎️ No extra services booked\n\n`; }
+  if(taxiSelection) {
+    summary += `\n🚖 Airport Transfer requested: ${taxiSelection}\n`;
+  }
   // NOTE: sessionTopics and sessionButtons intentionally excluded — internal data only
   const ratedSections = sections.filter(s => ratings[s.key] > 0);
   if(ratedSections.length > 0) {
