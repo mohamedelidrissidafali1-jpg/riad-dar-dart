@@ -431,6 +431,19 @@
         <div class="card-sub" id="lbl-final-sub"></div>
         <textarea class="s-textarea" id="cmt-final" rows="3"></textarea>
       </div>
+      <!-- TAXI UPSELL — optional, shown before submit, fully self-contained -->
+      <div class="card" id="survey-taxi-card" style="border:1px solid #C8BC5A;background:linear-gradient(135deg,#fffdf0,#fff);margin-bottom:12px">
+        <div class="card-title" id="survey-taxi-title"></div>
+        <div class="card-sub" id="survey-taxi-intro" style="margin-bottom:8px"></div>
+        <div style="font-size:12px;font-weight:600;color:#333;margin-bottom:10px" id="survey-taxi-price"></div>
+        <div style="font-size:12px;color:#c0392b;margin-bottom:12px" id="survey-taxi-note"></div>
+        <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px" id="survey-taxi-people"></div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="tried-btn" id="taxi-opt-small" onclick="selectTaxiOption('small')" style="flex:1"></button>
+          <button class="tried-btn" id="taxi-opt-large" onclick="selectTaxiOption('large')" style="flex:1"></button>
+        </div>
+        <a id="survey-taxi-wa-btn" class="action-btn btn-wa" target="_blank" style="display:none;text-align:center;text-decoration:none"></a>
+      </div>
       <button id="submit-survey-btn" onclick="submitSurvey()"></button>
     </div>
     <div id="thankyou-screen">
@@ -649,6 +662,14 @@ const T = {
     sugExperiences: "🎨 Experiences",
     sugDarija: "🗣️ Learn Darija",
     sugDrinks: "🍷 Wine & Beer",
+    taxiTitle: "🚖 Airport Transfer",
+    taxiIntro: "Need a ride to the airport? Book it now before you check out.",
+    taxiPrice: "1–4 people: €20 · 5+ people: €30",
+    taxiNote: "⚠️ Minimum 2 hours advance notice required.",
+    taxiPeople: "How many people?",
+    taxi1to4: "1–4 people — €20",
+    taxi5plus: "5+ people — €30",
+    taxiBook: "Book via WhatsApp",
     drinksTitle: "🍷 Wine & Beer",
     drinksIntro: "Enjoy a drink in the comfort of the riad.",
     drinksWine: "🍷 Wine — €15",
@@ -790,6 +811,14 @@ const T = {
     sugExperiences: "🎨 Expériences",
     sugDarija: "🗣️ Apprendre le Darija",
     sugDrinks: "🍷 Vin & Bière",
+    taxiTitle: "🚖 Transfert Aéroport",
+    taxiIntro: "Besoin d'un taxi pour l'aéroport ? Réservez avant de partir.",
+    taxiPrice: "1–4 personnes : 20€ · 5+ personnes : 30€",
+    taxiNote: "⚠️ Minimum 2 heures de préavis requis.",
+    taxiPeople: "Combien de personnes ?",
+    taxi1to4: "1–4 personnes — 20€",
+    taxi5plus: "5+ personnes — 30€",
+    taxiBook: "Réserver via WhatsApp",
     drinksTitle: "🍷 Vin & Bière",
     drinksIntro: "Profitez d'un verre dans le confort du riad.",
     drinksWine: "🍷 Vin — 15€",
@@ -931,6 +960,14 @@ const T = {
     sugExperiences: "🎨 Experiencias",
     sugDarija: "🗣️ Aprender Darija",
     sugDrinks: "🍷 Vino & Cerveza",
+    taxiTitle: "🚖 Traslado al Aeropuerto",
+    taxiIntro: "¿Necesita un taxi al aeropuerto? Resérvelo antes de salir.",
+    taxiPrice: "1–4 personas: €20 · 5+ personas: €30",
+    taxiNote: "⚠️ Se requiere un mínimo de 2 horas de antelación.",
+    taxiPeople: "¿Cuántas personas?",
+    taxi1to4: "1–4 personas — €20",
+    taxi5plus: "5+ personas — €30",
+    taxiBook: "Reservar por WhatsApp",
     drinksTitle: "🍷 Vino & Cerveza",
     drinksIntro: "Disfrute de una bebida en la comodidad del riad.",
     drinksWine: "🍷 Vino — €15",
@@ -1072,6 +1109,14 @@ const T = {
     sugExperiences: "🎨 Esperienze",
     sugDarija: "🗣️ Imparare il Darija",
     sugDrinks: "🍷 Vino & Birra",
+    taxiTitle: "🚖 Transfer Aeroporto",
+    taxiIntro: "Serve un taxi per l'aeroporto? Prenotalo prima del check-out.",
+    taxiPrice: "1–4 persone: €20 · 5+ persone: €30",
+    taxiNote: "⚠️ Minimo 2 ore di preavviso richiesto.",
+    taxiPeople: "Quante persone?",
+    taxi1to4: "1–4 persone — €20",
+    taxi5plus: "5+ persone — €30",
+    taxiBook: "Prenota via WhatsApp",
     drinksTitle: "🍷 Vino & Birra",
     drinksIntro: "Godetevi un drink nel comfort del riad.",
     drinksWine: "🍷 Vino — €15",
@@ -1213,6 +1258,14 @@ const T = {
     sugExperiences: "🎨 Erlebnisse",
     sugDarija: "🗣️ Darija lernen",
     sugDrinks: "🍷 Wein & Bier",
+    taxiTitle: "🚖 Flughafentransfer",
+    taxiIntro: "Brauchen Sie ein Taxi zum Flughafen? Jetzt vor dem Check-out buchen.",
+    taxiPrice: "1–4 Personen: 20€ · 5+ Personen: 30€",
+    taxiNote: "⚠️ Mindestens 2 Stunden Vorlaufzeit erforderlich.",
+    taxiPeople: "Wie viele Personen?",
+    taxi1to4: "1–4 Personen — 20€",
+    taxi5plus: "5+ Personen — 30€",
+    taxiBook: "Per WhatsApp buchen",
     drinksTitle: "🍷 Wein & Bier",
     drinksIntro: "Genießen Sie ein Getränk im Komfort des Riads.",
     drinksWine: "🍷 Wein — 15€",
@@ -1354,6 +1407,14 @@ const T = {
     sugExperiences: "🎨 تجارب",
     sugDarija: "🗣️ تعلم الدارجة",
     sugDrinks: "🍷 نبيذ وبيرة",
+    taxiTitle: "🚖 نقل المطار",
+    taxiIntro: "تحتاج إلى سيارة أجرة للمطار؟ احجزها الآن قبل المغادرة.",
+    taxiPrice: "1–4 أشخاص: 20€ · 5+ أشخاص: 30€",
+    taxiNote: "⚠️ يلزم الحجز قبل ساعتين على الأقل.",
+    taxiPeople: "كم عدد الأشخاص؟",
+    taxi1to4: "1–4 أشخاص — 20€",
+    taxi5plus: "5+ أشخاص — 30€",
+    taxiBook: "احجز عبر واتساب",
     drinksTitle: "🍷 نبيذ وبيرة",
     drinksIntro: "استمتع بمشروب في راحة الرياض.",
     drinksWine: "🍷 نبيذ — 15€",
@@ -1633,7 +1694,14 @@ function applyAllTranslations() {
     'lbl-bfast-title': t.bfastTitle, 'lbl-bfast-sub': t.bfastSub,
     'lbl-extra-title': t.extraTitle, 'lbl-extra-sub': t.extraSub,
     'lbl-hammam-extra': t.hammamLabel, 'lbl-massage-extra': t.massageLabel, 'lbl-transport-extra': t.transportLabel,
-    'lbl-final-title': t.finalTitle, 'lbl-final-sub': t.finalSub
+    'lbl-final-title': t.finalTitle, 'lbl-final-sub': t.finalSub,
+    'survey-taxi-title': t.taxiTitle,
+    'survey-taxi-intro': t.taxiIntro,
+    'survey-taxi-price': t.taxiPrice,
+    'survey-taxi-note': t.taxiNote,
+    'survey-taxi-people': t.taxiPeople,
+    'taxi-opt-small': t.taxi1to4,
+    'taxi-opt-large': t.taxi5plus
   };
   Object.entries(surveyMap).forEach(([id, val]) => {
     const el = document.getElementById(id);
@@ -2291,6 +2359,28 @@ function showLocalExpDetail(key) {
     <button onclick="document.getElementById('local-exp-detail-card').remove()" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid #ddd;border-radius:8px;font-size:11px;color:#999;cursor:pointer;font-family:inherit">${t.expBackBtn}</button>`;
   cb.appendChild(card);
   cb.scrollTop = cb.scrollHeight;
+}
+
+// ── SURVEY TAXI UPSELL ──
+function selectTaxiOption(size) {
+  const t = T[selectedLangCode] || T['en'];
+  const isSmall = size === 'small';
+
+  document.getElementById('taxi-opt-small').classList.toggle('selected', isSmall);
+  document.getElementById('taxi-opt-large').classList.toggle('selected', !isSmall);
+
+  const label = isSmall ? t.taxi1to4 : t.taxi5plus;
+  const price = isSmall ? '€20' : '€30';
+  const people = isSmall ? '1–4' : '5+';
+
+  const waMsg = encodeURIComponent(
+    'Hi, I\'d like to book an airport transfer for ' + people + ' people — ' + price + '. Guest: ' + (reservationName || 'guest')
+  );
+
+  const waBtn = document.getElementById('survey-taxi-wa-btn');
+  waBtn.href = RECEPTION_WA + '?text=' + waMsg;
+  waBtn.textContent = '🚖 ' + t.taxiBook + ' (' + label + ')';
+  waBtn.style.display = 'block';
 }
 
 // ── DRINKS ──
