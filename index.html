@@ -251,29 +251,6 @@
   <button id="instr-btn" class="onb-btn" onclick="enterSaveScreen()"></button>
 </div>
 
-<!-- SAVE TO HOME SCREEN -->
-<div id="save-screen" class="onboarding-screen" style="display:none">
-  <div id="save-icon" style="font-size:36px;margin-bottom:16px">📲</div>
-  <div id="save-title" class="onb-title"></div>
-  <div id="save-sub" class="onb-sub"></div>
-  <div style="width:100%;max-width:340px;margin-bottom:16px">
-    <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:12px;text-align:left" id="save-device-q">What phone do you have?</div>
-    <div style="display:flex;gap:10px">
-      <button onclick="showDeviceInstructions('iphone')" style="flex:1;padding:14px;background:#fff;border:1.5px solid #ddd;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:#333">🍎 iPhone</button>
-      <button onclick="showDeviceInstructions('android')" style="flex:1;padding:14px;background:#fff;border:1.5px solid #ddd;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:#333">🤖 Android</button>
-    </div>
-  </div>
-  <div id="iphone-instructions" style="display:none;background:#fff;border:1px solid #ece9e2;border-radius:14px;padding:18px;width:100%;max-width:340px;margin-bottom:12px;text-align:left">
-    <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px">🍎 iPhone — Safari</div>
-    <div id="iphone-steps" style="font-size:12px;color:#555;line-height:1.9"></div>
-  </div>
-  <div id="android-instructions" style="display:none;background:#fff;border:1px solid #ece9e2;border-radius:14px;padding:18px;width:100%;max-width:340px;margin-bottom:12px;text-align:left">
-    <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px">🤖 Android — Chrome</div>
-    <div id="android-steps" style="font-size:12px;color:#555;line-height:1.9"></div>
-  </div>
-  <button id="save-continue-btn" class="onb-btn" onclick="enterNameScreen()" style="max-width:340px;margin-bottom:12px;margin-top:8px"></button>
-</div>
-
 <!-- ══════════════════════════════════════════
      FIX 4: RESERVATION NAME SCREEN (required)
      ══════════════════════════════════════════ -->
@@ -1721,14 +1698,7 @@ function selectLang(lang, code) {
 
 function enterSaveScreen() {
   document.getElementById('instruction-screen').style.display = 'none';
-  const t = T[selectedLangCode] || T['en'];
-  document.getElementById('save-title').textContent = t.saveTitle;
-  document.getElementById('save-sub').textContent = t.saveSub;
-  document.getElementById('save-device-q').textContent = t.saveDeviceQ;
-  document.getElementById('iphone-steps').innerHTML = t.iphoneSteps;
-  document.getElementById('android-steps').innerHTML = t.androidSteps;
-  document.getElementById('save-continue-btn').textContent = t.saveContinueBtn;
-  document.getElementById('save-screen').style.display = 'flex';
+  enterNameScreen();
 }
 
 function showDeviceInstructions(device) {
@@ -3089,36 +3059,11 @@ function saveFarewellCardAsPDF() {
 
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
 
+  // Capture the card that is already rendered on screen
   const cardEl = document.getElementById('farewell-card');
   if (!cardEl) { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } return; }
   const certDiv = cardEl.firstElementChild;
   if (!certDiv) { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } return; }
-
-  const saveMsg =
-    selectedLangCode === 'ar' ? 'اضغط مطولاً على الصورة ثم اختر «حفظ الصورة»' :
-    selectedLangCode === 'fr' ? 'Appuyez longuement sur l'image → Enregistrer l'image' :
-    selectedLangCode === 'es' ? 'Mantén presionada la imagen → Guardar imagen' :
-    selectedLangCode === 'it' ? 'Tieni premuta l'immagine → Salva immagine' :
-    selectedLangCode === 'de' ? 'Bild gedrückt halten → Bild speichern' :
-    'Press & hold the image → Save to your phone';
-
-  function showOverlay(dataUrl) {
-    const existing = document.getElementById('cert-image-overlay');
-    if (existing) existing.remove();
-    const overlay = document.createElement('div');
-    overlay.id = 'cert-image-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:9999;display:flex;flex-direction:column;align-items:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;';
-    overlay.innerHTML = `
-      <div style="width:100%;max-width:400px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-          <div style="color:#C8960A;font-family:Georgia,serif;font-size:13px;font-weight:700;line-height:1.4;flex:1;padding-right:10px;">📸 ${saveMsg}</div>
-          <button onclick="document.getElementById('cert-image-overlay').remove()" style="flex-shrink:0;background:rgba(200,150,10,0.15);border:1.5px solid #C8960A;color:#C8960A;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
-        </div>
-        <img src="${dataUrl}" style="width:100%;display:block;border-radius:4px;border:1px solid rgba(200,150,10,0.3);" />
-        <div style="color:rgba(200,150,74,0.5);font-size:10px;text-align:center;margin-top:8px;font-family:Georgia,serif;">Riad Dar D'Art · riaddardart.com</div>
-      </div>`;
-    document.body.appendChild(overlay);
-  }
 
   function doCapture() {
     html2canvas(certDiv, {
@@ -3126,17 +3071,52 @@ function saveFarewellCardAsPDF() {
       useCORS: true,
       allowTaint: true,
       logging: false,
-      backgroundColor: '#FDF6E3'
+      backgroundColor: '#1a1008'
     }).then(canvas => {
-      const dataUrl = canvas.toDataURL('image/png');
-      showOverlay(dataUrl);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+      if (isIOS) {
+        // iOS cannot download files — show image full screen, guest saves to Photos
+        const dataUrl = canvas.toDataURL('image/png');
+        const overlay = document.createElement('div');
+        overlay.id = 'cert-image-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px;overflow-y:auto;';
+        const saveTip = t.farewellListenBtn ? '' : '';
+        const iosMsg = (t.farewellDownload || '').includes('حفظ') ? 'اضغط مطولاً على الصورة ← حفظ في الصور' :
+                       (t.farewellDownload || '').includes('partager') ? 'Appuyez longuement → Enregistrer dans Photos' :
+                       (t.farewellDownload || '').includes('compartir') ? 'Mantén presionado → Guardar en Fotos' :
+                       (t.farewellDownload || '').includes('condividi') ? 'Tieni premuto → Salva in Foto' :
+                       (t.farewellDownload || '').includes('teilen') ? 'Gedrückt halten → In Fotos speichern' :
+                       'Press & hold the image → Save to Photos';
+        overlay.innerHTML = `
+          <div style="width:100%;max-width:420px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <div style="color:#C8960A;font-family:Georgia,serif;font-size:13px;font-weight:700;">📸 ${iosMsg}</div>
+              <button onclick="document.getElementById('cert-image-overlay').remove()" style="background:rgba(200,150,10,0.2);border:1px solid #C8960A;color:#C8960A;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;line-height:1;">✕</button>
+            </div>
+            <img src="${dataUrl}" style="width:100%;border-radius:4px;display:block;" />
+          </div>`;
+        document.body.appendChild(overlay);
+      } else {
+        // Android & desktop — direct PNG download
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'riad-dar-dart-certificate.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }, 'image/png');
+      }
+
       if (btn) {
         btn.disabled = false;
-        btn.textContent = t.farewellSaved || '✅ Done!';
+        btn.textContent = t.farewellSaved || '✅ Saved!';
         setTimeout(() => { btn.textContent = farewellDownload; }, 3000);
       }
-    }).catch(err => {
-      console.error('html2canvas error:', err);
+    }).catch(() => {
       if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
     });
   }
