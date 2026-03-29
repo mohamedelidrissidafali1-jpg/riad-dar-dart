@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2892,118 +2893,233 @@ function submitSurvey() {
 function showFarewellCard(name) {
   const t = T[selectedLangCode] || T['en'];
   const card = document.getElementById('farewell-card');
-  if(!card) return;
+  if (!card) return;
+  const isRTL = selectedLangCode === 'ar';
   const waMsg = encodeURIComponent(`Hi, I'd like to book a stay at Riad Dar D'Art.`);
   const waLink = `${RECEPTION_WA}?text=${waMsg}`;
   const waDisplay = RECEPTION_WA.replace('https://wa.me/', '+');
-  const isRTL = selectedLangCode === 'ar';
+  const checkoutDateStr = new Date().toLocaleDateString(
+    selectedLangCode === 'ar' ? 'ar-MA' :
+    selectedLangCode === 'fr' ? 'fr-FR' :
+    selectedLangCode === 'de' ? 'de-DE' :
+    selectedLangCode === 'es' ? 'es-ES' :
+    selectedLangCode === 'it' ? 'it-IT' : 'en-GB',
+    { year: 'numeric', month: 'long', day: 'numeric' }
+  );
+  const farewellMsg = t.farewellMsg || t.farewellCardTitle || 'It was a true honour to welcome you into our home in the heart of the ancient Medina.';
+  const farewellSub2 = t.farewellSub2 || t.farewellCardSub || 'We hope to welcome you back soon.';
+  const farewellCertLabel = t.farewellCertLabel || 'Certificate of Stay';
+  const farewellPresentedTo = t.farewellPresentedTo || 'This certificate is proudly presented to';
+  const farewellQuote = t.farewellQuote || 'The soul of Marrakech lives in its hidden gardens, ancient stones, and the warmth of those who call the Medina home.';
+  const farewellQuoteSource = t.farewellQuoteSource || '— The Medina, Marrakech';
+  const farewellBookLabel = t.farewellBookLabel || t.farewellCardDirect || '📲 Book directly with us next time:';
+  const farewellInstagram = t.farewellInstagram || '📸 Tag us: @riaddardart';
+  const farewellShareTitle = t.farewellShareTitle || 'Share Your Marrakech Story';
+  const farewellShareSub = t.farewellShareSub || 'Know someone who loves travel? Send them this card.';
+  const farewellFooter = t.farewellFooter || 'With love from the Medina · riaddardart.com';
+  const farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Download Your Certificate';
+
   card.innerHTML = `
-    <div id="farewell-card-inner" style="background:#fdf8f0;border:1.5px solid #C8BC5A;border-radius:16px;padding:32px 24px;position:relative;overflow:hidden;text-align:center" dir="${isRTL ? 'rtl' : 'ltr'}">
-      <div style="position:absolute;inset:0;background-image:url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C8BC5A' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");pointer-events:none"></div>
-      <div style="position:relative;z-index:1">
-        <div style="font-family:Georgia,serif;font-size:11px;color:#C8BC5A;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:24px">✦ Riad Dar D'Art ✦</div>
-        <div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:12px">${t.farewellCardDear} ${name},</div>
-        <div style="font-family:Georgia,serif;font-size:15px;color:#3a3530;line-height:1.7;margin-bottom:6px">${t.farewellCardTitle}</div>
-        <div style="font-size:13px;color:#999;margin-bottom:24px">${t.farewellCardSub}</div>
-        <div style="height:1px;background:linear-gradient(to right,transparent,#C8BC5A,transparent);margin-bottom:24px"></div>
-        <div style="font-size:12px;color:#777;margin-bottom:8px">${t.farewellCardDirect}</div>
-        <a href="${waLink}" target="_blank" style="font-size:14px;font-weight:700;color:#25D366;text-decoration:none">${waDisplay}</a>
-        <div style="margin-top:22px">
-          <button id="farewell-share-btn" onclick="saveFarewellCardAsPDF()" style="background:#C8BC5A;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:100%">${t.farewellCardShare}</button>
+    <div dir="${isRTL ? 'rtl' : 'ltr'}" style="font-family:Georgia,serif;overflow:hidden;border:2px solid #C8960A;box-shadow:0 8px 40px rgba(0,0,0,0.18);">
+
+      <!-- GOLD TOP BAND -->
+      <div style="height:5px;background:linear-gradient(90deg,#5C3A00,#C8960A,#F5C842,#FFDE5A,#F5C842,#C8960A,#5C3A00);"></div>
+
+      <!-- PARCHMENT BODY -->
+      <div style="background:#FDF6E3;padding:22px 22px 18px;position:relative;">
+
+        <!-- Watermark star background -->
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:240px;height:240px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22%3E%3Cpath d=%22M100 10 L110 50 L150 40 L120 70 L160 80 L120 90 L150 120 L110 110 L100 150 L90 110 L50 120 L80 90 L40 80 L80 70 L50 40 L90 50 Z%22 fill=%22%23C8960A%22 fill-opacity=%220.05%22/%3E%3Ccircle cx=%22100%22 cy=%22100%22 r=%2260%22 fill=%22none%22 stroke=%22%23C8960A%22 stroke-width=%220.5%22 stroke-opacity=%220.07%22/%3E%3C/svg%3E');background-size:contain;background-repeat:no-repeat;pointer-events:none;"></div>
+
+        <!-- Riad name -->
+        <div style="text-align:center;margin-bottom:8px;position:relative;">
+          <div style="font-family:Georgia,serif;font-size:24px;font-weight:900;color:#8B1A00;letter-spacing:0.5px;margin-bottom:3px;">Riad Dar D'Art</div>
+          <div style="font-size:10px;color:#9A7840;letter-spacing:2px;text-transform:uppercase;">✦ &nbsp; Marrakech Medina, Morocco &nbsp; ✦</div>
         </div>
+
+        <!-- Ornament -->
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0;position:relative;">
+          <div style="flex:1;height:0.5px;background:linear-gradient(to right,transparent,#C8960A);"></div>
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="#C8960A"><path d="M10 1l1.5 4.5L16 4l-3 3.5 4.5 1.5L10 10 17.5 11.5 14.5 15 16 19l-6-2.5L10 20l-3.5-6.5-3 3.5 1.5-4L1 9.5 6 8 3 5l5 1.5z"/></svg>
+          <div style="flex:1;height:0.5px;background:linear-gradient(to left,transparent,#C8960A);"></div>
+        </div>
+
+        <!-- Cert label -->
+        <div style="text-align:center;color:#8B6000;font-size:8px;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;position:relative;">✦ &nbsp; ${farewellCertLabel} &nbsp; ✦</div>
+
+        <!-- Presented to + guest name -->
+        <div style="text-align:center;font-style:italic;color:#7A6040;font-size:11px;margin-bottom:4px;position:relative;">${farewellPresentedTo}</div>
+        <div style="text-align:center;font-family:Georgia,serif;font-size:34px;font-weight:700;color:#1C0800;line-height:1.1;margin-bottom:8px;position:relative;">${name}</div>
+
+        <!-- Date pill -->
+        <div style="text-align:center;margin-bottom:12px;position:relative;">
+          <span style="display:inline-block;background:#8B1A00;color:white;border-radius:30px;padding:3px 16px;font-size:9px;letter-spacing:2px;text-transform:uppercase;">${checkoutDateStr}</span>
+        </div>
+
+        <!-- Farewell message -->
+        <div style="text-align:center;font-style:italic;font-size:13px;color:#3D2500;line-height:1.7;margin-bottom:4px;position:relative;">"${farewellMsg}"</div>
+        <div style="text-align:center;font-size:11px;color:#9A8060;margin-bottom:12px;position:relative;line-height:1.5;">${farewellSub2}</div>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0;position:relative;">
+          <div style="flex:1;height:0.5px;background:linear-gradient(to right,transparent,#C8960A);"></div>
+          <span style="color:#C8960A;font-size:10px;">◆</span>
+          <div style="flex:1;height:0.5px;background:linear-gradient(to left,transparent,#C8960A);"></div>
+        </div>
+
+        <!-- Quote box -->
+        <div style="background:#FFF8EC;border:1px solid rgba(200,150,10,0.35);border-left:3px solid #8B1A00;border-radius:5px;padding:10px 14px;margin-bottom:12px;position:relative;">
+          <div style="font-style:italic;font-size:11px;color:#4A3520;line-height:1.7;">"${farewellQuote}"</div>
+          <div style="font-size:9px;color:#C8960A;font-weight:700;letter-spacing:1px;text-align:${isRTL ? 'left' : 'right'};margin-top:6px;text-transform:uppercase;">${farewellQuoteSource}</div>
+        </div>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0;position:relative;">
+          <div style="flex:1;height:0.5px;background:linear-gradient(to right,transparent,#C8960A);"></div>
+          <span style="color:#C8960A;font-size:10px;">✦ ✦ ✦</span>
+          <div style="flex:1;height:0.5px;background:linear-gradient(to left,transparent,#C8960A);"></div>
+        </div>
+
+        <!-- Book direct -->
+        <div style="text-align:center;position:relative;">
+          <div style="font-size:10px;color:#7A6040;margin-bottom:4px;">${farewellBookLabel}</div>
+          <a href="${waLink}" target="_blank" style="display:block;font-family:Georgia,serif;font-size:17px;font-weight:700;color:#25D366;text-decoration:none;margin-bottom:4px;">${waDisplay}</a>
+          <div style="font-size:10px;color:#9A8060;">${farewellInstagram}</div>
+        </div>
+
       </div>
-    </div>`;
+
+      <!-- GOLD BOTTOM BAND -->
+      <div style="height:5px;background:linear-gradient(90deg,#5C3A00,#C8960A,#F5C842,#FFDE5A,#F5C842,#C8960A,#5C3A00);"></div>
+
+      <!-- DARK BOTTOM -->
+      <div style="background:linear-gradient(135deg,#1C0800,#2E1500);padding:14px 22px;text-align:center;">
+        <div style="color:#C8960A;font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:5px;">${farewellShareTitle}</div>
+        <div style="color:#C4A97A;font-size:11px;line-height:1.6;margin-bottom:6px;">${farewellShareSub}</div>
+        <div style="color:rgba(200,150,74,0.4);font-size:9px;letter-spacing:1px;">${farewellFooter}</div>
+      </div>
+
+    </div>
+
+    <!-- DOWNLOAD BUTTON -->
+    <button id="farewell-share-btn" onclick="saveFarewellCardAsPDF()" style="width:100%;padding:14px;background:linear-gradient(135deg,#8B1A00,#C13A00);color:white;border:none;font-family:Georgia,serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-top:0;box-shadow:0 4px 20px rgba(139,26,0,0.4);">${farewellDownload}</button>
+  `;
   card.style.display = 'block';
 }
 
 function saveFarewellCardAsPDF() {
   const btn = document.getElementById('farewell-share-btn');
   const t = T[selectedLangCode] || T['en'];
+  const farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Download Your Certificate';
 
-  function runPDF() {
-    if(btn) { btn.disabled = true; btn.textContent = '...'; }
-    try {
+  function doCapture() {
+    if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+    const isRTL = selectedLangCode === 'ar';
+    const waDisplay = RECEPTION_WA.replace('https://wa.me/', '+');
+    const waMsg = encodeURIComponent(`Hi, I'd like to book a stay at Riad Dar D'Art.`);
+    const waLink = `${RECEPTION_WA}?text=${waMsg}`;
+    const today = new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+    const gName = reservationName || 'Guest';
+    const farewellMsg = t.farewellMsg || t.farewellCardTitle || 'It was a true honour to welcome you into our home in the heart of the ancient Medina.';
+    const farewellSub2 = t.farewellSub2 || t.farewellCardSub || 'We hope to welcome you back soon.';
+    const farewellCertLabel = t.farewellCertLabel || 'Certificate of Stay';
+    const farewellPresentedTo = t.farewellPresentedTo || 'This certificate is proudly presented to';
+    const farewellQuote = t.farewellQuote || 'The soul of Marrakech lives in its hidden gardens, ancient stones, and the warmth of those who call the Medina home.';
+    const farewellQuoteSource = t.farewellQuoteSource || '— The Medina, Marrakech';
+    const farewellBookLabel = t.farewellBookLabel || t.farewellCardDirect || '📲 Book directly with us next time:';
+    const farewellInstagram = t.farewellInstagram || '📸 Tag us: @riaddardart';
+    const farewellShareTitle = t.farewellShareTitle || 'Share Your Marrakech Story';
+    const farewellShareSub = t.farewellShareSub || 'Know someone who loves travel? Send them this card.';
+    const farewellFooter = t.farewellFooter || 'With love from the Medina · riaddardart.com';
+
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:fixed;left:-9999px;top:0;width:480px;z-index:-1;';
+    wrapper.innerHTML = `
+      <div dir="${isRTL ? 'rtl' : 'ltr'}" style="width:480px;font-family:Georgia,serif;overflow:hidden;border:2px solid #C8960A;">
+        <div style="height:6px;background:linear-gradient(90deg,#5C3A00,#C8960A,#F5C842,#FFDE5A,#F5C842,#C8960A,#5C3A00);"></div>
+        <div style="background:#FDF6E3;padding:32px 36px 26px;position:relative;">
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22%3E%3Cpath d=%22M100 10 L110 50 L150 40 L120 70 L160 80 L120 90 L150 120 L110 110 L100 150 L90 110 L50 120 L80 90 L40 80 L80 70 L50 40 L90 50 Z%22 fill=%22%23C8960A%22 fill-opacity=%220.05%22/%3E%3Ccircle cx=%22100%22 cy=%22100%22 r=%2260%22 fill=%22none%22 stroke=%22%23C8960A%22 stroke-width=%220.5%22 stroke-opacity=%220.07%22/%3E%3C/svg%3E');background-size:contain;background-repeat:no-repeat;pointer-events:none;"></div>
+          <div style="text-align:center;margin-bottom:12px;position:relative;">
+            <div style="font-size:30px;font-weight:900;color:#8B1A00;margin-bottom:4px;">Riad Dar D'Art</div>
+            <div style="font-size:11px;color:#9A7840;letter-spacing:3px;text-transform:uppercase;">✦ &nbsp; Marrakech Medina, Morocco &nbsp; ✦</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin:10px 0;position:relative;">
+            <div style="flex:1;height:0.5px;background:linear-gradient(to right,transparent,#C8960A);"></div>
+            <span style="color:#C8960A;font-size:14px;">✦</span>
+            <div style="flex:1;height:0.5px;background:linear-gradient(to left,transparent,#C8960A);"></div>
+          </div>
+          <div style="text-align:center;color:#8B6000;font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;position:relative;">✦ &nbsp; ${farewellCertLabel} &nbsp; ✦</div>
+          <div style="text-align:center;font-style:italic;color:#7A6040;font-size:13px;margin-bottom:6px;position:relative;">${farewellPresentedTo}</div>
+          <div style="text-align:center;font-size:42px;font-weight:700;color:#1C0800;line-height:1.1;margin-bottom:10px;position:relative;">${gName}</div>
+          <div style="text-align:center;margin-bottom:16px;position:relative;">
+            <span style="display:inline-block;background:#8B1A00;color:white;border-radius:30px;padding:4px 20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;">${today}</span>
+          </div>
+          <div style="text-align:center;font-style:italic;font-size:15px;color:#3D2500;line-height:1.75;margin-bottom:6px;position:relative;">"${farewellMsg}"</div>
+          <div style="text-align:center;font-size:12px;color:#9A8060;margin-bottom:16px;position:relative;line-height:1.5;">${farewellSub2}</div>
+          <div style="display:flex;align-items:center;gap:10px;margin:10px 0;position:relative;">
+            <div style="flex:1;height:0.5px;background:linear-gradient(to right,transparent,#C8960A);"></div>
+            <span style="color:#C8960A;font-size:12px;">◆</span>
+            <div style="flex:1;height:0.5px;background:linear-gradient(to left,transparent,#C8960A);"></div>
+          </div>
+          <div style="background:#FFF8EC;border:1px solid rgba(200,150,10,0.35);border-left:4px solid #8B1A00;border-radius:6px;padding:14px 18px;margin-bottom:16px;position:relative;">
+            <div style="font-style:italic;font-size:13px;color:#4A3520;line-height:1.75;">"${farewellQuote}"</div>
+            <div style="font-size:10px;color:#C8960A;font-weight:700;letter-spacing:1px;text-align:${isRTL ? 'left' : 'right'};margin-top:8px;text-transform:uppercase;">${farewellQuoteSource}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin:10px 0;position:relative;">
+            <div style="flex:1;height:0.5px;background:linear-gradient(to right,transparent,#C8960A);"></div>
+            <span style="color:#C8960A;font-size:12px;">✦ ✦ ✦</span>
+            <div style="flex:1;height:0.5px;background:linear-gradient(to left,transparent,#C8960A);"></div>
+          </div>
+          <div style="text-align:center;position:relative;">
+            <div style="font-size:12px;color:#7A6040;margin-bottom:6px;">${farewellBookLabel}</div>
+            <div style="font-size:20px;font-weight:700;color:#25D366;margin-bottom:6px;">${waDisplay}</div>
+            <div style="font-size:11px;color:#9A8060;">${farewellInstagram}</div>
+          </div>
+        </div>
+        <div style="height:6px;background:linear-gradient(90deg,#5C3A00,#C8960A,#F5C842,#FFDE5A,#F5C842,#C8960A,#5C3A00);"></div>
+        <div style="background:linear-gradient(135deg,#1C0800,#2E1500);padding:20px 36px;text-align:center;">
+          <div style="color:#C8960A;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;">${farewellShareTitle}</div>
+          <div style="color:#C4A97A;font-size:13px;line-height:1.65;margin-bottom:8px;">${farewellShareSub}</div>
+          <div style="color:rgba(200,150,74,0.4);font-size:10px;letter-spacing:1px;">${farewellFooter}</div>
+        </div>
+      </div>`;
+
+    document.body.appendChild(wrapper);
+    html2canvas(wrapper.firstElementChild, { scale: 2, useCORS: true, backgroundColor: null, logging: false }).then(canvas => {
+      document.body.removeChild(wrapper);
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const w = 210, h = 297;
-
-      // Cream background
-      doc.setFillColor(253, 248, 240);
-      doc.rect(0, 0, w, h, 'F');
-
-      // Gold border
-      doc.setDrawColor(200, 188, 90);
-      doc.setLineWidth(0.8);
-      doc.rect(12, 12, w - 24, h - 24);
-
-      // Riad name — gold serif
-      doc.setTextColor(200, 188, 90);
-      doc.setFont('times', 'bold');
-      doc.setFontSize(26);
-      doc.text("Riad Dar D'Art", w / 2, 55, { align: 'center' });
-
-      // Decorative ornament
-      doc.setFontSize(13);
-      doc.text('- - -', w / 2, 67, { align: 'center' });
-
-      // Guest name
-      doc.setTextColor(26, 26, 26);
-      doc.setFont('times', 'bold');
-      doc.setFontSize(22);
-      const gName = reservationName || 'Guest';
-      doc.text(`${t.farewellCardDear} ${gName},`, w / 2, 90, { align: 'center' });
-
-      // Farewell title
-      doc.setFont('times', 'normal');
-      doc.setFontSize(15);
-      doc.setTextColor(58, 53, 48);
-      const titleLines = doc.splitTextToSize(t.farewellCardTitle, 165);
-      doc.text(titleLines, w / 2, 108, { align: 'center' });
-
-      // Subtitle
-      doc.setFontSize(12);
-      doc.setTextColor(160, 155, 148);
-      doc.text(t.farewellCardSub, w / 2, 126, { align: 'center' });
-
-      // Gold divider line
-      doc.setDrawColor(200, 188, 90);
-      doc.setLineWidth(0.4);
-      doc.line(45, 140, 165, 140);
-
-      // Direct booking label
-      doc.setFont('times', 'normal');
-      doc.setFontSize(11);
-      doc.setTextColor(110, 105, 98);
-      doc.text(t.farewellCardDirect, w / 2, 157, { align: 'center' });
-
-      // WhatsApp number
-      doc.setFont('times', 'bold');
-      doc.setFontSize(14);
-      doc.setTextColor(37, 167, 80);
-      const waDisplay = RECEPTION_WA.replace('https://wa.me/', '+');
-      doc.text(waDisplay, w / 2, 171, { align: 'center' });
-
-      doc.save('riad-dar-dart-farewell.pdf');
-
-      if(btn) {
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdfW = 210;
+      const pdfH = (canvas.height * pdfW) / canvas.width;
+      const yOffset = pdfH < 297 ? (297 - pdfH) / 2 : 0;
+      doc.addImage(imgData, 'JPEG', 0, yOffset, pdfW, Math.min(pdfH, 297));
+      doc.save('riad-dar-dart-certificate.pdf');
+      if (btn) {
         btn.disabled = false;
         btn.textContent = t.farewellSaved || '✅ Saved!';
-        setTimeout(() => { btn.textContent = t.farewellCardShare; }, 3000);
+        setTimeout(() => { btn.textContent = farewellDownload; }, 3000);
       }
-    } catch(e) {
-      if(btn) { btn.disabled = false; btn.textContent = t.farewellCardShare; }
-    }
+    }).catch(() => {
+      document.body.removeChild(wrapper);
+      if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+    });
   }
 
-  if(window.jspdf && window.jspdf.jsPDF) {
-    runPDF();
-  } else {
+  function loadScript(src, cb) {
     const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-    s.onload = runPDF;
-    s.onerror = () => { if(btn) { btn.disabled = false; btn.textContent = t.farewellCardShare; } };
+    s.src = src;
+    s.onload = cb;
+    s.onerror = () => { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } };
     document.head.appendChild(s);
   }
+
+  const hasJsPDF = window.jspdf && window.jspdf.jsPDF;
+  const hasH2C = window.html2canvas;
+  if (hasJsPDF && hasH2C) { doCapture(); }
+  else if (hasJsPDF && !hasH2C) { loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', doCapture); }
+  else if (!hasJsPDF && hasH2C) { loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', doCapture); }
+  else { loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', () => { loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', doCapture); }); }
 }
 
 function scrollToFarewellCard() {
