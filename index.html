@@ -721,7 +721,7 @@ const T = {
     farewellShareTitle: "Share Your Marrakech Story",
     farewellShareSub: "Know someone who loves travel? Send them this card — your recommendation is the most beautiful gift.",
     farewellFooter: "With love from the Medina · riaddardart.com",
-    farewellDownload: "⬇  Save & Share Certificate",
+    farewellDownload: "⬇  Save Certificate",
     farewellListenBtn: "🔊 Listen",
     drinksTitle: "🍷 Wine & Beer",
     drinksIntro: "Enjoy a drink in the comfort of the riad.",
@@ -908,7 +908,7 @@ const T = {
     farewellShareTitle: "Partagez votre histoire à Marrakech",
     farewellShareSub: "Vous connaissez quelqu'un qui aime voyager ? Envoyez-lui cette carte — votre recommandation est le plus beau des cadeaux.",
     farewellFooter: "Avec amour depuis la Médina · riaddardart.com",
-    farewellDownload: "⬇  Enregistrer et partager",
+    farewellDownload: "⬇  Enregistrer le certificat",
     farewellListenBtn: "🔊 Écouter",
     drinksTitle: "🍷 Vin & Bière",
     drinksIntro: "Profitez d'un verre dans le confort du riad.",
@@ -1095,7 +1095,7 @@ const T = {
     farewellShareTitle: "Comparte tu historia en Marrakech",
     farewellShareSub: "¿Conoces a alguien que ame viajar? Envíale esta tarjeta — tu recomendación es el mejor regalo.",
     farewellFooter: "Con amor desde la Medina · riaddardart.com",
-    farewellDownload: "⬇  Guardar y compartir",
+    farewellDownload: "⬇  Guardar certificado",
     farewellListenBtn: "🔊 Escuchar",
     drinksTitle: "🍷 Vino & Cerveza",
     drinksIntro: "Disfrute de una bebida en la comodidad del riad.",
@@ -1282,7 +1282,7 @@ const T = {
     farewellShareTitle: "Condividi la tua storia a Marrakech",
     farewellShareSub: "Conosci qualcuno che ama viaggiare? Manda loro questa card — la tua raccomandazione è il regalo più bello.",
     farewellFooter: "Con amore dalla Medina · riaddardart.com",
-    farewellDownload: "⬇  Salva e condividi",
+    farewellDownload: "⬇  Salva certificato",
     farewellListenBtn: "🔊 Ascolta",
     drinksTitle: "🍷 Vino & Birra",
     drinksIntro: "Godetevi un drink nel comfort del riad.",
@@ -1469,7 +1469,7 @@ const T = {
     farewellShareTitle: "Teile deine Marrakesch-Geschichte",
     farewellShareSub: "Kennst du jemanden, der Reisen liebt? Schick ihm diese Karte — deine Empfehlung ist das schönste Geschenk.",
     farewellFooter: "Mit Liebe aus der Medina · riaddardart.com",
-    farewellDownload: "⬇  Speichern und teilen",
+    farewellDownload: "⬇  Zertifikat speichern",
     farewellListenBtn: "🔊 Anhören",
     drinksTitle: "🍷 Wein & Bier",
     drinksIntro: "Genießen Sie ein Getränk im Komfort des Riads.",
@@ -1656,7 +1656,7 @@ const T = {
     farewellShareTitle: "شارك قصتك في مراكش",
     farewellShareSub: "هل تعرف شخصاً يعشق السفر؟ أرسل له هذه البطاقة — توصيتك هي أجمل هدية.",
     farewellFooter: "بكل محبة من المدينة العتيقة · riaddardart.com",
-    farewellDownload: "⬇  حفظ ومشاركة الشهادة",
+    farewellDownload: "⬇  حفظ الشهادة",
     farewellListenBtn: "🔊 استمع",
     drinksTitle: "🍷 نبيذ وبيرة",
     drinksIntro: "استمتع بمشروب في راحة الرياض.",
@@ -2730,7 +2730,7 @@ async function translateToDarija() {
   cb.scrollTop = cb.scrollHeight;
 
   const userLangName = selectedLangCode === 'fr' ? 'French' : selectedLangCode === 'es' ? 'Spanish' : selectedLangCode === 'de' ? 'German' : selectedLangCode === 'it' ? 'Italian' : selectedLangCode === 'ar' ? 'Arabic' : 'English';
-  const darijaSystem = `You are a Moroccan Darija translator helping a guest at a riad in Marrakech. The user gives you a word or phrase. You MUST reply entirely in ${userLangName} — not in English unless the user chose English. Format: 1) Darija in Arabic script 2) Phonetic pronunciation in Latin letters 3) Very short usage tip in ${userLangName}. Use emojis. Example: 🇲🇦 شكراً — "Shukran" 💡 [tip in ${userLangName}]`;
+  const darijaSystem = `You are a Moroccan Darija translator helping a guest at a riad in Marrakech. The user gives you a word or phrase. You MUST reply entirely in ${userLangName}. Format: 1) Darija in Arabic script 2) Phonetic pronunciation in Latin letters 3) Very short usage tip in ${userLangName}. Use emojis. Example: 🇲🇦 شكراً — "Shukran" 💡 [tip in ${userLangName}]`;
 
   try {
     const res = await fetch('/api/chat', {
@@ -3084,99 +3084,80 @@ function showFarewellCard(name) {
 function saveFarewellCardAsPDF() {
   const btn = document.getElementById('farewell-share-btn');
   const t = T[selectedLangCode] || T['en'];
-  const isRTL = selectedLangCode === 'ar';
-  const farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Save & Share Certificate';
-  const waDisplay = RECEPTION_WA.replace('https://wa.me/', '+');
-  const waMsg = encodeURIComponent(`Hi, I'd like to book a stay at Riad Dar D'Art.`);
-  const waLink = `${RECEPTION_WA}?text=${waMsg}`;
-  const today = new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
-  const gName = reservationName || 'Guest';
-  const farewellMsg = t.farewellMsg || t.farewellCardTitle || 'It was a true honour to welcome you into our home in the heart of the ancient Medina.';
-  const farewellSub2 = t.farewellSub2 || t.farewellCardSub || 'We hope to welcome you back soon.';
-  const farewellCertLabel = t.farewellCertLabel || 'Certificate of Stay';
-  const farewellPresentedTo = t.farewellPresentedTo || 'This certificate is proudly presented to';
-  const farewellQuote = t.farewellQuote || 'The soul of Marrakech lives in its hidden gardens, ancient stones, and the warmth of those who call the Medina home.';
-  const farewellQuoteSource = t.farewellQuoteSource || '— The Medina, Marrakech';
-  const farewellBookLabel = t.farewellBookLabel || t.farewellCardDirect || '📲 Book directly with us next time:';
-  const farewellInstagram = t.farewellInstagram || '📸 Tag us: @riaddardart';
-  const farewellShareTitle = t.farewellShareTitle || 'Share Your Marrakech Story';
-  const farewellShareSub = t.farewellShareSub || 'Know someone who loves travel? Send them this card.';
-  const farewellFooter = t.farewellFooter || 'With love from the Medina · riaddardart.com';
-  const saveLabel = isRTL ? 'اضغط مطولاً على الصفحة لحفظها أو مشاركتها' : selectedLangCode === 'fr' ? 'Appuyez longuement ou utilisez le menu partager pour enregistrer' : selectedLangCode === 'de' ? 'Gedrückt halten oder Teilen-Menü zum Speichern' : selectedLangCode === 'es' ? 'Mantén presionado o usa el menú compartir para guardar' : selectedLangCode === 'it' ? 'Tieni premuto o usa il menu condividi per salvare' : 'Long-press or use the share menu to save this page';
+  const farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Save Certificate';
 
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
 
-  const certHTML = `<!DOCTYPE html>
-<html lang="${selectedLangCode}" dir="${isRTL ? 'rtl' : 'ltr'}">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Riad Dar D'Art — ${farewellCertLabel}</title>
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#1a1008; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:16px; font-family:Georgia,serif; }
-  .cert { width:100%; max-width:420px; overflow:hidden; border:2px solid #C8960A; box-shadow:0 8px 40px rgba(0,0,0,0.5); }
-  .gold-band { height:5px; background:linear-gradient(90deg,#5C3A00,#C8960A,#F5C842,#FFDE5A,#F5C842,#C8960A,#5C3A00); }
-  .body { background:#FDF6E3; padding:22px 22px 18px; position:relative; overflow:hidden; }
-  .wm { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:240px; height:240px; pointer-events:none; }
-  .rel { position:relative; }
-  .orn { display:flex; align-items:center; gap:8px; margin:8px 0; }
-  .ol { flex:1; height:0.5px; background:linear-gradient(to right,transparent,#C8960A); }
-  .olr { flex:1; height:0.5px; background:linear-gradient(to left,transparent,#C8960A); }
-  .dark { background:linear-gradient(135deg,#1C0800,#2E1500); padding:14px 22px; text-align:center; }
-  .tip { background:#2a1a08; color:#C8960A; text-align:center; padding:12px 16px; font-size:12px; font-family:Georgia,serif; border-top:1px solid rgba(200,150,10,0.3); width:100%; max-width:420px; }
-</style>
-</head>
-<body>
-<div class="cert">
-  <div class="gold-band"></div>
-  <div class="body">
-    <svg class="wm" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <path d="M100 10 L110 50 L150 40 L120 70 L160 80 L120 90 L150 120 L110 110 L100 150 L90 110 L50 120 L80 90 L40 80 L80 70 L50 40 L90 50 Z" fill="#C8960A" fill-opacity="0.05"/>
-      <circle cx="100" cy="100" r="60" fill="none" stroke="#C8960A" stroke-width="0.5" stroke-opacity="0.07"/>
-    </svg>
-    <div class="rel">
-      <div style="text-align:center;font-size:24px;font-weight:900;color:#8B1A00;margin-bottom:3px;">Riad Dar D'Art</div>
-      <div style="text-align:center;font-size:10px;color:#9A7840;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">✦  Marrakech Medina, Morocco  ✦</div>
-      <div class="orn"><div class="ol"></div><svg width="16" height="16" viewBox="0 0 20 20" fill="#C8960A"><path d="M10 1l1.5 4.5L16 4l-3 3.5 4.5 1.5L10 10 17.5 11.5 14.5 15 16 19l-6-2.5L10 20l-3.5-6.5-3 3.5 1.5-4L1 9.5 6 8 3 5l5 1.5z"/></svg><div class="olr"></div></div>
-      <div style="text-align:center;color:#8B6000;font-size:8px;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;">✦  ${farewellCertLabel}  ✦</div>
-      <div style="text-align:center;font-style:italic;color:#7A6040;font-size:11px;margin-bottom:4px;">${farewellPresentedTo}</div>
-      <div style="text-align:center;font-size:34px;font-weight:700;color:#1C0800;line-height:1.1;margin-bottom:8px;">${gName}</div>
-      <div style="text-align:center;margin-bottom:12px;"><span style="display:inline-block;background:#8B1A00;color:white;border-radius:30px;padding:3px 16px;font-size:9px;letter-spacing:2px;text-transform:uppercase;">${today}</span></div>
-      <div style="text-align:center;font-style:italic;font-size:13px;color:#3D2500;line-height:1.7;margin-bottom:4px;">"${farewellMsg}"</div>
-      <div style="text-align:center;font-size:11px;color:#9A8060;margin-bottom:12px;line-height:1.5;">${farewellSub2}</div>
-      <div class="orn"><div class="ol"></div><span style="color:#C8960A;font-size:10px;">◆</span><div class="olr"></div></div>
-      <div style="background:#FFF8EC;border:1px solid rgba(200,150,10,0.35);border-left:3px solid #8B1A00;border-radius:5px;padding:10px 14px;margin-bottom:12px;">
-        <div style="font-style:italic;font-size:11px;color:#4A3520;line-height:1.7;">"${farewellQuote}"</div>
-        <div style="font-size:9px;color:#C8960A;font-weight:700;letter-spacing:1px;text-align:${isRTL ? 'left' : 'right'};margin-top:6px;text-transform:uppercase;">${farewellQuoteSource}</div>
-      </div>
-      <div class="orn"><div class="ol"></div><span style="color:#C8960A;font-size:10px;">✦ ✦ ✦</span><div class="olr"></div></div>
-      <div style="text-align:center;">
-        <div style="font-size:10px;color:#7A6040;margin-bottom:4px;">${farewellBookLabel}</div>
-        <a href="${waLink}" style="display:block;font-size:17px;font-weight:700;color:#25D366;text-decoration:none;margin-bottom:4px;">${waDisplay}</a>
-        <div style="font-size:10px;color:#9A8060;">${farewellInstagram}</div>
-      </div>
-    </div>
-  </div>
-  <div class="gold-band"></div>
-  <div class="dark">
-    <div style="color:#C8960A;font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:5px;">${farewellShareTitle}</div>
-    <div style="color:#C4A97A;font-size:11px;line-height:1.6;margin-bottom:6px;">${farewellShareSub}</div>
-    <div style="color:rgba(200,150,74,0.4);font-size:9px;letter-spacing:1px;">${farewellFooter}</div>
-  </div>
-</div>
-<div class="tip">📱 ${saveLabel}</div>
-</body>
-</html>`;
+  // Capture the card that is already rendered on screen
+  const cardEl = document.getElementById('farewell-card');
+  if (!cardEl) { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } return; }
+  const certDiv = cardEl.firstElementChild;
+  if (!certDiv) { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } return; }
 
-  const blob = new Blob([certHTML], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank');
+  function doCapture() {
+    html2canvas(certDiv, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      backgroundColor: '#1a1008'
+    }).then(canvas => {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-  if (btn) {
-    btn.disabled = false;
-    btn.textContent = t.farewellSaved || '✅ Opened!';
-    setTimeout(() => { btn.textContent = farewellDownload; URL.revokeObjectURL(url); }, 5000);
+      if (isIOS) {
+        // iOS cannot download files — show image full screen, guest saves to Photos
+        const dataUrl = canvas.toDataURL('image/png');
+        const overlay = document.createElement('div');
+        overlay.id = 'cert-image-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px;overflow-y:auto;';
+        const saveTip = t.farewellListenBtn ? '' : '';
+        const iosMsg = (t.farewellDownload || '').includes('حفظ') ? 'اضغط مطولاً على الصورة ← حفظ في الصور' :
+                       (t.farewellDownload || '').includes('partager') ? 'Appuyez longuement → Enregistrer dans Photos' :
+                       (t.farewellDownload || '').includes('compartir') ? 'Mantén presionado → Guardar en Fotos' :
+                       (t.farewellDownload || '').includes('condividi') ? 'Tieni premuto → Salva in Foto' :
+                       (t.farewellDownload || '').includes('teilen') ? 'Gedrückt halten → In Fotos speichern' :
+                       'Press & hold the image → Save to Photos';
+        overlay.innerHTML = `
+          <div style="width:100%;max-width:420px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <div style="color:#C8960A;font-family:Georgia,serif;font-size:13px;font-weight:700;">📸 ${iosMsg}</div>
+              <button onclick="document.getElementById('cert-image-overlay').remove()" style="background:rgba(200,150,10,0.2);border:1px solid #C8960A;color:#C8960A;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;line-height:1;">✕</button>
+            </div>
+            <img src="${dataUrl}" style="width:100%;border-radius:4px;display:block;" />
+          </div>`;
+        document.body.appendChild(overlay);
+      } else {
+        // Android & desktop — direct PNG download
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'riad-dar-dart-certificate.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }, 'image/png');
+      }
+
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = t.farewellSaved || '✅ Saved!';
+        setTimeout(() => { btn.textContent = farewellDownload; }, 3000);
+      }
+    }).catch(() => {
+      if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+    });
+  }
+
+  if (window.html2canvas) {
+    doCapture();
+  } else {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = doCapture;
+    s.onerror = () => { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } };
+    document.head.appendChild(s);
   }
 }
 
