@@ -3080,88 +3080,34 @@ function showFarewellCard(name) {
 }
 
 function saveFarewellCardAsPDF() {
-  var btn = document.getElementById('farewell-share-btn');
-  var t = T[selectedLangCode] || T['en'];
-  var farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Save Certificate';
-  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
-
   var certDiv = document.getElementById('farewell-card-inner');
   if (!certDiv) {
-    if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-    return;
+    certDiv = document.getElementById('farewell-card');
   }
+  if (!certDiv) return;
 
-  function doCapture() {
-    setTimeout(function() {
-      var w = certDiv.offsetWidth;
-      var h = certDiv.offsetHeight;
-      if (!w || !h) {
-        alert('Card size is 0 — width:' + w + ' height:' + h);
-        if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-        return;
-      }
-      html2canvas(certDiv, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#FDF6E3',
-        width: w,
-        height: h
-      }).then(function(canvas) {
-        canvas.toBlob(function(blob) {
-          if (navigator.share && navigator.canShare) {
-            var file = new File([blob], 'riad-dardart-certificate.png', { type: 'image/png' });
-            if (navigator.canShare({ files: [file] })) {
-              navigator.share({
-                files: [file],
-                title: "Riad Dar D'Art Certificate"
-              }).then(function() {
-                if (btn) {
-                  btn.disabled = false;
-                  btn.textContent = t.farewellSaved || '✅ Done!';
-                  setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
-                }
-              }).catch(function() {
-                if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-              });
-              return;
-            }
-          }
-          var url = URL.createObjectURL(blob);
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = 'riad-dardart-certificate.png';
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(function() {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          }, 1000);
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = t.farewellSaved || '✅ Done!';
-            setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
-          }
-        }, 'image/png');
-      }).catch(function(err) {
-        alert('html2canvas error: ' + err.message);
-        if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-      });
-    }, 300);
-  }
+  var html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Riad Dar D'Art — Certificate</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#f5f0e8; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:20px; font-family:Georgia,serif; }
+  .hint { font-size:13px; color:#666; margin-bottom:16px; text-align:center; font-family:sans-serif; }
+  .cert { max-width:420px; width:100%; }
+</style>
+</head>
+<body>
+<p class="hint">📸 Take a screenshot to save your certificate</p>
+<div class="cert">` + certDiv.outerHTML + `</div>
+</body>
+</html>`;
 
-  if (window.html2canvas) {
-    doCapture();
-  } else {
-    var s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = doCapture;
-    s.onerror = function() {
-      alert('html2canvas failed to load');
-      if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-    };
-    document.head.appendChild(s);
-  }
+  var blob = new Blob([html], { type: 'text/html' });
+  var url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
 }
 
 function scrollToFarewellCard() {
