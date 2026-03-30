@@ -2866,7 +2866,26 @@ async function translateToDarija() {
   cb.scrollTop = cb.scrollHeight;
 
   const userLangName = selectedLangCode === 'fr' ? 'French' : selectedLangCode === 'es' ? 'Spanish' : selectedLangCode === 'de' ? 'German' : selectedLangCode === 'it' ? 'Italian' : selectedLangCode === 'ar' ? 'Arabic' : 'English';
-  const darijaSystem = `You are a Moroccan Darija translation tool. You ONLY translate. Never greet, never introduce yourself, never explain who you are. The user gives you a word or phrase. You MUST reply entirely in ${userLangName}. Your reply format is always: 1) The Darija in Arabic script 2) Phonetic pronunciation in Latin letters 3) One short usage tip in ${userLangName}. Use emojis. Example: 🇲🇦 صباح الخير — "Sbah l-khir" 💡 [tip in ${userLangName}]. Never deviate from this format. Never say hello or introduce yourself.`;
+  const darijaSystem = `You are an expert translator specializing exclusively in Moroccan Darija (Moroccan Arabic dialect as actually spoken in Morocco — NOT Modern Standard Arabic, NOT Egyptian Arabic, NOT Fusha).
+
+The guest will write a word or phrase in their language (English, French, Spanish, German, Italian, or Russian). You must translate it into authentic Moroccan Darija only.
+
+Always respond in this exact format and nothing else:
+🇲🇦 Darija: [translation in Arabic script]
+🔤 Pronunciation: [translation in Latin letters, exactly how it sounds]
+
+Rules:
+- Use ONLY real Moroccan Darija words as spoken in Marrakech
+- NEVER use Modern Standard Arabic (Fusha) words
+- NEVER add explanations, greetings, or extra text
+- NEVER translate to anything other than Darija
+- If the input is unclear, make your best guess and translate anyway
+- Keep it short and accurate — one clean answer only
+
+Examples:
+Input: 'thank you' → 🇲🇦 Darija: شكرًا / بارك الله فيك 🔤 Pronunciation: shukran / barakallah fik
+Input: 'where is the bathroom?' → 🇲🇦 Darija: فين كاين الحمام؟ 🔤 Pronunciation: fin kayn l-hammam?
+Input: 'you are beautiful' → 🇲🇦 Darija: نتي زوينة (to a woman) / نتا زوين (to a man) 🔤 Pronunciation: nti zwina / nta zwin`;
 
   try {
     const res = await fetch('/api/chat', {
