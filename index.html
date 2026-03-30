@@ -3080,58 +3080,17 @@ function showFarewellCard(name) {
 }
 
 function saveFarewellCardAsPDF() {
-  const btn = document.getElementById('farewell-share-btn');
-  const t = T[selectedLangCode] || T['en'];
-  const farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Save Certificate';
+  var btn = document.getElementById('farewell-share-btn');
+  var t = T[selectedLangCode] || T['en'];
+  var farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Save Certificate';
 
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
 
-  const certDiv = document.getElementById('farewell-card-inner');
+  var certDiv = document.getElementById('farewell-card-inner');
   if (!certDiv) {
     console.error('[Certificate] #farewell-card-inner not found in DOM');
     if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
     return;
-  }
-
-  const saveMsg =
-    selectedLangCode === 'ar' ? 'اضغط مطولاً على الصورة ثم اختر حفظ الصورة' :
-    selectedLangCode === 'fr' ? 'Appuyez longuement sur l\'image puis Enregistrer' :
-    selectedLangCode === 'es' ? 'Mantén presionada la imagen y elige Guardar' :
-    selectedLangCode === 'it' ? 'Tieni premuta la foto e scegli Salva' :
-    selectedLangCode === 'de' ? 'Bild gedrückt halten dann Speichern' :
-    'Press & hold the image then Save to your phone';
-
-  function showOverlay(dataUrl) {
-    var existing = document.getElementById('cert-image-overlay');
-    if (existing) existing.remove();
-    var overlay = document.createElement('div');
-    overlay.id = 'cert-image-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:9999;display:flex;flex-direction:column;align-items:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;';
-    var inner = document.createElement('div');
-    inner.style.cssText = 'width:100%;max-width:400px;';
-    var header = document.createElement('div');
-    header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;';
-    var tip = document.createElement('div');
-    tip.style.cssText = 'color:#C8960A;font-family:Georgia,serif;font-size:13px;font-weight:700;line-height:1.4;flex:1;padding-right:10px;';
-    tip.textContent = '📸 ' + saveMsg;
-    var closeBtn = document.createElement('button');
-    closeBtn.style.cssText = 'flex-shrink:0;background:rgba(200,150,10,0.15);border:1.5px solid #C8960A;color:#C8960A;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer;';
-    closeBtn.textContent = '✕';
-    closeBtn.onclick = function() { overlay.remove(); };
-    header.appendChild(tip);
-    header.appendChild(closeBtn);
-    var img = document.createElement('img');
-    img.src = dataUrl;
-    img.style.cssText = 'width:100%;display:block;border-radius:4px;border:1px solid rgba(200,150,10,0.3);';
-    var footer = document.createElement('div');
-    footer.style.cssText = 'color:rgba(200,150,74,0.5);font-size:10px;text-align:center;margin-top:8px;font-family:Georgia,serif;';
-    footer.textContent = 'Riad Dar D\'Art · riaddardart.com';
-    inner.appendChild(header);
-    inner.appendChild(img);
-    inner.appendChild(footer);
-    overlay.appendChild(inner);
-    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
-    document.body.appendChild(overlay);
   }
 
   function doCapture() {
@@ -3145,14 +3104,19 @@ function saveFarewellCardAsPDF() {
       }).then(function(canvas) {
         try {
           var dataUrl = canvas.toDataURL('image/png');
-          showOverlay(dataUrl);
+          var a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = 'riad-dardart-certificate.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
           if (btn) {
             btn.disabled = false;
             btn.textContent = t.farewellSaved || '✅ Done!';
             setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
           }
         } catch(e2) {
-          console.error('[Certificate] overlay error:', e2);
+          console.error('[Certificate] download error:', e2);
           if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
         }
       }).catch(function(err) {
