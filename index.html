@@ -3085,9 +3085,8 @@ function saveFarewellCardAsPDF() {
   var farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Save Certificate';
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
 
-  var certDiv = document.getElementById('farewell-card-inner');
+  var certDiv = document.getElementById('farewell-card');
   if (!certDiv) {
-    alert('Certificate element not found');
     if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
     return;
   }
