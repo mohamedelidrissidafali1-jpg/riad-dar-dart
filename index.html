@@ -3074,12 +3074,13 @@ function showFarewellCard(name) {
     </div>
 
     <!-- DOWNLOAD BUTTON -->
-    <button id="farewell-share-btn" onclick="saveFarewellCardAsPDF()" style="width:100%;padding:14px;background:linear-gradient(135deg,#8B1A00,#C13A00);color:white;border:none;font-family:Georgia,serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-top:0;box-shadow:0 4px 20px rgba(139,26,0,0.4);">${farewellDownload}</button>
+    <button id="farewell-share-btn" onclick="alert('button works')" style="width:100%;padding:14px;background:linear-gradient(135deg,#8B1A00,#C13A00);color:white;border:none;font-family:Georgia,serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;margin-top:0;box-shadow:0 4px 20px rgba(139,26,0,0.4);">${farewellDownload}</button>
   `;
   card.style.display = 'block';
 }
 
 function saveFarewellCardAsPDF() {
+  alert('function called');
   var btn = document.getElementById('farewell-share-btn');
   var t = T[selectedLangCode] || T['en'];
   var farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Save Certificate';
