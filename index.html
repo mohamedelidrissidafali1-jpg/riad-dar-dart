@@ -501,6 +501,10 @@ const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwYLtNDCOJZK-gQyp
 
 // Session tracking
 const sessionBookings = [];
+function trackBooking(entry) {
+  sessionBookings.push(entry);
+  try { localStorage.setItem('dda_bookings', JSON.stringify(sessionBookings)); } catch(e) {}
+}
 let taxiSelection = null;
 const sessionButtons = [];
 const sessionTopics = [];
@@ -551,6 +555,7 @@ function clearSession() {
   localStorage.removeItem('dda_savedDate');
   localStorage.removeItem('dda_riad');
   localStorage.removeItem('dda_locked');
+  localStorage.removeItem('dda_bookings');
   localStorage.removeItem('followupStartTime');
   localStorage.removeItem('followupShown');
   // Clear upsell_initial key for this guest
@@ -1896,7 +1901,7 @@ window.addEventListener('load', () => {
   // ── STAFF RESET: ?reset=true clears all data and reloads to fresh onboarding ──
   if(window.location.search.indexOf('reset=true') !== -1) {
     ['dda_guestName','dda_langCode','dda_history','dda_savedDate','dda_riad','dda_locked',
-     'dda_lockedName','dda_lockedLang','dda_lockedRiad',
+     'dda_lockedName','dda_lockedLang','dda_lockedRiad','dda_bookings',
      STORAGE_KEY,'followupStartTime','followupShown'].forEach(k => localStorage.removeItem(k));
     window.location.replace(window.location.pathname);
     return;
@@ -1928,6 +1933,11 @@ window.addEventListener('load', () => {
     document.getElementById('instruction-screen').style.display = 'none';
     document.getElementById('save-screen').style.display = 'none';
     document.getElementById('name-screen').style.display = 'none';
+    // Restore persisted bookings from previous visits today
+    try {
+      var savedB = localStorage.getItem('dda_bookings');
+      if(savedB) JSON.parse(savedB).forEach(b => sessionBookings.push(b));
+    } catch(e) {}
     document.getElementById('main-app').style.display = 'block';
     applyAllTranslations();
     launchWelcome();
@@ -2265,7 +2275,7 @@ function confirmSpa() {
   }
   const svcText = spaService === 'hammam' ? 'Hammam' : spaService === 'massage' ? `Massage (${spaDuration} min)` : `Hammam + Massage (${spaDuration} min)`;
   const msg = `Hello! Spa booking request — Riad Dar D'Art:\n\n🌿 Service: ${svcText}\n👥 People: ${spaPeople}\n📅 Date & Time: ${time}\n👤 Reservation: ${name}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
-  sessionBookings.push(`🌿 ${svcText} — ${time} (${spaPeople} people)`);
+  trackBooking(`🌿 ${svcText} — ${time} (${spaPeople} people)`);
   window.open(`${RECEPTION_WA}?text=${encodeURIComponent(msg)}`, '_blank');
   setTimeout(() => {
     const form = document.getElementById('spa-form'); if (form) form.remove();
@@ -2305,7 +2315,7 @@ function selectChatTaxiOption(size) {
   const btn = document.getElementById('chat-taxi-wa-btn');
   btn.href = `${RECEPTION_WA}?text=${waMsg}`;
   btn.textContent = `🚖 ${t.taxiBook || 'Book via WhatsApp'} — ${label}`;
-  btn.onclick = () => { sessionBookings.push(`🚕 Airport Transfer — ${label}`); };
+  btn.onclick = () => { trackBooking(`🚕 Airport Transfer — ${label}`); };
   btn.style.display = 'block';
 }
 
@@ -2340,7 +2350,7 @@ function confirmTaxi() {
   const time = (document.getElementById('taxi-time') || {}).value.trim();
   if (!time) return;
   const msg = `Hello! Airport transfer request — Riad Dar D'Art:\n\n🚕 Flight time: ${time}\n👤 Reservation: ${reservationName}\n🌐 Language: ${selectedLang}\n\nPlease confirm. Thank you!`;
-  sessionBookings.push(`🚕 Airport Transfer — ${time}`);
+  trackBooking(`🚕 Airport Transfer — ${time}`);
   window.open(`${RECEPTION_WA}?text=${encodeURIComponent(msg)}`, '_blank');
   setTimeout(() => {
     const card = document.getElementById('taxi-card'); if (card) card.remove();
@@ -2766,7 +2776,7 @@ function showLocalExpDetail(key) {
     <div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:8px">${expName}</div>
     <div style="font-size:12px;color:#555;line-height:1.7;margin-bottom:6px">${expDesc}</div>
     <div style="font-size:13px;font-weight:700;color:#7a4a05;margin-bottom:12px">${exp.price}</div>
-    <a class="action-btn btn-wa" href="${RECEPTION_WA}?text=${waMsg}" target="_blank" onclick="sessionBookings.push('${expName}')" style="display:block;text-align:center;text-decoration:none">✅ ${t.expBookBtn}</a>
+    <a class="action-btn btn-wa" href="${RECEPTION_WA}?text=${waMsg}" target="_blank" onclick="trackBooking('${expName}')" style="display:block;text-align:center;text-decoration:none">✅ ${t.expBookBtn}</a>
     <button onclick="document.getElementById('local-exp-detail-card').remove()" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid #ddd;border-radius:8px;font-size:11px;color:#999;cursor:pointer;font-family:inherit">${t.expBackBtn}</button>`;
   cb.appendChild(card);
   cb.scrollTop = cb.scrollHeight;
@@ -2998,7 +3008,7 @@ function submitSurvey() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sheetData: sheetData })
-  }).catch(() => {});
+  }).then(() => { localStorage.removeItem('dda_bookings'); }).catch(() => {});
 
   // ── WHATSAPP SUMMARY — reception only, no guest questions or tracking data ──
   let summary = `📋 *Checkout Summary — Riad Dar D'Art*\n\n`;
