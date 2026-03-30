@@ -3092,51 +3092,73 @@ function saveFarewellCardAsPDF() {
   }
 
   function doCapture() {
-    html2canvas(certDiv, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#FDF6E3'
-    }).then(function(canvas) {
-      canvas.toBlob(function(blob) {
-        if (navigator.share && navigator.canShare) {
-          var file = new File([blob], 'riad-dardart-certificate.png', { type: 'image/png' });
-          if (navigator.canShare({ files: [file] })) {
-            navigator.share({
-              files: [file],
-              title: "Riad Dar D'Art Certificate"
-            }).then(function() {
-              if (btn) {
-                btn.disabled = false;
-                btn.textContent = t.farewellSaved || '✅ Done!';
-                setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
-              }
-            }).catch(function(err) {
-              if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-            });
-            return;
+    var originalDisplay = certDiv.style.display;
+    var originalVisibility = certDiv.style.visibility;
+    var originalPosition = certDiv.style.position;
+
+    // Force visible for capture
+    certDiv.style.display = 'block';
+    certDiv.style.visibility = 'visible';
+    certDiv.style.position = 'relative';
+
+    // Wait one frame for layout to settle
+    setTimeout(function() {
+      html2canvas(certDiv, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#FDF6E3',
+        width: certDiv.scrollWidth,
+        height: certDiv.scrollHeight
+      }).then(function(canvas) {
+        // Restore original styles
+        certDiv.style.display = originalDisplay;
+        certDiv.style.visibility = originalVisibility;
+        certDiv.style.position = originalPosition;
+
+        canvas.toBlob(function(blob) {
+          if (navigator.share && navigator.canShare) {
+            var file = new File([blob], 'riad-dardart-certificate.png', { type: 'image/png' });
+            if (navigator.canShare({ files: [file] })) {
+              navigator.share({
+                files: [file],
+                title: "Riad Dar D'Art Certificate"
+              }).then(function() {
+                if (btn) {
+                  btn.disabled = false;
+                  btn.textContent = t.farewellSaved || '✅ Done!';
+                  setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
+                }
+              }).catch(function() {
+                if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+              });
+              return;
+            }
           }
-        }
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'riad-dardart-certificate.png';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function() {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }, 1000);
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = t.farewellSaved || '✅ Done!';
-          setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
-        }
-      }, 'image/png');
-    }).catch(function(err) {
-      alert('html2canvas error: ' + err.message);
-      if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-    });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = 'riad-dardart-certificate.png';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function() {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 1000);
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = t.farewellSaved || '✅ Done!';
+            setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
+          }
+        }, 'image/png');
+      }).catch(function(err) {
+        certDiv.style.display = originalDisplay;
+        certDiv.style.visibility = originalVisibility;
+        certDiv.style.position = originalPosition;
+        alert('html2canvas error: ' + err.message);
+        if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+      });
+    }, 100);
   }
 
   if (window.html2canvas) {
