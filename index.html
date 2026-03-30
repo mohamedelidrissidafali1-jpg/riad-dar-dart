@@ -3086,10 +3086,12 @@ function saveFarewellCardAsPDF() {
 
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
 
-  const cardEl = document.getElementById('farewell-card');
-  if (!cardEl) { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } return; }
-  const certDiv = cardEl.firstElementChild;
-  if (!certDiv) { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } return; }
+  const certDiv = document.getElementById('farewell-card-inner');
+  if (!certDiv) {
+    console.error('[Certificate] #farewell-card-inner not found in DOM');
+    if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+    return;
+  }
 
   const saveMsg =
     selectedLangCode === 'ar' ? 'اضغط مطولاً على الصورة ثم اختر حفظ الصورة' :
@@ -3128,27 +3130,39 @@ function saveFarewellCardAsPDF() {
     inner.appendChild(img);
     inner.appendChild(footer);
     overlay.appendChild(inner);
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
     document.body.appendChild(overlay);
   }
 
   function doCapture() {
-    html2canvas(certDiv, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      backgroundColor: '#FDF6E3'
-    }).then(function(canvas) {
-      var dataUrl = canvas.toDataURL('image/png');
-      showOverlay(dataUrl);
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = t.farewellSaved || '✅ Done!';
-        setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
-      }
-    }).catch(function() {
+    try {
+      html2canvas(certDiv, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: true,
+        backgroundColor: '#FDF6E3'
+      }).then(function(canvas) {
+        try {
+          var dataUrl = canvas.toDataURL('image/png');
+          showOverlay(dataUrl);
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = t.farewellSaved || '✅ Done!';
+            setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
+          }
+        } catch(e2) {
+          console.error('[Certificate] overlay error:', e2);
+          if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+        }
+      }).catch(function(err) {
+        console.error('[Certificate] html2canvas error:', err);
+        if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+      });
+    } catch(e) {
+      console.error('[Certificate] doCapture exception:', e);
       if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-    });
+    }
   }
 
   if (window.html2canvas) {
@@ -3157,7 +3171,10 @@ function saveFarewellCardAsPDF() {
     var s = document.createElement('script');
     s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
     s.onload = doCapture;
-    s.onerror = function() { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } };
+    s.onerror = function() {
+      console.error('[Certificate] html2canvas CDN failed to load');
+      if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+    };
     document.head.appendChild(s);
   }
 }
