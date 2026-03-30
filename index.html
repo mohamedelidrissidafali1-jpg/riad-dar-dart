@@ -1847,32 +1847,29 @@ function launchWelcome() {
   cb.appendChild(welcome);
 
   // Quick info card
-  setTimeout(() => {
-    const infoCard = document.createElement('div');
-    infoCard.className = 'action-card';
-    infoCard.style.cssText = 'background:linear-gradient(135deg,#E1F5EE,#f7fdf9);border-color:#5DCAA5;';
-    const wifiLabel = selectedLangCode === 'ar' ? 'واي فاي' : selectedLangCode === 'de' ? 'WLAN' : 'WiFi';
-    const bfastLabel = selectedLangCode === 'ar' ? 'الإفطار' : selectedLangCode === 'fr' ? 'Petit-déjeuner' : selectedLangCode === 'de' ? 'Frühstück' : selectedLangCode === 'es' ? 'Desayuno' : selectedLangCode === 'it' ? 'Colazione' : 'Breakfast';
-    const poolLabel = selectedLangCode === 'ar' ? 'المسبح' : selectedLangCode === 'fr' ? 'Piscine' : selectedLangCode === 'de' ? 'Pool' : selectedLangCode === 'es' ? 'Piscina' : selectedLangCode === 'it' ? 'Piscina' : 'Pool';
-    const freeLabel = selectedLangCode === 'ar' ? 'مجاني' : selectedLangCode === 'fr' ? 'Gratuit' : selectedLangCode === 'de' ? 'Kostenlos' : selectedLangCode === 'es' ? 'Gratuito' : selectedLangCode === 'it' ? 'Gratuita' : 'Free';
-    const mapsBtnLabel = selectedLangCode === 'ar' ? '📍 إيجاد الرياض على الخريطة' : selectedLangCode === 'fr' ? '📍 Trouver le Riad sur Maps' : selectedLangCode === 'de' ? '📍 Riad auf Maps finden' : selectedLangCode === 'es' ? '📍 Encontrar el Riad en Maps' : selectedLangCode === 'it' ? '📍 Trova il Riad su Maps' : '📍 Find the Riad on Maps';
-    infoCard.innerHTML = `
-      <div class="action-card-title" style="color:#0F6E56;font-size:13px;margin-bottom:10px">${t.quickInfoTitle}</div>
-      <div style="font-size:12px;color:#333;line-height:2.1">
-        📶 <strong>${wifiLabel}:</strong> ${WIFI_PASSWORD}<br>
-        🍳 <strong>${bfastLabel}:</strong> 8:00 – 10:30<br>
-        🏊 <strong>${poolLabel}:</strong> ${freeLabel}
-      </div>
-      <a class="action-btn btn-maps" href="${GMAPS}" target="_blank" style="margin-top:10px">${mapsBtnLabel}</a>
-    `;
-    cb.appendChild(infoCard);
-    cb.scrollTop = 99999;
-    saveSession();
+  const infoCard = document.createElement('div');
+  infoCard.className = 'action-card';
+  infoCard.style.cssText = 'background:linear-gradient(135deg,#E1F5EE,#f7fdf9);border-color:#5DCAA5;';
+  const wifiLabel = selectedLangCode === 'ar' ? 'واي فاي' : selectedLangCode === 'de' ? 'WLAN' : 'WiFi';
+  const bfastLabel = selectedLangCode === 'ar' ? 'الإفطار' : selectedLangCode === 'fr' ? 'Petit-déjeuner' : selectedLangCode === 'de' ? 'Frühstück' : selectedLangCode === 'es' ? 'Desayuno' : selectedLangCode === 'it' ? 'Colazione' : 'Breakfast';
+  const poolLabel = selectedLangCode === 'ar' ? 'المسبح' : selectedLangCode === 'fr' ? 'Piscine' : selectedLangCode === 'de' ? 'Pool' : selectedLangCode === 'es' ? 'Piscina' : selectedLangCode === 'it' ? 'Piscina' : 'Pool';
+  const freeLabel = selectedLangCode === 'ar' ? 'مجاني' : selectedLangCode === 'fr' ? 'Gratuit' : selectedLangCode === 'de' ? 'Kostenlos' : selectedLangCode === 'es' ? 'Gratuito' : selectedLangCode === 'it' ? 'Gratuita' : 'Free';
+  const mapsBtnLabel = selectedLangCode === 'ar' ? '📍 إيجاد الرياض على الخريطة' : selectedLangCode === 'fr' ? '📍 Trouver le Riad sur Maps' : selectedLangCode === 'de' ? '📍 Riad auf Maps finden' : selectedLangCode === 'es' ? '📍 Encontrar el Riad en Maps' : selectedLangCode === 'it' ? '📍 Trova il Riad su Maps' : '📍 Find the Riad on Maps';
+  infoCard.innerHTML = `
+    <div class="action-card-title" style="color:#0F6E56;font-size:13px;margin-bottom:10px">${t.quickInfoTitle}</div>
+    <div style="font-size:12px;color:#333;line-height:2.1">
+      📶 <strong>${wifiLabel}:</strong> ${WIFI_PASSWORD}<br>
+      🍳 <strong>${bfastLabel}:</strong> 8:00 – 10:30<br>
+      🏊 <strong>${poolLabel}:</strong> ${freeLabel}
+    </div>
+    <a class="action-btn btn-maps" href="${GMAPS}" target="_blank" style="margin-top:10px">${mapsBtnLabel}</a>
+  `;
+  cb.appendChild(infoCard);
+  cb.scrollTop = 99999;
+  saveSession();
 
-    // ── SPA OFFER — fires 5s after welcome card, shown only once per guest ──
-    setTimeout(() => showSpaOffer(), 5000);
-
-  }, 800);
+  // ── SPA OFFER — fires 5s after welcome card, shown only once per guest ──
+  setTimeout(() => showSpaOffer(), 5000);
 
   // ── Save timestamp when welcome first loads (for 2h follow-up logic) ──
   localStorage.setItem('followupStartTime', Date.now().toString());
@@ -2731,7 +2728,7 @@ async function translateToDarija() {
   cb.scrollTop = cb.scrollHeight;
 
   const userLangName = selectedLangCode === 'fr' ? 'French' : selectedLangCode === 'es' ? 'Spanish' : selectedLangCode === 'de' ? 'German' : selectedLangCode === 'it' ? 'Italian' : selectedLangCode === 'ar' ? 'Arabic' : 'English';
-  const darijaSystem = `You are a Moroccan Darija translator helping a guest at a riad in Marrakech. The user gives you a word or phrase. You MUST reply entirely in ${userLangName}. Format: 1) Darija in Arabic script 2) Phonetic pronunciation in Latin letters 3) Very short usage tip in ${userLangName}. Use emojis. Example: 🇲🇦 شكراً — "Shukran" 💡 [tip in ${userLangName}]`;
+  const darijaSystem = `You are a Moroccan Darija translation tool. You ONLY translate. Never greet, never introduce yourself, never explain who you are. The user gives you a word or phrase. You MUST reply entirely in ${userLangName}. Your reply format is always: 1) The Darija in Arabic script 2) Phonetic pronunciation in Latin letters 3) One short usage tip in ${userLangName}. Use emojis. Example: 🇲🇦 صباح الخير — "Sbah l-khir" 💡 [tip in ${userLangName}]. Never deviate from this format. Never say hello or introduce yourself.`;
 
   try {
     const res = await fetch('/api/chat', {
@@ -3089,11 +3086,50 @@ function saveFarewellCardAsPDF() {
 
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
 
-  // Capture the card that is already rendered on screen
   const cardEl = document.getElementById('farewell-card');
   if (!cardEl) { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } return; }
   const certDiv = cardEl.firstElementChild;
   if (!certDiv) { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } return; }
+
+  const saveMsg =
+    selectedLangCode === 'ar' ? 'اضغط مطولاً على الصورة ثم اختر حفظ الصورة' :
+    selectedLangCode === 'fr' ? 'Appuyez longuement sur l\'image puis Enregistrer' :
+    selectedLangCode === 'es' ? 'Mantén presionada la imagen y elige Guardar' :
+    selectedLangCode === 'it' ? 'Tieni premuta la foto e scegli Salva' :
+    selectedLangCode === 'de' ? 'Bild gedrückt halten dann Speichern' :
+    'Press & hold the image then Save to your phone';
+
+  function showOverlay(dataUrl) {
+    var existing = document.getElementById('cert-image-overlay');
+    if (existing) existing.remove();
+    var overlay = document.createElement('div');
+    overlay.id = 'cert-image-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.96);z-index:9999;display:flex;flex-direction:column;align-items:center;padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;';
+    var inner = document.createElement('div');
+    inner.style.cssText = 'width:100%;max-width:400px;';
+    var header = document.createElement('div');
+    header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;';
+    var tip = document.createElement('div');
+    tip.style.cssText = 'color:#C8960A;font-family:Georgia,serif;font-size:13px;font-weight:700;line-height:1.4;flex:1;padding-right:10px;';
+    tip.textContent = '📸 ' + saveMsg;
+    var closeBtn = document.createElement('button');
+    closeBtn.style.cssText = 'flex-shrink:0;background:rgba(200,150,10,0.15);border:1.5px solid #C8960A;color:#C8960A;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer;';
+    closeBtn.textContent = '✕';
+    closeBtn.onclick = function() { overlay.remove(); };
+    header.appendChild(tip);
+    header.appendChild(closeBtn);
+    var img = document.createElement('img');
+    img.src = dataUrl;
+    img.style.cssText = 'width:100%;display:block;border-radius:4px;border:1px solid rgba(200,150,10,0.3);';
+    var footer = document.createElement('div');
+    footer.style.cssText = 'color:rgba(200,150,74,0.5);font-size:10px;text-align:center;margin-top:8px;font-family:Georgia,serif;';
+    footer.textContent = 'Riad Dar D\'Art · riaddardart.com';
+    inner.appendChild(header);
+    inner.appendChild(img);
+    inner.appendChild(footer);
+    overlay.appendChild(inner);
+    document.body.appendChild(overlay);
+  }
 
   function doCapture() {
     html2canvas(certDiv, {
@@ -3101,52 +3137,16 @@ function saveFarewellCardAsPDF() {
       useCORS: true,
       allowTaint: true,
       logging: false,
-      backgroundColor: '#1a1008'
-    }).then(canvas => {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-      if (isIOS) {
-        // iOS cannot download files — show image full screen, guest saves to Photos
-        const dataUrl = canvas.toDataURL('image/png');
-        const overlay = document.createElement('div');
-        overlay.id = 'cert-image-overlay';
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px;overflow-y:auto;';
-        const saveTip = t.farewellListenBtn ? '' : '';
-        const iosMsg = (t.farewellDownload || '').includes('حفظ') ? 'اضغط مطولاً على الصورة ← حفظ في الصور' :
-                       (t.farewellDownload || '').includes('partager') ? 'Appuyez longuement → Enregistrer dans Photos' :
-                       (t.farewellDownload || '').includes('compartir') ? 'Mantén presionado → Guardar en Fotos' :
-                       (t.farewellDownload || '').includes('condividi') ? 'Tieni premuto → Salva in Foto' :
-                       (t.farewellDownload || '').includes('teilen') ? 'Gedrückt halten → In Fotos speichern' :
-                       'Press & hold the image → Save to Photos';
-        overlay.innerHTML = `
-          <div style="width:100%;max-width:420px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-              <div style="color:#C8960A;font-family:Georgia,serif;font-size:13px;font-weight:700;">📸 ${iosMsg}</div>
-              <button onclick="document.getElementById('cert-image-overlay').remove()" style="background:rgba(200,150,10,0.2);border:1px solid #C8960A;color:#C8960A;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;line-height:1;">✕</button>
-            </div>
-            <img src="${dataUrl}" style="width:100%;border-radius:4px;display:block;" />
-          </div>`;
-        document.body.appendChild(overlay);
-      } else {
-        // Android & desktop — direct PNG download
-        canvas.toBlob(blob => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'riad-dar-dart-certificate.png';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(() => URL.revokeObjectURL(url), 5000);
-        }, 'image/png');
-      }
-
+      backgroundColor: '#FDF6E3'
+    }).then(function(canvas) {
+      var dataUrl = canvas.toDataURL('image/png');
+      showOverlay(dataUrl);
       if (btn) {
         btn.disabled = false;
-        btn.textContent = t.farewellSaved || '✅ Saved!';
-        setTimeout(() => { btn.textContent = farewellDownload; }, 3000);
+        btn.textContent = t.farewellSaved || '✅ Done!';
+        setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
       }
-    }).catch(() => {
+    }).catch(function() {
       if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
     });
   }
@@ -3154,10 +3154,10 @@ function saveFarewellCardAsPDF() {
   if (window.html2canvas) {
     doCapture();
   } else {
-    const s = document.createElement('script');
+    var s = document.createElement('script');
     s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
     s.onload = doCapture;
-    s.onerror = () => { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } };
+    s.onerror = function() { if (btn) { btn.disabled = false; btn.textContent = farewellDownload; } };
     document.head.appendChild(s);
   }
 }
