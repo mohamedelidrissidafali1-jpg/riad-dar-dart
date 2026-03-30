@@ -2697,13 +2697,23 @@ function showDarijaLearn() {
   const card = document.createElement('div');
   card.className = 'action-card'; card.id = 'darija-card';
   card.style.cssText = 'border-color:#C8BC5A;';
+  const userLangName = selectedLangCode === 'fr' ? 'French' : selectedLangCode === 'es' ? 'Spanish' : selectedLangCode === 'de' ? 'German' : selectedLangCode === 'it' ? 'Italian' : selectedLangCode === 'ar' ? 'Arabic' : 'English';
+  const typeInstruction =
+    selectedLangCode === 'fr' ? '⬇️ Tapez ci-dessous pour traduire' :
+    selectedLangCode === 'es' ? '⬇️ Escribe abajo para traducir' :
+    selectedLangCode === 'de' ? '⬇️ Unten eingeben zum Übersetzen' :
+    selectedLangCode === 'it' ? '⬇️ Scrivi qui sotto per tradurre' :
+    selectedLangCode === 'ar' ? '⬇️ اكتب أدناه للترجمة' :
+    '⬇️ Type below to translate';
   card.innerHTML = `
-    <div class="action-card-title" style="color:#7a4a05;font-size:13px;margin-bottom:8px">🇲🇦 ${t.sugDarija}</div>
-    <p style="font-size:12px;color:#555;margin-bottom:10px">${t.darijaIntro}</p>
-    <input id="darija-input" class="onb-input" type="text" inputmode="text" enterkeyhint="send" placeholder="${t.darijaPlaceholder}" style="margin-bottom:8px;font-size:14px" onkeydown="if(event.key==='Enter') translateToDarija()"/>
-    <button class="action-btn btn-teal" onclick="translateToDarija()" style="margin-bottom:0">${t.darijaBtn}</button>`;
+    <div class="action-card-title" style="color:#7a4a05;font-size:13px;margin-bottom:6px">🇲🇦 ${t.sugDarija}</div>
+    <p style="font-size:12px;color:#555;margin-bottom:8px">${t.darijaIntro}</p>
+    <div style="font-size:14px;font-weight:700;color:#C8960A;margin-bottom:8px">${typeInstruction}</div>
+    <input id="darija-input" class="onb-input" type="text" inputmode="text" enterkeyhint="send" placeholder="${t.darijaPlaceholder}" style="border:2px solid #C8960A;border-radius:8px;padding:10px;width:100%;font-size:15px;margin-bottom:8px" onkeydown="if(event.key==='Enter') translateToDarija()"/>
+    <button onclick="translateToDarija()" style="width:100%;padding:13px;font-size:15px;font-weight:700;background:#1D9E75;color:white;border:none;border-radius:8px;cursor:pointer;margin-bottom:0">${t.darijaBtn}</button>`;
   cb.appendChild(card);
   cb.scrollTop = cb.scrollHeight;
+  setTimeout(function() { var inp = document.getElementById('darija-input'); if(inp) inp.focus(); }, 300);
 }
 
 async function translateToDarija() {
