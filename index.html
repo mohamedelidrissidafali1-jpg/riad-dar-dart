@@ -549,6 +549,8 @@ function clearSession() {
   localStorage.removeItem('dda_langCode');
   localStorage.removeItem('dda_history');
   localStorage.removeItem('dda_savedDate');
+  localStorage.removeItem('dda_riad');
+  localStorage.removeItem('dda_locked');
   localStorage.removeItem('followupStartTime');
   localStorage.removeItem('followupShown');
   // Clear upsell_initial key for this guest
@@ -1788,6 +1790,7 @@ function selectRiad(riad) {
     localStorage.setItem('dda_guestName', reservationName);
     localStorage.setItem('dda_langCode', selectedLangCode);
     localStorage.setItem('dda_savedDate', new Date().toDateString());
+    localStorage.setItem('dda_riad', riad);
   } catch(e) {}
   if(riad === '19') {
     WIFI_PASSWORD = '0908070605';
@@ -1807,44 +1810,61 @@ function selectRiad(riad) {
 }
 
 // ══════════════════════════════════════════════════════════
+//  LOCK SCREEN (shown after checkout on next page load)
+// ══════════════════════════════════════════════════════════
+function showLockScreen() {
+  var lang = localStorage.getItem('dda_langCode') || selectedLangCode || 'en';
+  var msg =
+    lang === 'fr' ? 'Merci pour votre séjour. Veuillez scanner le QR code pour démarrer une nouvelle session.' :
+    lang === 'es' ? 'Gracias por su estancia. Escanee el código QR para iniciar una nueva sesión.' :
+    lang === 'de' ? 'Danke für Ihren Aufenthalt. Bitte scannen Sie den QR-Code für eine neue Sitzung.' :
+    lang === 'it' ? 'Grazie per il soggiorno. Scansioni il QR code per iniziare una nuova sessione.' :
+    lang === 'ar' ? 'شكراً على إقامتكم. يرجى مسح رمز QR لبدء جلسة جديدة.' :
+    'Thank you for staying with us. Please scan the QR code to start a new session.';
+  document.body.innerHTML = '';
+  document.body.style.cssText = 'margin:0;padding:0;background:#f5f0e8;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Georgia,serif;text-align:center;';
+  var div = document.createElement('div');
+  div.style.cssText = 'padding:40px 30px;max-width:340px;';
+  div.innerHTML =
+    '<div style="font-size:48px;margin-bottom:20px">🌙</div>' +
+    '<div style="font-size:18px;color:#0F6E56;font-weight:700;margin-bottom:16px">Riad Dar D\'Art</div>' +
+    '<div style="font-size:15px;color:#444;line-height:1.7">' + msg + '</div>';
+  document.body.appendChild(div);
+}
+
+// ══════════════════════════════════════════════════════════
 //  RESTORE SESSION
 // ══════════════════════════════════════════════════════════
 window.addEventListener('load', () => {
-  // Check same-day dda keys first
-  var ddaSavedDate = localStorage.getItem('dda_savedDate');
-  var ddaTodayDate = new Date().toDateString();
+  // ── STAFF RESET: ?reset=true clears all data and reloads to fresh onboarding ──
+  if(window.location.search.indexOf('reset=true') !== -1) {
+    ['dda_guestName','dda_langCode','dda_history','dda_savedDate','dda_riad','dda_locked',
+     STORAGE_KEY,'followupStartTime','followupShown'].forEach(k => localStorage.removeItem(k));
+    window.location.replace(window.location.pathname);
+    return;
+  }
+
+  // ── LOCKED: guest has checked out — show lock screen until staff resets ──
+  if(localStorage.getItem('dda_locked') === 'true') {
+    showLockScreen();
+    return;
+  }
+
+  // ── RETURNING GUEST: skip onboarding, start a fresh empty conversation ──
   var ddaName = localStorage.getItem('dda_guestName');
   var ddaLang = localStorage.getItem('dda_langCode');
-
-  const session = loadSession();
-  if(session && session.langCode && session.chatHTML && session.reservationName) {
-    selectedLang = session.lang;
-    selectedLangCode = session.langCode;
-    reservationName = session.reservationName || '';
-    if(session.history) session.history.forEach(m => history.push(m));
-    document.body.dir = selectedLangCode === 'ar' ? 'rtl' : 'ltr';
-    document.getElementById('lang-screen').style.display = 'none';
-    document.getElementById('instruction-screen').style.display = 'none';
-    document.getElementById('save-screen').style.display = 'none';
-    document.getElementById('name-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    applyAllTranslations();
-    document.getElementById('chat-box').innerHTML = session.chatHTML;
-    setTimeout(() => {
-      const cb = document.getElementById('chat-box');
-      cb.scrollTop = cb.scrollHeight;
-      addReturnBanner();
-      // ── UPSELL TRIGGER 2 — check if 2h have passed since first load ──
-      checkAndShowFollowup();
-    }, 100);
-  } else if(ddaSavedDate === ddaTodayDate && ddaName && ddaLang) {
-    // Fallback: restore from dda keys if main session missing but same day
+  if(ddaName && ddaLang) {
     selectedLangCode = ddaLang;
     selectedLang = ddaLang === 'fr' ? 'Français' : ddaLang === 'es' ? 'Español' : ddaLang === 'de' ? 'Deutsch' : ddaLang === 'it' ? 'Italiano' : ddaLang === 'ar' ? 'العربية' : 'English';
     reservationName = ddaName;
-    var ddaHistory = localStorage.getItem('dda_history');
-    var parsedHistory = [];
-    if(ddaHistory) { try { parsedHistory = JSON.parse(ddaHistory); parsedHistory.forEach(m => history.push(m)); } catch(e) {} }
+    // Restore riad-specific settings
+    var ddaRiad = localStorage.getItem('dda_riad');
+    if(ddaRiad === '19') {
+      WIFI_PASSWORD = '0908070605';
+      RECEPTION_WA = 'https://wa.me/212702617999';
+      ALERT_WA = 'https://wa.me/212702617999';
+      GMAPS = 'https://www.google.com/maps/place/Riad+Dar+d%E2%80%98Art+2/@31.6322583,-7.9974182,17z/data=!3m1!4b1!4m6!3m5!1s0xdafefbdbdc99443:0x6d6be0e954cf234b!8m2!3d31.6322583!4d-7.9948433!16s%2Fg%2F11jsvvn8x7?entry=ttu&g_ep=EgoyMDI2MDMyNC4wIKXMDSoASAFQAw%3D%3D';
+    }
     document.body.dir = selectedLangCode === 'ar' ? 'rtl' : 'ltr';
     document.getElementById('lang-screen').style.display = 'none';
     document.getElementById('instruction-screen').style.display = 'none';
@@ -1852,20 +1872,11 @@ window.addEventListener('load', () => {
     document.getElementById('name-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
     applyAllTranslations();
-    // Render saved messages into chat-box using same pattern as live chat
-    var cbRestore = document.getElementById('chat-box');
-    parsedHistory.forEach(function(m) {
-      var div = document.createElement('div');
-      div.className = m.role === 'user' ? 'msg msg-user' : 'msg msg-bot';
-      div.textContent = m.content;
-      cbRestore.appendChild(div);
-    });
-    setTimeout(() => {
-      cbRestore.scrollTop = cbRestore.scrollHeight;
-      addReturnBanner();
-      checkAndShowFollowup();
-    }, 100);
+    launchWelcome();
+    return;
   }
+
+  // ── FIRST TIME: no data — show onboarding as normal (do nothing) ──
 });
 
 function addReturnBanner() {
@@ -3009,6 +3020,7 @@ function submitSurvey() {
     const chatTab = document.getElementById('tab-chat-btn');
     if(chatTab) { chatTab.style.pointerEvents = 'none'; chatTab.style.opacity = '0.35'; }
     clearSession();
+    localStorage.setItem('dda_locked', 'true');
     const ci = document.getElementById('chat-input');
     const sb = document.getElementById('send-btn');
     if(ci) { ci.disabled = true; ci.placeholder = '—'; }
