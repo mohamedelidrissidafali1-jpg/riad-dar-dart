@@ -2992,7 +2992,7 @@ function showFarewellCard(name) {
   const farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Download Your Certificate';
 
   card.innerHTML = `
-    <div dir="${isRTL ? 'rtl' : 'ltr'}" style="font-family:Georgia,serif;overflow:hidden;border:2px solid #C8960A;box-shadow:0 8px 40px rgba(0,0,0,0.18);">
+    <div id="farewell-card-inner" dir="${isRTL ? 'rtl' : 'ltr'}" style="font-family:Georgia,serif;overflow:hidden;border:2px solid #C8960A;box-shadow:0 8px 40px rgba(0,0,0,0.18);">
 
       <!-- GOLD TOP BAND -->
       <div style="height:5px;background:linear-gradient(90deg,#5C3A00,#C8960A,#F5C842,#FFDE5A,#F5C842,#C8960A,#5C3A00);"></div>
@@ -3085,37 +3085,29 @@ function saveFarewellCardAsPDF() {
   var farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Save Certificate';
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
 
-  var certDiv = document.getElementById('farewell-card');
+  var certDiv = document.getElementById('farewell-card-inner');
   if (!certDiv) {
     if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
     return;
   }
 
   function doCapture() {
-    var originalDisplay = certDiv.style.display;
-    var originalVisibility = certDiv.style.visibility;
-    var originalPosition = certDiv.style.position;
-
-    // Force visible for capture
-    certDiv.style.display = 'block';
-    certDiv.style.visibility = 'visible';
-    certDiv.style.position = 'relative';
-
-    // Wait one frame for layout to settle
     setTimeout(function() {
+      var w = certDiv.offsetWidth;
+      var h = certDiv.offsetHeight;
+      if (!w || !h) {
+        alert('Card size is 0 — width:' + w + ' height:' + h);
+        if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+        return;
+      }
       html2canvas(certDiv, {
         scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#FDF6E3',
-        width: certDiv.scrollWidth,
-        height: certDiv.scrollHeight
+        width: w,
+        height: h
       }).then(function(canvas) {
-        // Restore original styles
-        certDiv.style.display = originalDisplay;
-        certDiv.style.visibility = originalVisibility;
-        certDiv.style.position = originalPosition;
-
         canvas.toBlob(function(blob) {
           if (navigator.share && navigator.canShare) {
             var file = new File([blob], 'riad-dardart-certificate.png', { type: 'image/png' });
@@ -3152,13 +3144,10 @@ function saveFarewellCardAsPDF() {
           }
         }, 'image/png');
       }).catch(function(err) {
-        certDiv.style.display = originalDisplay;
-        certDiv.style.visibility = originalVisibility;
-        certDiv.style.position = originalPosition;
         alert('html2canvas error: ' + err.message);
         if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
       });
-    }, 100);
+    }, 300);
   }
 
   if (window.html2canvas) {
