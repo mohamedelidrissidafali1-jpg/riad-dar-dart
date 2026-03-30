@@ -3083,50 +3083,43 @@ function saveFarewellCardAsPDF() {
   var btn = document.getElementById('farewell-share-btn');
   var t = T[selectedLangCode] || T['en'];
   var farewellDownload = t.farewellDownload || t.farewellCardShare || '⬇ Save Certificate';
-
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
 
   var certDiv = document.getElementById('farewell-card-inner');
   if (!certDiv) {
-    console.error('[Certificate] #farewell-card-inner not found in DOM');
     if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
     return;
   }
 
   function doCapture() {
-    try {
-      html2canvas(certDiv, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: true,
-        backgroundColor: '#FDF6E3'
-      }).then(function(canvas) {
-        try {
-          var dataUrl = canvas.toDataURL('image/png');
-          var a = document.createElement('a');
-          a.href = dataUrl;
-          a.download = 'riad-dardart-certificate.png';
-          document.body.appendChild(a);
-          a.click();
+    html2canvas(certDiv, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#FDF6E3'
+    }).then(function(canvas) {
+      canvas.toBlob(function(blob) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'riad-dardart-certificate.png';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
           document.body.removeChild(a);
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = t.farewellSaved || '✅ Done!';
-            setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
-          }
-        } catch(e2) {
-          console.error('[Certificate] download error:', e2);
-          if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+          URL.revokeObjectURL(url);
+        }, 1000);
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = t.farewellSaved || '✅ Done!';
+          setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
         }
-      }).catch(function(err) {
-        console.error('[Certificate] html2canvas error:', err);
-        if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-      });
-    } catch(e) {
-      console.error('[Certificate] doCapture exception:', e);
+      }, 'image/png');
+    }).catch(function(err) {
+      console.error('[Certificate] error:', err);
       if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
-    }
+    });
   }
 
   if (window.html2canvas) {
@@ -3136,7 +3129,6 @@ function saveFarewellCardAsPDF() {
     s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
     s.onload = doCapture;
     s.onerror = function() {
-      console.error('[Certificate] html2canvas CDN failed to load');
       if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
     };
     document.head.appendChild(s);
