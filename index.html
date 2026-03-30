@@ -525,6 +525,11 @@ function saveSession() {
       chatHTML: document.getElementById('chat-box') ? document.getElementById('chat-box').innerHTML : '',
       savedAt: Date.now()
     }));
+    // dda keys for same-day persistence
+    if (reservationName) localStorage.setItem('dda_guestName', reservationName);
+    if (selectedLangCode) localStorage.setItem('dda_langCode', selectedLangCode);
+    localStorage.setItem('dda_history', JSON.stringify(history));
+    localStorage.setItem('dda_savedDate', new Date().toDateString());
   } catch(e) {}
 }
 
@@ -533,13 +538,17 @@ function loadSession() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if(!raw) return null;
     const s = JSON.parse(raw);
-    if(Date.now() - s.savedAt > 7 * 24 * 60 * 60 * 1000) { localStorage.removeItem(STORAGE_KEY); return null; }
+    if(new Date(s.savedAt).toDateString() !== new Date().toDateString()) { localStorage.removeItem(STORAGE_KEY); return null; }
     return s;
   } catch(e) { return null; }
 }
 
 function clearSession() {
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem('dda_guestName');
+  localStorage.removeItem('dda_langCode');
+  localStorage.removeItem('dda_history');
+  localStorage.removeItem('dda_savedDate');
   localStorage.removeItem('followupStartTime');
   localStorage.removeItem('followupShown');
   // Clear upsell_initial key for this guest
@@ -1774,6 +1783,12 @@ function submitGuestName() {
 }
 
 function selectRiad(riad) {
+  // Save name and language immediately when guest enters chat
+  try {
+    localStorage.setItem('dda_guestName', reservationName);
+    localStorage.setItem('dda_langCode', selectedLangCode);
+    localStorage.setItem('dda_savedDate', new Date().toDateString());
+  } catch(e) {}
   if(riad === '19') {
     WIFI_PASSWORD = '0908070605';
     RECEPTION_WA = 'https://wa.me/212702617999';
@@ -1795,6 +1810,12 @@ function selectRiad(riad) {
 //  RESTORE SESSION
 // ══════════════════════════════════════════════════════════
 window.addEventListener('load', () => {
+  // Check same-day dda keys first
+  var ddaSavedDate = localStorage.getItem('dda_savedDate');
+  var ddaTodayDate = new Date().toDateString();
+  var ddaName = localStorage.getItem('dda_guestName');
+  var ddaLang = localStorage.getItem('dda_langCode');
+
   const session = loadSession();
   if(session && session.langCode && session.chatHTML && session.reservationName) {
     selectedLang = session.lang;
@@ -1814,6 +1835,24 @@ window.addEventListener('load', () => {
       cb.scrollTop = cb.scrollHeight;
       addReturnBanner();
       // ── UPSELL TRIGGER 2 — check if 2h have passed since first load ──
+      checkAndShowFollowup();
+    }, 100);
+  } else if(ddaSavedDate === ddaTodayDate && ddaName && ddaLang) {
+    // Fallback: restore from dda keys if main session missing but same day
+    selectedLangCode = ddaLang;
+    selectedLang = ddaLang === 'fr' ? 'Français' : ddaLang === 'es' ? 'Español' : ddaLang === 'de' ? 'Deutsch' : ddaLang === 'it' ? 'Italiano' : ddaLang === 'ar' ? 'العربية' : 'English';
+    reservationName = ddaName;
+    var ddaHistory = localStorage.getItem('dda_history');
+    if(ddaHistory) { try { JSON.parse(ddaHistory).forEach(m => history.push(m)); } catch(e) {} }
+    document.body.dir = selectedLangCode === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('lang-screen').style.display = 'none';
+    document.getElementById('instruction-screen').style.display = 'none';
+    document.getElementById('save-screen').style.display = 'none';
+    document.getElementById('name-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    applyAllTranslations();
+    setTimeout(() => {
+      addReturnBanner();
       checkAndShowFollowup();
     }, 100);
   }
