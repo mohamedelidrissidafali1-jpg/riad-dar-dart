@@ -1843,7 +1843,8 @@ window.addEventListener('load', () => {
     selectedLang = ddaLang === 'fr' ? 'Français' : ddaLang === 'es' ? 'Español' : ddaLang === 'de' ? 'Deutsch' : ddaLang === 'it' ? 'Italiano' : ddaLang === 'ar' ? 'العربية' : 'English';
     reservationName = ddaName;
     var ddaHistory = localStorage.getItem('dda_history');
-    if(ddaHistory) { try { JSON.parse(ddaHistory).forEach(m => history.push(m)); } catch(e) {} }
+    var parsedHistory = [];
+    if(ddaHistory) { try { parsedHistory = JSON.parse(ddaHistory); parsedHistory.forEach(m => history.push(m)); } catch(e) {} }
     document.body.dir = selectedLangCode === 'ar' ? 'rtl' : 'ltr';
     document.getElementById('lang-screen').style.display = 'none';
     document.getElementById('instruction-screen').style.display = 'none';
@@ -1851,7 +1852,16 @@ window.addEventListener('load', () => {
     document.getElementById('name-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
     applyAllTranslations();
+    // Render saved messages into chat-box using same pattern as live chat
+    var cbRestore = document.getElementById('chat-box');
+    parsedHistory.forEach(function(m) {
+      var div = document.createElement('div');
+      div.className = m.role === 'user' ? 'msg msg-user' : 'msg msg-bot';
+      div.textContent = m.content;
+      cbRestore.appendChild(div);
+    });
     setTimeout(() => {
+      cbRestore.scrollTop = cbRestore.scrollHeight;
       addReturnBanner();
       checkAndShowFollowup();
     }, 100);
