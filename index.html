@@ -3099,11 +3099,31 @@ function saveFarewellCardAsPDF() {
       backgroundColor: '#FDF6E3'
     }).then(function(canvas) {
       canvas.toBlob(function(blob) {
+        // Try Web Share API first (works great on Android Chrome)
+        if (navigator.share && navigator.canShare) {
+          var file = new File([blob], 'riad-dardart-certificate.png', { type: 'image/png' });
+          if (navigator.canShare({ files: [file] })) {
+            navigator.share({
+              files: [file],
+              title: 'Riad Dar D\'Art — Certificate'
+            }).then(function() {
+              if (btn) {
+                btn.disabled = false;
+                btn.textContent = t.farewellSaved || '✅ Done!';
+                setTimeout(function() { btn.textContent = farewellDownload; }, 3000);
+              }
+            }).catch(function(err) {
+              console.log('Share cancelled or failed:', err);
+              if (btn) { btn.disabled = false; btn.textContent = farewellDownload; }
+            });
+            return;
+          }
+        }
+        // Fallback: blob URL download
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
         a.download = 'riad-dardart-certificate.png';
-        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         setTimeout(function() {
