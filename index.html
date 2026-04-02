@@ -3000,28 +3000,45 @@ function submitSurvey() {
   const name = document.getElementById('guest-name').value.trim() || reservationName || 'Guest';
   const STAR_LABELS = ['', '⭐ Needs improvement', '⭐⭐ Poor', '⭐⭐⭐ Acceptable', '⭐⭐⭐⭐ Good', '⭐⭐⭐⭐⭐ Excellent'];
   const sections = [
-    { key: 'staff', label: 'Staff & Service', comment: document.getElementById('cmt-staff').value.trim() },
-    { key: 'room', label: 'Room', comment: document.getElementById('cmt-room').value.trim() },
-    { key: 'breakfast', label: 'Breakfast', comment: document.getElementById('cmt-breakfast').value.trim() },
+    { key: 'staff', label: 'Staff & Service', comment: cmtStaff },
+    { key: 'room', label: 'Room', comment: cmtRoom },
+    { key: 'breakfast', label: 'Breakfast', comment: cmtBreakfast },
     { key: 'hammam', label: 'Hammam', comment: '' },
     { key: 'massage', label: 'Massage', comment: '' },
     { key: 'transport', label: 'Airport Transfer', comment: '' },
   ];
-  const finalComment = document.getElementById('cmt-final').value.trim();
-  const today = new Date().toLocaleDateString('fr-FR');
+  const cmtStaff     = document.getElementById('cmt-staff').value.trim();
+  const cmtRoom      = document.getElementById('cmt-room').value.trim();
+  const cmtBreakfast = document.getElementById('cmt-breakfast').value.trim();
+  const cmtFinal     = document.getElementById('cmt-final').value.trim();
+  const today = new Date().toLocaleDateString('en-GB');
+  const langNameEn = { en: 'English', fr: 'French', es: 'Spanish', it: 'Italian', de: 'German', ar: 'Arabic' }[selectedLangCode] || selectedLang;
+
+  // Combine all comment boxes into one field, labelled, skipping empties
+  const commentParts = [];
+  if (cmtStaff)     commentParts.push('Staff: ' + cmtStaff);
+  if (cmtRoom)      commentParts.push('Room: ' + cmtRoom);
+  if (cmtBreakfast) commentParts.push('Breakfast: ' + cmtBreakfast);
+  if (cmtFinal)     commentParts.push('General: ' + cmtFinal);
+  const combinedComment = commentParts.join(' | ') || '';
+
+  const hammamTried    = document.getElementById('hammam-yes').classList.contains('selected');
+  const massageTried   = document.getElementById('massage-yes').classList.contains('selected');
+  const transportTried = document.getElementById('transport-yes').classList.contains('selected');
 
   // ── GOOGLE SHEET (internal — full data, sent silently in background) ──
   const sheetData = {
-    date: today, guestName: name, language: selectedLang,
+    date: today,
+    guestName: name,
+    language: langNameEn,
     bookings: sessionBookings.length > 0 ? sessionBookings.join(', ') : 'None',
-    staffRating: toStars(ratings.staff),
-    roomRating: toStars(ratings.room),
-    breakfastRating: toStars(ratings.breakfast),
-    hammamRating: toStars(ratings.hammam),
-    massageRating: toStars(ratings.massage),
-    transportRating: toStars(ratings.transport),
-    finalComment: finalComment || '',
-    topicsExplored: sessionButtons.length > 0 ? sessionButtons.join(', ') : 'None',
+    staffRating:     ratings.staff     ? String(ratings.staff)     : '',
+    roomRating:      ratings.room      ? String(ratings.room)      : '',
+    breakfastRating: ratings.breakfast ? String(ratings.breakfast) : '',
+    hammamRating:    hammamTried    ? (ratings.hammam    ? String(ratings.hammam)    : 'Yes') : 'No',
+    massageRating:   massageTried   ? (ratings.massage   ? String(ratings.massage)   : 'Yes') : 'No',
+    transportRating: transportTried ? (ratings.transport ? String(ratings.transport) : 'Yes') : 'No',
+    finalComment: combinedComment,
     new_questions: getUsefulQuestions().join(' | ') || 'None'
   };
   console.log("SESSION TOPICS:", sessionTopics);
@@ -3036,7 +3053,7 @@ function submitSurvey() {
   let summary = `📋 *Checkout Summary — Riad Dar D'Art*\n\n`;
   summary += `📅 Date: ${today}\n`;
   summary += `👤 Guest: *${name}*\n`;
-  summary += `🌐 Language: ${selectedLang}\n\n`;
+  summary += `🌐 Language: ${langNameEn}\n\n`;
   if(sessionBookings.length > 0) {
     summary += `🛎️ *Services booked:*\n`;
     sessionBookings.forEach(b => { summary += `• ${b}\n`; });
@@ -3051,7 +3068,7 @@ function submitSurvey() {
     summary += `⭐ *Satisfaction ratings:*\n`;
     ratedSections.forEach(s => { summary += `• ${s.label}: ${STAR_LABELS[ratings[s.key]]}${s.comment ? ` — "${s.comment}"` : ''}\n`; });
   }
-  if(finalComment) summary += `\n💬 *Guest message:*\n"${finalComment}"`;
+  if(cmtFinal) summary += `\n💬 *Guest message:*\n"${cmtFinal}"`;
 
   // Send checkout summary to reception only
   setTimeout(() => {
@@ -3077,14 +3094,14 @@ function submitSurvey() {
   const lowRatings = sections.filter(s => ratings[s.key] > 0 && ratings[s.key] <= 3);
   if(lowRatings.length > 0) {
     let msg = `🚨 *Alert — Low Ratings — Riad Dar D'Art*\n\n`;
-    msg += `👤 Guest: *${name}*\n🌐 Language: ${selectedLang}\n\n`;
+    msg += `👤 Guest: *${name}*\n🌐 Language: ${langNameEn}\n\n`;
     msg += `⚠️ *Low ratings received:*\n`;
     lowRatings.forEach(s => {
       msg += `• ${s.label}: ${STAR_LABELS[ratings[s.key]]}`;
       if(s.comment) msg += `\n  💬 "${s.comment}"`;
       msg += '\n';
     });
-    if(finalComment) msg += `\n💬 *Guest message:*\n"${finalComment}"`;
+    if(cmtFinal) msg += `\n💬 *Guest message:*\n"${cmtFinal}"`;
     msg += `\n\n📋 Please follow up with this guest as soon as possible.`;
     // Alert goes to RECEPTION only — manager number removed
     const alertUrl = `${RECEPTION_WA}?text=${encodeURIComponent(msg)}`;
