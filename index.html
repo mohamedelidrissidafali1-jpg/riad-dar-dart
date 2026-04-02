@@ -2996,9 +2996,45 @@ function getUsefulQuestions() {
 function submitSurvey() {
   const btn = document.getElementById('submit-survey-btn');
   btn.disabled = true; btn.textContent = '...';
+
+  // Hard deadline — show thankyou no matter what within 10 seconds
+  const hardDeadline = setTimeout(() => completeCheckout(), 10000);
+
+  function completeCheckout() {
+    clearTimeout(hardDeadline);
+    const t = T[selectedLangCode] || T['en'];
+    document.getElementById('survey-form').style.display = 'none';
+    document.getElementById('thankyou-screen').style.display = 'block';
+    document.getElementById('ty-name').textContent = t.tyTitle(name);
+    document.getElementById('ty-sub').textContent = t.tySub;
+    document.getElementById('ty-review-title').textContent = t.tyReview;
+    const tyContact = document.getElementById('ty-contact-btn');
+    if(tyContact) tyContact.textContent = t.tyContact;
+    checkoutDone = true;
+    const chatTab = document.getElementById('tab-chat-btn');
+    if(chatTab) { chatTab.style.pointerEvents = 'none'; chatTab.style.opacity = '0.35'; }
+    localStorage.setItem('dda_lockedName', reservationName);
+    localStorage.setItem('dda_lockedLang', selectedLangCode);
+    localStorage.setItem('dda_lockedRiad', localStorage.getItem('dda_riad') || '141');
+    clearSession();
+    localStorage.setItem('dda_locked', 'true');
+    const ci = document.getElementById('chat-input');
+    const sb = document.getElementById('send-btn');
+    if(ci) { ci.disabled = true; ci.placeholder = '—'; }
+    if(sb) sb.disabled = true;
+    const sugg = document.getElementById('suggestions');
+    if(sugg) sugg.style.display = 'none';
+    showFarewellCard(name);
+  }
+
+  try {
   const t = T[selectedLangCode] || T['en'];
   const name = document.getElementById('guest-name').value.trim() || reservationName || 'Guest';
   const STAR_LABELS = ['', '⭐ Needs improvement', '⭐⭐ Poor', '⭐⭐⭐ Acceptable', '⭐⭐⭐⭐ Good', '⭐⭐⭐⭐⭐ Excellent'];
+  const cmtStaff     = document.getElementById('cmt-staff').value.trim();
+  const cmtRoom      = document.getElementById('cmt-room').value.trim();
+  const cmtBreakfast = document.getElementById('cmt-breakfast').value.trim();
+  const cmtFinal     = document.getElementById('cmt-final').value.trim();
   const sections = [
     { key: 'staff', label: 'Staff & Service', comment: cmtStaff },
     { key: 'room', label: 'Room', comment: cmtRoom },
@@ -3007,10 +3043,6 @@ function submitSurvey() {
     { key: 'massage', label: 'Massage', comment: '' },
     { key: 'transport', label: 'Airport Transfer', comment: '' },
   ];
-  const cmtStaff     = document.getElementById('cmt-staff').value.trim();
-  const cmtRoom      = document.getElementById('cmt-room').value.trim();
-  const cmtBreakfast = document.getElementById('cmt-breakfast').value.trim();
-  const cmtFinal     = document.getElementById('cmt-final').value.trim();
   const today = new Date().toLocaleDateString('en-GB');
   const langNameEn = { en: 'English', fr: 'French', es: 'Spanish', it: 'Italian', de: 'German', ar: 'Arabic' }[selectedLangCode] || selectedLang;
 
@@ -3113,35 +3145,11 @@ function submitSurvey() {
     }, 3500);
   }
 
-  setTimeout(() => {
-    document.getElementById('survey-form').style.display = 'none';
-    document.getElementById('thankyou-screen').style.display = 'block';
-    document.getElementById('ty-name').textContent = t.tyTitle(name);
-    document.getElementById('ty-sub').textContent = t.tySub;
-    document.getElementById('ty-review-title').textContent = t.tyReview;
-    const tyContact = document.getElementById('ty-contact-btn');
-    if(tyContact) tyContact.textContent = t.tyContact;
-
-    // Lock chat after checkout
-    checkoutDone = true;
-    const chatTab = document.getElementById('tab-chat-btn');
-    if(chatTab) { chatTab.style.pointerEvents = 'none'; chatTab.style.opacity = '0.35'; }
-    // Save data needed to rebuild certificate on lock screen reload
-    localStorage.setItem('dda_lockedName', reservationName);
-    localStorage.setItem('dda_lockedLang', selectedLangCode);
-    localStorage.setItem('dda_lockedRiad', localStorage.getItem('dda_riad') || '141');
-    clearSession();
-    localStorage.setItem('dda_locked', 'true');
-    const ci = document.getElementById('chat-input');
-    const sb = document.getElementById('send-btn');
-    if(ci) { ci.disabled = true; ci.placeholder = '—'; }
-    if(sb) sb.disabled = true;
-    const sugg = document.getElementById('suggestions');
-    if(sugg) sugg.style.display = 'none';
-
-    // Show farewell card
-    showFarewellCard(name);
-  }, 800);
+  setTimeout(() => completeCheckout(), 800);
+  } catch(e) {
+    console.error('submitSurvey error:', e);
+    setTimeout(() => completeCheckout(), 800);
+  }
 }
 
 function showFarewellCard(name) {
