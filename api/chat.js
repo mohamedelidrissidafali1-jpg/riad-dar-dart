@@ -6,6 +6,12 @@ export default async function handler(req, res) {
 
   const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzfIugKNZlz1NncrXe3o2pMZZMC0cDWGs-eQvF2pbHoVF4sDQSH--Z80282C2igkUPr/exec';
 
+  // Convert numeric rating to star emojis; leave non-numeric values (Yes/No/'') as-is
+  function toStars(val) {
+    const n = parseInt(val, 10);
+    return (!isNaN(n) && n > 0) ? '⭐'.repeat(n) : (val || '');
+  }
+
   // Normalize native language names to English
   const LANG_MAP = {
     'Français': 'French', 'Español': 'Spanish', 'Deutsch': 'German',
@@ -63,12 +69,12 @@ export default async function handler(req, res) {
         guestName:        d.guestName        || '',
         language:         languageEn,
         bookings:         d.bookings         || '',
-        staffRating:      d.staffRating      || '',
-        roomRating:       d.roomRating       || '',
-        breakfastRating:  d.breakfastRating  || '',
-        hammamRating:     d.hammamRating     || '',
-        massageRating:    d.massageRating    || '',
-        transportRating:  d.transportRating  || '',
+        staffRating:      toStars(d.staffRating),
+        roomRating:       toStars(d.roomRating),
+        breakfastRating:  toStars(d.breakfastRating),
+        hammamRating:     toStars(d.hammamRating),
+        massageRating:    toStars(d.massageRating),
+        transportRating:  toStars(d.transportRating),
         finalComment:     commentEn          || '',
         new_questions:    questionsEn        || '',
       };
