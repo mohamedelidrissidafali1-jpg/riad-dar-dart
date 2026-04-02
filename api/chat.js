@@ -57,32 +57,32 @@ export default async function handler(req, res) {
       // Normalize language name to English
       const languageEn = LANG_MAP[d.language] || d.language || '';
 
-      // Ordered row matching columns A–M exactly
-      const row = [
-        d.date        || '',  // A: Date
-        d.guestName   || '',  // B: Guest Name
-        '',                   // C: Facture N° — filled manually by manager
-        languageEn,           // D: Language (English name)
-        d.bookings    || '',  // E: Services
-        d.staffRating || '',  // F: Staff
-        d.roomRating  || '',  // G: Room
-        d.breakfastRating  || '', // H: Breakfast
-        d.hammamRating     || '', // I: Hammam
-        d.massageRating    || '', // J: Massage
-        d.transportRating  || '', // K: Transfer
-        commentEn          || '', // L: Comment (translated)
-        questionsEn        || '', // M: New Questions (translated)
-      ];
+      // Flat payload — matches what the Apps Script expects
+      const payload = {
+        date:             d.date             || '',
+        guestName:        d.guestName        || '',
+        language:         languageEn,
+        bookings:         d.bookings         || '',
+        staffRating:      d.staffRating      || '',
+        roomRating:       d.roomRating       || '',
+        breakfastRating:  d.breakfastRating  || '',
+        hammamRating:     d.hammamRating     || '',
+        massageRating:    d.massageRating    || '',
+        transportRating:  d.transportRating  || '',
+        finalComment:     commentEn          || '',
+        new_questions:    questionsEn        || '',
+      };
 
-      const headers = ['Date', 'Guest Name', 'Facture N°', 'Language', 'Services',
-                       'Staff', 'Room', 'Breakfast', 'Hammam', 'Massage',
-                       'Transfer', 'Comment', 'New Questions'];
+      console.log('Sending to sheet:', JSON.stringify(payload));
 
-      await fetch(SHEET_URL, {
+      const sheetRes = await fetch(SHEET_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ headers, row })
+        body: JSON.stringify(payload)
       });
+      const sheetText = await sheetRes.text();
+      console.log('Sheet response:', sheetText);
+
       return res.status(200).json({ status: 'ok' });
     }
 

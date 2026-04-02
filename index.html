@@ -2993,6 +2993,9 @@ function submitSurvey() {
   const btn = document.getElementById('submit-survey-btn');
   btn.disabled = true; btn.textContent = '...';
 
+  // Hoist name so completeCheckout can use it regardless of try/catch scope
+  const name = (document.getElementById('guest-name') || {value:''}).value.trim() || reservationName || 'Guest';
+
   // Hard deadline — show thankyou no matter what within 10 seconds
   const hardDeadline = setTimeout(() => completeCheckout(), 10000);
 
@@ -3025,7 +3028,7 @@ function submitSurvey() {
 
   try {
   const t = T[selectedLangCode] || T['en'];
-  const name = document.getElementById('guest-name').value.trim() || reservationName || 'Guest';
+  // `name` is declared above completeCheckout so it stays in scope there
   const STAR_LABELS = ['', '⭐ Needs improvement', '⭐⭐ Poor', '⭐⭐⭐ Acceptable', '⭐⭐⭐⭐ Good', '⭐⭐⭐⭐⭐ Excellent'];
   const cmtStaff = ''; const cmtRoom = ''; const cmtBreakfast = '';
   const cmtFinal = document.getElementById('cmt-final').value.trim();
@@ -3067,13 +3070,12 @@ function submitSurvey() {
     finalComment: combinedComment,
     new_questions: getUsefulQuestions().join(' | ') || 'None'
   };
-  console.log("SESSION TOPICS:", sessionTopics);
-  console.log("FILTERED QUESTIONS:", getUsefulQuestions());
+  console.log("SHEET DATA:", JSON.stringify(sheetData));
   fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sheetData: sheetData })
-  }).then(() => { localStorage.removeItem('dda_bookings'); }).catch(() => {});
+  }).then(r => r.json()).then(d => console.log("Sheet response:", d)).catch(e => console.error("Sheet fetch error:", e));
 
   // ── WHATSAPP SUMMARY — reception only, no guest questions or tracking data ──
   let summary = `📋 *Checkout Summary — Riad Dar D'Art*\n\n`;
