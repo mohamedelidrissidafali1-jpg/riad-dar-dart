@@ -393,21 +393,18 @@
         <div class="card-sub" id="lbl-staff-sub"></div>
         <div class="stars" id="stars-staff"><span class="star" data-s="staff" data-v="1">⭐</span><span class="star" data-s="staff" data-v="2">⭐</span><span class="star" data-s="staff" data-v="3">⭐</span><span class="star" data-s="staff" data-v="4">⭐</span><span class="star" data-s="staff" data-v="5">⭐</span></div>
         <div class="star-label" id="lbl-staff"></div>
-        <textarea class="s-textarea" id="cmt-staff" rows="2"></textarea>
       </div>
       <div class="card">
         <div class="card-title" id="lbl-room-title"></div>
         <div class="card-sub" id="lbl-room-sub"></div>
         <div class="stars" id="stars-room"><span class="star" data-s="room" data-v="1">⭐</span><span class="star" data-s="room" data-v="2">⭐</span><span class="star" data-s="room" data-v="3">⭐</span><span class="star" data-s="room" data-v="4">⭐</span><span class="star" data-s="room" data-v="5">⭐</span></div>
         <div class="star-label" id="lbl-room"></div>
-        <textarea class="s-textarea" id="cmt-room" rows="2"></textarea>
       </div>
       <div class="card">
         <div class="card-title" id="lbl-bfast-title"></div>
         <div class="card-sub" id="lbl-bfast-sub"></div>
         <div class="stars" id="stars-breakfast"><span class="star" data-s="breakfast" data-v="1">⭐</span><span class="star" data-s="breakfast" data-v="2">⭐</span><span class="star" data-s="breakfast" data-v="3">⭐</span><span class="star" data-s="breakfast" data-v="4">⭐</span><span class="star" data-s="breakfast" data-v="5">⭐</span></div>
         <div class="star-label" id="lbl-breakfast"></div>
-        <textarea class="s-textarea" id="cmt-breakfast" rows="2"></textarea>
       </div>
       <div class="card">
         <div class="card-title" id="lbl-extra-title"></div>
@@ -2095,8 +2092,7 @@ function applyAllTranslations() {
 
   // Survey textareas placeholders
   const taMap = {
-    'cmt-staff': t.staffPlaceholder, 'cmt-room': t.roomPlaceholder,
-    'cmt-breakfast': t.bfastPlaceholder, 'cmt-final': t.finalPlaceholder
+    'cmt-final': t.finalPlaceholder
   };
   Object.entries(taMap).forEach(([id, val]) => {
     const el = document.getElementById(id);
@@ -3031,10 +3027,8 @@ function submitSurvey() {
   const t = T[selectedLangCode] || T['en'];
   const name = document.getElementById('guest-name').value.trim() || reservationName || 'Guest';
   const STAR_LABELS = ['', '⭐ Needs improvement', '⭐⭐ Poor', '⭐⭐⭐ Acceptable', '⭐⭐⭐⭐ Good', '⭐⭐⭐⭐⭐ Excellent'];
-  const cmtStaff     = document.getElementById('cmt-staff').value.trim();
-  const cmtRoom      = document.getElementById('cmt-room').value.trim();
-  const cmtBreakfast = document.getElementById('cmt-breakfast').value.trim();
-  const cmtFinal     = document.getElementById('cmt-final').value.trim();
+  const cmtStaff = ''; const cmtRoom = ''; const cmtBreakfast = '';
+  const cmtFinal = document.getElementById('cmt-final').value.trim();
   const sections = [
     { key: 'staff', label: 'Staff & Service', comment: cmtStaff },
     { key: 'room', label: 'Room', comment: cmtRoom },
